@@ -1,17 +1,17 @@
-package com.project.voting.security;
+//package com.project.voting.security;
+//
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+//import javax.servlet.ServletException;
+//import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletResponse;
+//import java.io.IOException;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
-        response.sendRedirect("/admin/main");
-
-    }
-}
+//public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+//    @Override
+//    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+//                                        Authentication authentication) throws IOException, ServletException {
+//        response.sendRedirect("/admin/main");
+//
+//    }
+//}

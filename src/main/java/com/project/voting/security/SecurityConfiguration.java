@@ -30,10 +30,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     {
         return new BCryptPasswordEncoder();
     }
-    @Bean
-    LoginSuccessHandler successHandler() {
-        return new LoginSuccessHandler();
-    }
+//    @Bean
+//    LoginSuccessHandler successHandler() {
+//        return new LoginSuccessHandler();
+//    }
 
 //    @Override
 //    public void configure(WebSecurity web) throws Exception {
@@ -45,14 +45,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .formLogin()
                 .loginPage("/admin/login")
-                .successHandler(successHandler())
+//                .successHandler(successHandler())
                 .failureHandler(getFailureHandler())
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .permitAll()
                 .and()
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/admin/logout"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)
                 .and()

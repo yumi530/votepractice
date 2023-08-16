@@ -29,7 +29,7 @@ public class Election extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   private Admin admin;
 
-  @OneToMany(mappedBy = "voteId")
+  @OneToMany(mappedBy = "election")
   private List<Vote> votes = new ArrayList<>();
 
 
@@ -52,6 +52,7 @@ public class Election extends BaseEntity {
       .groupName(electionDto.getGroupName())
       .electionStartDt(electionDto.getElectionStartDt())
       .electionEndDt(electionDto.getElectionEndDt())
+      .votes(electionDto.getVotes())
 
       .build();
   }

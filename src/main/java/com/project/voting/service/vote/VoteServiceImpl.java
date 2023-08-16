@@ -4,8 +4,9 @@ import com.project.voting.domain.election.Election;
 import com.project.voting.domain.election.ElectionRepository;
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteRepository;
+import com.project.voting.dto.election.ElectionDto;
 import com.project.voting.dto.vote.VoteDto;
-import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     public Vote save(VoteDto voteDto) {
+        electionRepository.findById(voteDto.getElectionId()).ifPresent(voteDto::setElection);
         Vote vote = Vote.toEntity(voteDto);
         return voteRepository.save(vote);
     }

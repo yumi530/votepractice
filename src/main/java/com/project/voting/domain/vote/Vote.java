@@ -2,6 +2,7 @@ package com.project.voting.domain.vote;
 
 import com.project.voting.domain.election.Election;
 import com.project.voting.dto.vote.VoteDto;
+import java.util.Optional;
 import lombok.*;
 
 import javax.persistence.*;
@@ -46,6 +47,7 @@ public class Vote {
       .candidateName(voteDto.getCandidateName())
       .candidateInfo(voteDto.getCandidateInfo())
       .agreeYn(voteDto.isAgreeYn())
+      .election(voteDto.getElection())
       .build();
 
   }

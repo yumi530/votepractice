@@ -17,7 +17,9 @@ public interface VoteService {
 
     Vote detail(Long voteId);
 
-    Vote save(VoteDto voteDto);
+//    Vote save(VoteDto voteDto);
+
+  Vote save(VoteDto voteDto);
 
 //    Vote save(VoteDto voteDto, Election election);
 }

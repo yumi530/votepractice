@@ -15,10 +15,12 @@ public class VoteDto {
     private String candidateInfo;
     private boolean agreeYn;
     private int preference;
+    @Setter
     private Election election;
+    private Long electionId;
 
     @Builder
-    public VoteDto(int voteId, String voteTitle, int voteType, String candidateName, String candidateInfo, boolean agreeYn, int preference, Election election) {
+    public VoteDto(int voteId, String voteTitle, int voteType, String candidateName, String candidateInfo, boolean agreeYn, int preference, Long electionId) {
         this.voteId = voteId;
         this.voteTitle = voteTitle;
         this.voteType = voteType;
@@ -26,7 +28,7 @@ public class VoteDto {
         this.candidateInfo = candidateInfo;
         this.agreeYn = agreeYn;
         this.preference = preference;
-        this.election = election;
+        this.electionId = electionId;
     }
 
 //public static VoteDto from(Vote vote) {

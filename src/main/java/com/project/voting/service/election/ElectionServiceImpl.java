@@ -4,7 +4,6 @@ import com.project.voting.domain.admin.Admin;
 import com.project.voting.domain.admin.AdminRepository;
 import com.project.voting.domain.election.Election;
 import com.project.voting.domain.election.ElectionRepository;
-import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteRepository;
 import com.project.voting.dto.election.ElectionDto;
 
@@ -12,10 +11,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import com.project.voting.dto.vote.VoteDto;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,17 +30,27 @@ public class ElectionServiceImpl implements ElectionService {
     return electionRepository.findAll();
   }
 
+  @Transactional
   @Override
-  public Election addElection(ElectionDto electionDto, Admin admin) {
-    Admin adminId = adminRepository.findById(admin.getUsername()).get();
+  public Election createdElection() {
+    Election election = new Election();
+    return electionRepository.save(election);
+
+  }
+
+  @Transactional
+  @Override
+  public Election addElection(ElectionDto electionDto) {
+//    Admin adminId = adminRepository.findById(admin.getUsername()).get();
 
     Election addElection = Election.builder()
-      .electionId(electionDto.getElectionId())
+//      .electionId(electionDto.getElectionId())
       .electionTitle(electionDto.getElectionTitle())
       .groupName(electionDto.getGroupName())
       .electionStartDt(electionDto.getElectionStartDt())
       .electionEndDt(electionDto.getElectionEndDt())
-      .admin(adminId)
+      .votes(electionDto.getVotes())
+//      .admin(adminId)
       .build();
     return electionRepository.save(addElection);
   }

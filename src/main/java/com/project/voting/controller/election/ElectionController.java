@@ -37,11 +37,12 @@ public class ElectionController {
 
   @GetMapping("/insert")
   public String addElection() {
+    electionService.createdElection();
     return "admin/insert";
   }
   @PostMapping("/insert")
-  public String addElectionSubmit(Model model, ElectionDto electionDto, Admin admin) {
-    Election addElection = electionService.addElection(electionDto, admin);
+  public String addElectionSubmit(Model model, ElectionDto electionDto) {
+    Election addElection = electionService.addElection(electionDto);
 
     model.addAttribute("addElection", addElection);
     return "admin/election_list";
