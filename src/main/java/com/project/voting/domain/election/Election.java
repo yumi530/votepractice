@@ -1,5 +1,6 @@
 package com.project.voting.domain.election;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.voting.domain.BaseEntity;
 import com.project.voting.domain.admin.Admin;
 
@@ -26,9 +27,11 @@ public class Election extends BaseEntity {
   private String electionStartDt;
   private String electionEndDt;
 
+  @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
   private Admin admin;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "election")
   private List<Vote> votes = new ArrayList<>();
 

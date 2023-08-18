@@ -8,14 +8,24 @@ import com.project.voting.dto.vote.VoteDto;
 import com.project.voting.service.admin.AdminService;
 import com.project.voting.service.election.ElectionServiceImpl;
 
+import com.project.voting.service.vote.VoteService;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,43 +37,67 @@ public class ElectionController {
 
   private final ElectionServiceImpl electionService;
   private final AdminService adminService;
+  private final VoteService voteService;
 
-  @GetMapping("/electionList")
-  public String getVoteList(Model model){
-    List<Election> electionList = electionService.getElectionList();
+  @RequestMapping("/electionList")
+  public String getVoteList(Model model,
+    @PageableDefault(page = 0, size = 10, sort = "electionId", direction = Sort.Direction.DESC) Pageable pageable) {
+    Page<Election> electionList = electionService.getElectionList(pageable);
+
+    int nowPage = electionList.getPageable().getPageNumber() + 1;
+    int startPage = Math.max(nowPage - 4, 1);
+    int endPage = Math.min(nowPage + 5, electionList.getTotalPages());
+
     model.addAttribute("electionList", electionList);
-    return "admin/election_list";
+    model.addAttribute("nowPage", nowPage);
+    model.addAttribute("startPage", startPage);
+    model.addAttribute("endPage", endPage);
+    return "admin/election-list";
   }
 
   @GetMapping("/insert")
-  public String addElection() {
-    electionService.createdElection();
+  public String addElection(Model model) {
+    Election createdElection = electionService.createdElection();
+    model.addAttribute("createdElection", createdElection);
     return "admin/insert";
   }
-  @PostMapping("/insert")
-  public String addElectionSubmit(Model model, ElectionDto electionDto) {
-    Election addElection = electionService.addElection(electionDto);
 
+  @PostMapping("/election")
+  public ResponseEntity addElectionSubmit(Model model,
+    @ModelAttribute("createdElection") ElectionDto electionDto,
+    @AuthenticationPrincipal Admin admin) {
+    Election addElection = electionService.addElection(electionDto, admin);
     model.addAttribute("addElection", addElection);
-    return "admin/election_list";
+    return ResponseEntity.status(HttpStatus.OK).build();
   }
 
-
-  @PostMapping("/detail")
-  public String voteDetail(Model model, Long voteId){
-    Election detail = electionService.detail(voteId);
+  @GetMapping("/election/detail")
+  public String electionDetail(Model model, ElectionDto electionDto,List<Long> voteId) {
+    Election detail = electionService.detail(electionDto.getElectionId());
+    List<Vote> detailVotes = voteService.detail(voteId);
+    model.addAttribute("detailVotes", detailVotes);
     model.addAttribute("detail", detail);
-    return "admin/detail";
-
+    return "admin/election-detail";
   }
-  @PostMapping("/election/save")
-  public ResponseEntity<Election> saveVote(@RequestBody ElectionDto electionDto) {
-    try {
-      Election savedElection = electionService.save(electionDto);
-      return ResponseEntity.ok(savedElection);
-    } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
+//  @GetMapping("/election/detail")
+//  public String electionDetail(Model model, ElectionDto electionDto, List<Long> voteId) {
+//    Election detail = electionService.detail(electionDto.getElectionId());
+//    List<Vote> detailVote = voteService.detail(voteId);
+//    model.addAttribute("detailVote", detailVote);
+//    model.addAttribute("detail", detail);
+//    return "admin/election-detail";
+//  }
+
+  //  @DeleteMapping("/election/delete")
+//  public String deletedElection(Long electionId){
+//    electionService.deleteElection(electionId);
+//    return "admin/election-list";
+//  }
+
+  @DeleteMapping("/election/delete")
+  public ResponseEntity deletedElection(Long electionId) {
+    electionService.deleteElection(electionId);
+    return ResponseEntity.status(HttpStatus.OK).build();
   }
 
 }

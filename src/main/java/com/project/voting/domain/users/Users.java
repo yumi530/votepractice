@@ -23,10 +23,11 @@ public class Users extends BaseEntity{
   private Election election;
 
   @Builder
-  public Users(String usersPhone, String usersName, String code){
+  public Users(String usersPhone, String usersName, String code, Election election){
     this.usersPhone = usersPhone;
     this.usersName = usersName;
     this.code = code;
+    this.election = election;
   }
 
 }

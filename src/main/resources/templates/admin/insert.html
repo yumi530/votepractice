@@ -11,10 +11,10 @@
   </style>
 </head>
 <body>
-<form id="electionForm" action="/admin/insert" method="post" enctype="multipart/form-data">
+<form id="electionForm" th:action="@{/admin/election(electionId=${createdElection.electionId})}" method="post">
   <table>
     <tr>
-      <td><input type="hidden" name="electionId"></td>
+      <td><input type="hidden" id="electionId" name="electionId" th:value="${createdElection.electionId}"></td>
     </tr>
     <tr>
       <td>대표선거명</td>
@@ -34,7 +34,7 @@
 
   <button type="button" onclick="insertVote()">투표추가</button>
   <div id="myVote">
-    <input type="hidden" id="electionId" name="electionId">
+    <input type="hidden" name="electionId">
     <input type="hidden" id="voteId" name="voteId">
     <input type="text" id="voteTitle" name="voteTitle" placeholder="투표명">
     <input type="text" id="candidateName" name="candidateName" placeholder="후보자명">
@@ -62,7 +62,7 @@
 
   function addVoteOption() {
     var voteOption = {
-      electionId : document.getElementById("electionId").value,
+      electionId: document.getElementById("electionId").value,
       voteId: document.getElementById("voteId").value,
       voteTitle: document.getElementById("voteTitle").value,
       candidateName: document.getElementById("candidateName").value,
@@ -76,13 +76,29 @@
   }
 
   function clearVoteInputs() {
-    document.getElementById("voteId").value = "";
+    // document.getElementById("voteId").value = "";
     document.getElementById("voteTitle").value = "";
     document.getElementById("candidateName").value = "";
     document.getElementById("candidateInfo").value = "";
   }
 
   function addVoteOptionToPage(voteOption) {
+    var voteOptionsList = $("#voteOptionsList");
+
+    var voteOptionDiv = $("<div>").text(
+        "투표명: " + voteOption.voteTitle +
+        ", 후보자명: " + voteOption.candidateName +
+        ", 후보자정보: " + voteOption.candidateInfo
+    );
+    voteOptionsList.append(voteOptionDiv);
+
+    // 숨겨진 input 필드 추가
+    var hiddenInput = $("<input>").attr("type", "hidden").attr("name", "hiddenElectionId").val(voteOption.electionId);
+    voteOptionsList.append(hiddenInput);
+
+    hiddenInput = $("<input>").attr("type", "hidden").attr("name", "hiddenVoteId").val(voteOption.voteId);
+    voteOptionsList.append(hiddenInput);
+
     $.ajax({
       url: "/vote/save",
       type: "POST",
@@ -90,12 +106,6 @@
       data: JSON.stringify(voteOption),
       success: function (response) {
         console.log("투표 옵션 추가 성공:", response);
-
-        var voteOptionsList = $("#voteOptionsList");
-        var voteOptionDiv = $("<div>").text("투표명: " + response.voteTitle,
-            "후보자명: " + response.candidateName, "후보자정보: " + response.candidateInfo);
-        voteOptionsList.append(voteOptionDiv);
-
         clearVoteInputs();
       },
       error: function (xhr, status, error) {
@@ -104,10 +114,9 @@
     });
   }
 
+
   function submitForm() {
-
     insertVote();
-
     var form = document.getElementById("electionForm");
     form.submit();
   }

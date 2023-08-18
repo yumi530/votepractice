@@ -1,5 +1,6 @@
 package com.project.voting.domain.vote;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.voting.domain.election.Election;
 import com.project.voting.dto.vote.VoteDto;
 import java.util.Optional;
@@ -14,28 +15,29 @@ public class Vote {
 
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
-  private int voteId;
+  private Long voteId;
   private String voteTitle;
-  private int voteType;
+//  private int voteType;
   private String candidateName;
   private String candidateInfo;
-  private boolean agreeYn;
-  private int preference;
+//  private boolean agreeYn;
+//  private int preference;
 
+  @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "election_id")
+  @JoinColumn(name = "election_election_id")
   private Election election;
 
   @Builder
-  public Vote(int voteId, String voteTitle, int voteType, String candidateName,
-    String candidateInfo, boolean agreeYn, int preference, Election election) {
+  public Vote(Long voteId, String voteTitle, String candidateName,
+    String candidateInfo, Election election) {
     this.voteId = voteId;
     this.voteTitle = voteTitle;
-    this.voteType = voteType;
+//    this.voteType = voteType;
     this.candidateName = candidateName;
     this.candidateInfo = candidateInfo;
-    this.agreeYn = agreeYn;
-    this.preference = preference;
+//    this.agreeYn = agreeYn;
+//    this.preference = preference;
     this.election = election;
   }
 
@@ -43,10 +45,10 @@ public class Vote {
     return Vote.builder()
       .voteId(voteDto.getVoteId())
       .voteTitle(voteDto.getVoteTitle())
-      .voteType(voteDto.getVoteType())
+//      .voteType(voteDto.getVoteType())
       .candidateName(voteDto.getCandidateName())
       .candidateInfo(voteDto.getCandidateInfo())
-      .agreeYn(voteDto.isAgreeYn())
+//      .agreeYn(voteDto.isAgreeYn())
       .election(voteDto.getElection())
       .build();
 

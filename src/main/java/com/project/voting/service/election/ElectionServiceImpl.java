@@ -4,18 +4,23 @@ import com.project.voting.domain.admin.Admin;
 import com.project.voting.domain.admin.AdminRepository;
 import com.project.voting.domain.election.Election;
 import com.project.voting.domain.election.ElectionRepository;
+import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteRepository;
 import com.project.voting.dto.election.ElectionDto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class ElectionServiceImpl implements ElectionService {
@@ -26,31 +31,33 @@ public class ElectionServiceImpl implements ElectionService {
 
 
   @Override
-  public List<Election> getElectionList() {
-    return electionRepository.findAll();
+  public Page<Election> getElectionList(Pageable pageable) {
+    return electionRepository.findAll(pageable);
   }
 
-  @Transactional
   @Override
   public Election createdElection() {
     Election election = new Election();
+    election.setElectionId(election.getElectionId());
     return electionRepository.save(election);
-
   }
 
-  @Transactional
+
   @Override
-  public Election addElection(ElectionDto electionDto) {
-//    Admin adminId = adminRepository.findById(admin.getUsername()).get();
+  public Election addElection(ElectionDto electionDto,
+    @AuthenticationPrincipal Admin admin) {
+    Admin adminId = adminRepository.findById(admin.getUsername()).get();
+    Election electionId = electionRepository.findById(createdElection().getElectionId()).get();
+
 
     Election addElection = Election.builder()
-//      .electionId(electionDto.getElectionId())
+      .electionId(electionId.getElectionId())
       .electionTitle(electionDto.getElectionTitle())
       .groupName(electionDto.getGroupName())
       .electionStartDt(electionDto.getElectionStartDt())
       .electionEndDt(electionDto.getElectionEndDt())
       .votes(electionDto.getVotes())
-//      .admin(adminId)
+      .admin(adminId)
       .build();
     return electionRepository.save(addElection);
   }
@@ -68,7 +75,7 @@ public class ElectionServiceImpl implements ElectionService {
   @Override
   public Election detail(Long electionId) {
     Election election = electionRepository.findById(electionId).get();
-    electionRepository.save(election);
+//    electionRepository.save(election);
     return election;
 
 

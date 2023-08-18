@@ -7,15 +7,17 @@ import com.project.voting.dto.election.ElectionDto;
 
 import com.project.voting.dto.vote.VoteDto;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface ElectionService {
-  List<Election> getElectionList();
+  Page<Election> getElectionList(Pageable pageable);
 
   @Transactional
   Election createdElection();
 
-  Election addElection(ElectionDto electionDto);
+  Election addElection(ElectionDto electionDto, Admin admin);
 
 
 

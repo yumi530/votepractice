@@ -8,26 +8,24 @@ import lombok.*;
 @Getter
 public class VoteDto {
 
-    private int voteId;
+    private Long voteId;
     private String voteTitle;
-    private int voteType;
     private String candidateName;
     private String candidateInfo;
-    private boolean agreeYn;
-    private int preference;
+//    private boolean agreeYn;
     @Setter
     private Election election;
     private Long electionId;
 
     @Builder
-    public VoteDto(int voteId, String voteTitle, int voteType, String candidateName, String candidateInfo, boolean agreeYn, int preference, Long electionId) {
+    public VoteDto(Long voteId, String voteTitle, String candidateName, String candidateInfo,Long electionId) {
         this.voteId = voteId;
         this.voteTitle = voteTitle;
-        this.voteType = voteType;
+//        this.voteType = voteType;
         this.candidateName = candidateName;
         this.candidateInfo = candidateInfo;
-        this.agreeYn = agreeYn;
-        this.preference = preference;
+//        this.agreeYn = agreeYn;
+//        this.preference = preference;
         this.electionId = electionId;
     }
 

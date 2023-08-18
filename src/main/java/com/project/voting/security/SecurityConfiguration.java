@@ -62,10 +62,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/")
-                .permitAll();
-//                .antMatchers("/admin/**")
-//                .hasAuthority("ADMIN");
+//                .antMatchers("/")
+//                .permitAll();
+                .antMatchers("/admin/**")
+                .hasAuthority("ADMIN");
     }
 
 
