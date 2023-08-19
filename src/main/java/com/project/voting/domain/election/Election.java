@@ -26,6 +26,8 @@ public class Election extends BaseEntity {
   private String groupName;
   private String electionStartDt;
   private String electionEndDt;
+  private String filename;
+  private String filepath;
 
   @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
@@ -37,7 +39,7 @@ public class Election extends BaseEntity {
 
 
   @Builder
-  public Election(Long electionId, String electionTitle, String groupName, String electionStartDt, String electionEndDt, List<Vote>votes, Admin admin) {
+  public Election(Long electionId, String electionTitle, String groupName, String electionStartDt, String electionEndDt, List<Vote>votes, Admin admin, String filename, String filepath) {
     this.electionId = electionId;
     this.electionTitle = electionTitle;
     this.groupName = groupName;
@@ -45,6 +47,8 @@ public class Election extends BaseEntity {
     this.electionEndDt = electionEndDt;
     this.votes = votes;
     this.admin =admin;
+    this.filename = filename;
+    this.filepath = filepath;
   }
 
 /*

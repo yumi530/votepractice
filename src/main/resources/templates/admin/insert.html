@@ -6,7 +6,7 @@
     <title>Title</title>
 </head>
 <body>
-<form id="electionForm" th:action="@{/admin/election}" method="post">
+<form id="electionForm" th:action="@{/admin/election}" method="post" enctype="multipart/form-data">
     <table>
         <tr>
             <td>대표선거명</td>
@@ -22,6 +22,12 @@
                     type="datetime-local"
                     name="electionEndDt"></td>
         </tr>
+        <tr>
+            <div class="mb-3">
+                <td><label for="file" class="form-label">명부등록</label></td>
+                <td><input class="form-control" type="file" id="file" name="file"></td>
+            </div>
+        </tr>
     </table>
 
     <button type="button" onclick="insertVoteTemplate()">투표추가</button>
@@ -32,7 +38,7 @@
     <button type="submit">개설 완료</button>
 </form>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
     // var index = 0;
 

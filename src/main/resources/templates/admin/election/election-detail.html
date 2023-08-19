@@ -25,9 +25,19 @@
 
 
     <tr th:each="vote : ${detail.votes}">
-        <td th:text="${vote.candidateName}"></td>
+        <td th:text="${vote.voteTitle}">
+            <button type="button" onclick="countButton()"></button>
+        </td>
     </tr>
 </table>
+<div class="d-flex justify-content-md-center">
+    <a th:href="@{${detail.filepath}}" th:download="${detail.filename}">명부 다운로드</a>
+</div>
 
+<script>
+    function countButton() {
+
+    }
+</script>
 </body>
 </html>

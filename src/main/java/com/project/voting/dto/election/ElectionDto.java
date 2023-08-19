@@ -13,5 +13,7 @@ public class ElectionDto {
     private String electionStartDt;
     private String electionEndDt;
     private List<VoteDto> votes;
+    private String filename;
+    private String filepath;
 
 }

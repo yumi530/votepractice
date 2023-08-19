@@ -9,6 +9,7 @@ import com.project.voting.service.election.ElectionServiceImpl;
 
 import com.project.voting.service.vote.VoteService;
 
+import java.io.IOException;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -21,11 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -58,16 +57,16 @@ public class ElectionController {
     }
 
     @PostMapping("/election")
-    public String addElectionSubmit(ElectionDto electionDto, @AuthenticationPrincipal Admin admin, RedirectAttributes redirectAttributes) {
-        electionService.addElectionAndVote(electionDto, admin);
+    public String addElectionSubmit(ElectionDto electionDto, @AuthenticationPrincipal Admin admin, RedirectAttributes redirectAttributes, MultipartFile file) throws IOException {
+        electionService.addElectionAndVote(electionDto, admin, file);
         redirectAttributes.addFlashAttribute("message", "addElectionAndVote Success");
         return "redirect:/admin/electionList";
     }
 
     @GetMapping("/election/detail")
-    public String electionDetail(Model model, ElectionDto electionDto) {
-//        Election detail = electionService.detail(electionDto.getElectionId());
-//        model.addAttribute("detail", detail);
+    public String electionDetail(Model model, ElectionDto electionDto, MultipartFile file) throws IOException {
+        Election detail = electionService.detail(electionDto);
+        model.addAttribute("detail", detail);
         return "admin/election/election-detail";
     }
 
