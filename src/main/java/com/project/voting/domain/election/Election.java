@@ -47,7 +47,7 @@ public class Election extends BaseEntity {
     this.admin =admin;
   }
 
-
+/*
   public static Election toEntity(ElectionDto electionDto) {
     return Election.builder()
       .electionId(electionDto.getElectionId())
@@ -59,4 +59,5 @@ public class Election extends BaseEntity {
 
       .build();
   }
+ */
 }

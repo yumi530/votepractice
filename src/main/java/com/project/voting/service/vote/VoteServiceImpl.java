@@ -32,7 +32,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     public Vote save(VoteDto voteDto) {
-        electionRepository.findById(voteDto.getElectionId()).ifPresent(voteDto::setElection);
+//        electionRepository.findById(voteDto.getElectionId()).ifPresent(voteDto::setElection);
         Vote vote = Vote.toEntity(voteDto);
         return voteRepository.save(vote);
     }

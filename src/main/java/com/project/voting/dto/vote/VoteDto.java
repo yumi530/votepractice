@@ -1,74 +1,14 @@
 package com.project.voting.dto.vote;
 
-import com.project.voting.domain.election.Election;
-import com.project.voting.domain.vote.Vote;
-import lombok.*;
+import lombok.Data;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@Data
 public class VoteDto {
 
     private Long voteId;
     private String voteTitle;
     private String candidateName;
     private String candidateInfo;
-//    private boolean agreeYn;
-    @Setter
-    private Election election;
     private Long electionId;
 
-    @Builder
-    public VoteDto(Long voteId, String voteTitle, String candidateName, String candidateInfo,Long electionId) {
-        this.voteId = voteId;
-        this.voteTitle = voteTitle;
-//        this.voteType = voteType;
-        this.candidateName = candidateName;
-        this.candidateInfo = candidateInfo;
-//        this.agreeYn = agreeYn;
-//        this.preference = preference;
-        this.electionId = electionId;
-    }
-
-//public static VoteDto from(Vote vote) {
-//    VoteDto dto = new VoteDto();
-//    dto.setVoteId(vote.getVoteId());
-//    dto.setElection(vote.getElection()); // 변경: Election 객체 설정
-//    dto.setVoteTitle(vote.getVoteTitle());
-//    dto.setVoteType(vote.getVoteType());
-//    dto.setCandidateName(vote.getCandidateName());
-//    dto.setCandidateInfo(vote.getCandidateInfo());
-//    dto.setAgreeYn(vote.isAgreeYn());
-//    return dto;
-//}
-
-//    // 변경: Election 객체 getter와 setter
-//    public Election getElection() {
-//        return election;
-//    }
-//
-//    public void setElection(Election election) {
-//        this.election = election;
-//    }
-//public static Vote toEntity(VoteDto voteDto) {
-//    return Vote.builder()
-//      .voteId(voteDto.getVoteId())
-//      .voteTitle(voteDto.getVoteTitle())
-//      .voteType(voteDto.getVoteType())
-//      .candidateName(voteDto.getCandidateName())
-//      .candidateInfo(voteDto.getCandidateInfo())
-//      .agreeYn(voteDto.isAgreeYn())
-//      .election(voteDto.getElection().getElectionId())
-//      .build();
-//}
-
-//    public Vote toEntity() {
-//        return Vote.builder()
-//                .voteId(voteId)
-//                .voteTitle(voteTitle)
-//                .voteType(voteType)
-//                .candidateName(candidateName)
-//                .candidateInfo(candidateInfo)
-//                .agreeYn(agreeYn)
-//                .build();
-//    }
 }

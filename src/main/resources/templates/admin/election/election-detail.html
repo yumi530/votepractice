@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table class="table">
+    <tr>
+        <td th:text="선거명"></td>
+        <td th:text="${detail.electionTitle}"></td>
+    </tr>
+    <tr>
+        <td th:text="이용기관"></td>
+        <td th:text="${detail.groupName}"></td>
+    </tr>
+    <tr>
+        <td th:text="선거시작"></td>
+        <td th:text="${detail.electionStartDt}"></td>
+    </tr>
+    <tr>
+        <td th:text="선거종료"></td>
+        <td th:text="${detail.electionEndDt}"></td>
+    </tr>
+
+
+    <tr th:each="vote : ${detail.votes}">
+        <td th:text="${vote.candidateName}"></td>
+    </tr>
+</table>
+
+</body>
+</html>

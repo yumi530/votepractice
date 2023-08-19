@@ -2,125 +2,55 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-  <style>
-    #myVote {
-      display: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
-<form id="electionForm" th:action="@{/admin/election(electionId=${createdElection.electionId})}" method="post">
-  <table>
-    <tr>
-      <td><input type="hidden" id="electionId" name="electionId" th:value="${createdElection.electionId}"></td>
-    </tr>
-    <tr>
-      <td>대표선거명</td>
-      <td><input type="text" name="electionTitle"></td>
-    </tr>
-    <tr>
-      <td>이용기관명</td>
-      <td><input type="text" name="groupName"></td>
-    </tr>
-    <tr>
-      <td>투표기간</td>
-      <td><input type="datetime-local" name="electionStartDt"><input
-          type="datetime-local"
-          name="electionEndDt"></td>
-    </tr>
-  </table>
+<form id="electionForm" th:action="@{/admin/election}" method="post">
+    <table>
+        <tr>
+            <td>대표선거명</td>
+            <td><input type="text" name="electionTitle"></td>
+        </tr>
+        <tr>
+            <td>이용기관명</td>
+            <td><input type="text" name="groupName"></td>
+        </tr>
+        <tr>
+            <td>투표기간</td>
+            <td><input type="datetime-local" name="electionStartDt"><input
+                    type="datetime-local"
+                    name="electionEndDt"></td>
+        </tr>
+    </table>
 
-  <button type="button" onclick="insertVote()">투표추가</button>
-  <div id="myVote">
-    <input type="hidden" name="electionId">
-    <input type="hidden" id="voteId" name="voteId">
-    <input type="text" id="voteTitle" name="voteTitle" placeholder="투표명">
-    <input type="text" id="candidateName" name="candidateName" placeholder="후보자명">
-    <input type="text" id="candidateInfo" name="candidateInfo" placeholder="후보자정보">
-    <button type="button" onclick="addVoteOption()">투표 옵션 추가</button>
-  </div>
+    <button type="button" onclick="insertVoteTemplate()">투표추가</button>
 
-  <button type="button" onclick="submitForm()">개설 완료</button>
-  <div id="voteOptionsList">
-  </div>
+    <div id="myVote">
+    </div>
+
+    <button type="submit">개설 완료</button>
 </form>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  var voteOptions = [];
+    // var index = 0;
 
-  function insertVote() {
-    var x = document.getElementById("myVote");
-    if (x.style.display === "none") {
-      x.style.display = "block";
-    } else {
-      x.style.display = "none";
+    function insertVoteTemplate() {
+        const voteTemplate = document.createElement("div");
+        const voteTemplateClassName = "vote-template";
+        voteTemplate.classList.add(voteTemplateClassName);
+
+        let index = document.getElementsByClassName(voteTemplateClassName).length;
+
+        voteTemplate.innerHTML = `
+            <input type="text" name="votes[${index}].voteTitle" placeholder="투표명">
+            <input type="text" name="votes[${index}].candidateName" placeholder="후보자명">
+            <input type="text" name="votes[${index}].candidateInfo" placeholder="후보자정보">
+        `;
+
+        document.getElementById("myVote").appendChild(voteTemplate);
     }
-  }
-
-  function addVoteOption() {
-    var voteOption = {
-      electionId: document.getElementById("electionId").value,
-      voteId: document.getElementById("voteId").value,
-      voteTitle: document.getElementById("voteTitle").value,
-      candidateName: document.getElementById("candidateName").value,
-      candidateInfo: document.getElementById("candidateInfo").value
-    };
-    voteOptions.push(voteOption);
-    clearVoteInputs();
-    console.log("투표 옵션 추가:", voteOption);
-
-    addVoteOptionToPage(voteOption);
-  }
-
-  function clearVoteInputs() {
-    // document.getElementById("voteId").value = "";
-    document.getElementById("voteTitle").value = "";
-    document.getElementById("candidateName").value = "";
-    document.getElementById("candidateInfo").value = "";
-  }
-
-  function addVoteOptionToPage(voteOption) {
-    var voteOptionsList = $("#voteOptionsList");
-
-    var voteOptionDiv = $("<div>").text(
-        "투표명: " + voteOption.voteTitle +
-        ", 후보자명: " + voteOption.candidateName +
-        ", 후보자정보: " + voteOption.candidateInfo
-    );
-    voteOptionsList.append(voteOptionDiv);
-
-    // 숨겨진 input 필드 추가
-    var hiddenInput = $("<input>").attr("type", "hidden").attr("name", "hiddenElectionId").val(voteOption.electionId);
-    voteOptionsList.append(hiddenInput);
-
-    hiddenInput = $("<input>").attr("type", "hidden").attr("name", "hiddenVoteId").val(voteOption.voteId);
-    voteOptionsList.append(hiddenInput);
-
-    $.ajax({
-      url: "/vote/save",
-      type: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(voteOption),
-      success: function (response) {
-        console.log("투표 옵션 추가 성공:", response);
-        clearVoteInputs();
-      },
-      error: function (xhr, status, error) {
-        console.error("투표 옵션 추가 실패:", error);
-      }
-    });
-  }
-
-
-  function submitForm() {
-    insertVote();
-    var form = document.getElementById("electionForm");
-    form.submit();
-  }
-
 </script>
 </body>
 </html>

@@ -1,11 +1,9 @@
 package com.project.voting.domain.voteCount;
 
 import com.project.voting.domain.vote.Vote;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+
+import javax.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -19,6 +17,7 @@ public class VoteCount {
   private boolean isAgreed;
 
   @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "vote_vote_id")
   private Vote vote;
 
   @Builder

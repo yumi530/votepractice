@@ -13,6 +13,8 @@ import java.time.format.DateTimeFormatter;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.project.voting.dto.vote.VoteDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,68 +27,70 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ElectionServiceImpl implements ElectionService {
 
-  private final ElectionRepository electionRepository;
-  private final VoteRepository voteRepository;
-  private final AdminRepository adminRepository;
+    private final ElectionRepository electionRepository;
+    private final VoteRepository voteRepository;
+    private final AdminRepository adminRepository;
 
 
-  @Override
-  public Page<Election> getElectionList(Pageable pageable) {
-    return electionRepository.findAll(pageable);
-  }
+    @Override
+    public Page<Election> getElectionList(Pageable pageable) {
+        return electionRepository.findAll(pageable);
+    }
 
-  @Override
-  public Election createdElection() {
-    Election election = new Election();
-    election.setElectionId(election.getElectionId());
-    return electionRepository.save(election);
-  }
+    @Override
+    @Transactional
+    public Election addElectionAndVote(ElectionDto electionDto,
+                                       @AuthenticationPrincipal Admin admin) {
+        Admin adminId = adminRepository.findById(admin.getUsername()).get();
 
+        Election election = Election.builder()
+                .electionTitle(electionDto.getElectionTitle())
+                .groupName(electionDto.getGroupName())
+                .electionStartDt(electionDto.getElectionStartDt())
+                .electionEndDt(electionDto.getElectionEndDt())
+                .admin(adminId)
+                .build();
 
-  @Override
-  public Election addElection(ElectionDto electionDto,
-    @AuthenticationPrincipal Admin admin) {
-    Admin adminId = adminRepository.findById(admin.getUsername()).get();
-    Election electionId = electionRepository.findById(createdElection().getElectionId()).get();
+        electionRepository.save(election);
 
+        List<VoteDto> voteList = electionDto.getVotes();
 
-    Election addElection = Election.builder()
-      .electionId(electionId.getElectionId())
-      .electionTitle(electionDto.getElectionTitle())
-      .groupName(electionDto.getGroupName())
-      .electionStartDt(electionDto.getElectionStartDt())
-      .electionEndDt(electionDto.getElectionEndDt())
-      .votes(electionDto.getVotes())
-      .admin(adminId)
-      .build();
-    return electionRepository.save(addElection);
-  }
+        for (VoteDto dto : voteList) {
 
-  @Override
-  public void deleteElection(Long electionId) {
-    electionRepository.deleteById(electionId);
-  }
+            Vote vote = Vote.builder()
+                    .voteTitle(dto.getVoteTitle())
+                    .candidateName(dto.getCandidateName())
+                    .candidateInfo(dto.getCandidateInfo())
+                    .election(election)
+                    .build();
 
-  @Override
-  public Election countElection(Long electionId) {
-    return null;
-  }
+            voteRepository.save(vote);
+        }
 
-  @Override
-  public Election detail(Long electionId) {
-    Election election = electionRepository.findById(electionId).get();
+        return election;
+    }
+
+    @Override
+    public void deleteElection(Long electionId) {
+        electionRepository.deleteById(electionId);
+    }
+
+    @Override
+    public Election countElection(Long electionId) {
+        return null;
+    }
+
+    @Override
+    public Election detail(Long electionId) {
+        Election election = electionRepository.findById(electionId).get();
 //    electionRepository.save(election);
-    return election;
+        return election;
 
 
-  }
+    }
 
-  @Override
-  public Election save(ElectionDto electionDto) {
-    Election election = Election.toEntity(electionDto);
-    return electionRepository.save(election);
-  }
 
+  /*
   @Override
   public Election openedElection(ElectionDto electionDto) {
     Optional<Election> optionalElection = electionRepository.findById(electionDto.getElectionId());
@@ -104,7 +108,7 @@ public class ElectionServiceImpl implements ElectionService {
       throw new RuntimeException("선거 기간이 아직 종료되지 않았습니다.");
     }
   }
-
+*/
 
 }
 
