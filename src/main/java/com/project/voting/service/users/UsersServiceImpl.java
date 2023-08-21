@@ -18,7 +18,7 @@ import java.util.Optional;
 public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
     private final ElectionRepository electionRepository;
-    private final String uploadedFolderPath = "/src/main/resources/static/files";
+
 
 //
 //    public boolean compareInputWithExcelData(MultipartFile file, String tel, UsersDto usersDto) throws IOException {

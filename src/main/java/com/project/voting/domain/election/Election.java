@@ -36,12 +36,11 @@ public class Election extends BaseEntity {
   @OneToMany(mappedBy = "election")
   private List<Vote> votes = new ArrayList<>();
 
-  @OneToMany(mappedBy = "election")
-  private List<Users> users = new ArrayList<>();
+
 
 
   @Builder
-  public Election(Long electionId, String electionTitle, String groupName, String electionStartDt, String electionEndDt, List<Vote>votes, Admin admin, List<Users> users) {
+  public Election(Long electionId, String electionTitle, String groupName, String electionStartDt, String electionEndDt, List<Vote>votes, Admin admin) {
     this.electionId = electionId;
     this.electionTitle = electionTitle;
     this.groupName = groupName;
@@ -49,7 +48,7 @@ public class Election extends BaseEntity {
     this.electionEndDt = electionEndDt;
     this.votes = votes;
     this.admin =admin;
-    this.users = users;
+
   }
 
 /*

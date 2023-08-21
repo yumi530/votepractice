@@ -56,53 +56,6 @@ public class ElectionServiceImpl implements ElectionService {
   public Election addElectionAndVote(ElectionDto electionDto,
     @AuthenticationPrincipal Admin admin, MultipartFile file) throws IOException {
 
-//        String fileName = "";
-//
-//        if (file != null && !file.isEmpty()) {
-//            if (isExcelFile(file)) {
-//                String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
-//                UUID uuid = UUID.randomUUID();
-//
-//                String originalFilename = file.getOriginalFilename();
-//                fileName = uuid + "_" + originalFilename;
-//                File saveFile = new File(projectPath, fileName);
-//                file.transferTo(saveFile);
-//    } else {
-//        throw new IllegalArgumentException("엑셀 파일이 아닙니다.");
-//    }
-//}
-
-//    Workbook workbook = WorkbookFactory.create(file.getInputStream());
-//        String ext = getFileExtension(file);
-//    if (file != null && !file.isEmpty()) {
-//      if (isExcelFile(file)) {
-//        List<UsersVo> listUser = new ArrayList<>();
-//
-//        List<Map<String, Object>> listMap = excelUtil.getListData(file, 1, 2);
-//
-//        for (Map<String, Object> map : listMap) {
-//          UsersVo userInfo = UsersVo.builder()
-//            .usersPhone(map.get("1").toString())
-//            .usersName(map.get("2").toString())
-//            .electionId(Long.valueOf(map.get("3").toString()))
-//            .build();
-//
-//          listUser.add(userInfo);
-//        }
-//
-//        for (UsersVo oneUsersVo : listUser) {
-//          Users users = Users.builder()
-//            .usersPhone(oneUsersVo.getUsersPhone())
-//            .usersName(oneUsersVo.getUsersName())
-//            .electionId(oneUsersVo.)
-//            .build();
-//          usersRepository.save(users);
-//        }
-//      } else {
-//        throw new IllegalArgumentException("엑셀 파일이 아닙니다.");
-//      }
-//    }
-
     Admin adminId = adminRepository.findById(admin.getUsername()).get();
 
     Election election = Election.builder()

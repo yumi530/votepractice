@@ -72,6 +72,7 @@ public class ExcelUtil {
                     }
 
                     excelList.add(map);
+
                 }
             }
 
@@ -80,5 +81,6 @@ public class ExcelUtil {
         }
 
         return excelList;
+
     }
 }

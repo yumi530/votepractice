@@ -11,12 +11,15 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 public class Users extends BaseEntity{
+//  @EmbeddedId
+//  private UsersElectionKey id;
+
   @Id
   private String usersPhone;
 
   private String usersName;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne
   @JoinColumn(name = "election_election_id")
   private Election election;
 

@@ -16,15 +16,15 @@ public class Count {
   private Long voteCountId;
   private boolean isAgreed;
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "vote_vote_id")
-  private Vote vote;
+//  @OneToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "vote_vote_id")
+//  private Vote vote;
 
   @Builder
-  public Count(Long voteCountId, boolean isAgreed, Vote vote){
+  public Count(Long voteCountId, boolean isAgreed){
     this.voteCountId = voteCountId;
     this.isAgreed = isAgreed;
-    this.vote = vote;
+
   }
 
 
