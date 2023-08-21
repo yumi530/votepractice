@@ -8,26 +8,24 @@ import com.project.voting.domain.election.Election;
 import lombok.*;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
-
-
 public class Users extends BaseEntity{
   @Id
   private String usersPhone;
 
   private String usersName;
-  private String code;
 
-  @OneToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "election_election_id")
   private Election election;
 
   @Builder
-  public Users(String usersPhone, String usersName, String code, Election election){
+  public Users(String usersPhone, String usersName, Election election){
     this.usersPhone = usersPhone;
     this.usersName = usersName;
-    this.code = code;
     this.election = election;
+
   }
 
 }

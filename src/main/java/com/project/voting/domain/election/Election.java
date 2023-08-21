@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.voting.domain.BaseEntity;
 import com.project.voting.domain.admin.Admin;
 
+import com.project.voting.domain.users.Users;
 import com.project.voting.dto.election.ElectionDto;
 import javax.persistence.*;
 
@@ -26,8 +27,6 @@ public class Election extends BaseEntity {
   private String groupName;
   private String electionStartDt;
   private String electionEndDt;
-  private String filename;
-  private String filepath;
 
   @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
@@ -37,9 +36,12 @@ public class Election extends BaseEntity {
   @OneToMany(mappedBy = "election")
   private List<Vote> votes = new ArrayList<>();
 
+  @OneToMany(mappedBy = "election")
+  private List<Users> users = new ArrayList<>();
+
 
   @Builder
-  public Election(Long electionId, String electionTitle, String groupName, String electionStartDt, String electionEndDt, List<Vote>votes, Admin admin, String filename, String filepath) {
+  public Election(Long electionId, String electionTitle, String groupName, String electionStartDt, String electionEndDt, List<Vote>votes, Admin admin, List<Users> users) {
     this.electionId = electionId;
     this.electionTitle = electionTitle;
     this.groupName = groupName;
@@ -47,8 +49,7 @@ public class Election extends BaseEntity {
     this.electionEndDt = electionEndDt;
     this.votes = votes;
     this.admin =admin;
-    this.filename = filename;
-    this.filepath = filepath;
+    this.users = users;
   }
 
 /*

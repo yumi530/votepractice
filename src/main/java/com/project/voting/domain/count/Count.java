@@ -1,4 +1,4 @@
-package com.project.voting.domain.voteCount;
+package com.project.voting.domain.count;
 
 import com.project.voting.domain.vote.Vote;
 
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class VoteCount {
+public class Count {
   @Id
   @GeneratedValue
   private Long voteCountId;
@@ -21,7 +21,7 @@ public class VoteCount {
   private Vote vote;
 
   @Builder
-  public VoteCount(Long voteCountId, boolean isAgreed, Vote vote){
+  public Count(Long voteCountId, boolean isAgreed, Vote vote){
     this.voteCountId = voteCountId;
     this.isAgreed = isAgreed;
     this.vote = vote;

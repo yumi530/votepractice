@@ -8,13 +8,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Admin implements UserDetails {
+public class Admin implements UserDetails , Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     private String adminId;
     private String password;

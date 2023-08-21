@@ -57,14 +57,14 @@ public class ElectionController {
     }
 
     @PostMapping("/election")
-    public String addElectionSubmit(ElectionDto electionDto, @AuthenticationPrincipal Admin admin, RedirectAttributes redirectAttributes, MultipartFile file) throws IOException {
+    public String addElectionSubmit(ElectionDto electionDto, @AuthenticationPrincipal Admin admin, RedirectAttributes redirectAttributes, @RequestPart MultipartFile file) throws IOException {
         electionService.addElectionAndVote(electionDto, admin, file);
         redirectAttributes.addFlashAttribute("message", "addElectionAndVote Success");
         return "redirect:/admin/electionList";
     }
 
     @GetMapping("/election/detail")
-    public String electionDetail(Model model, ElectionDto electionDto, MultipartFile file) throws IOException {
+    public String electionDetail(Model model, ElectionDto electionDto) {
         Election detail = electionService.detail(electionDto);
         model.addAttribute("detail", detail);
         return "admin/election/election-detail";

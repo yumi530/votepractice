@@ -16,18 +16,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AdminServiceImpl implements AdminService {
+public class AdminServiceImpl implements AdminService  {
     private final AdminRepository adminRepository;
+//    private static final long serialVersionUID = 6494678977089006639L;
 
-//  @Override
-//  public boolean login(Admin admin) {
-//    Optional<Admin> optionalAdmin = adminRepository.findById(admin.getAdminId());
-//    if (optionalAdmin.isEmpty()){
-//      throw new RuntimeException("ID not found.");
-//    }
-//
-//    return true;
-//  }
+
 
 
     @Override
