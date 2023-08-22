@@ -19,7 +19,7 @@ public class Users extends BaseEntity{
 
   private String usersName;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "election_election_id")
   private Election election;
 

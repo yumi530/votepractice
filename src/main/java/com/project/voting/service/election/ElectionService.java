@@ -24,7 +24,9 @@ public interface ElectionService {
 
     Election countElection(Long electionId);
 
-    Election detail(ElectionDto electionDto);
+  List<ElectionDto> detailList(String userPhone);
+
+  Election detail(ElectionDto electionDto);
 
 
 

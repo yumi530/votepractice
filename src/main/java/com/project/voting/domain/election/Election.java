@@ -36,7 +36,9 @@ public class Election extends BaseEntity {
   @OneToMany(mappedBy = "election")
   private List<Vote> votes = new ArrayList<>();
 
-
+  @JsonIgnore
+  @OneToMany(mappedBy = "election")
+  private List<Users> users = new ArrayList<>();
 
 
   @Builder

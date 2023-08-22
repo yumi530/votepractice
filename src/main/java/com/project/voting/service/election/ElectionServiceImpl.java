@@ -10,28 +10,19 @@ import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteRepository;
 import com.project.voting.dto.election.ElectionDto;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import java.util.*;
 
 import com.project.voting.dto.vote.VoteDto;
 import com.project.voting.util.ExcelUtil;
 import com.project.voting.vo.UsersVo;
-import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Transactional
@@ -118,6 +109,12 @@ public class ElectionServiceImpl implements ElectionService {
   @Override
   public Election countElection(Long electionId) {
     return null;
+  }
+
+  @Override
+  public List<ElectionDto> detailList(String usersPhone) {
+    List<Election> electionList = electionRepository.findAll(usersPhone);
+    return ElectionDto.of(electionList);
   }
 
   @Override
