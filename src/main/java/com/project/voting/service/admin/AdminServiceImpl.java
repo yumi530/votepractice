@@ -31,6 +31,7 @@ public class AdminServiceImpl implements AdminService  {
         }
         Admin admin = optionalAdmin.get();
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+//        grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
         if (admin.isAdminYn()) {
             grantedAuthorities.add(new SimpleGrantedAuthority("ADMIN"));
         }
@@ -45,4 +46,6 @@ public class AdminServiceImpl implements AdminService  {
         }
         return optionalAdmin;
     }
+
+
 }

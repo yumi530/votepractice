@@ -17,4 +17,5 @@ public interface VoteService {
 
   List<Vote> detail(List<Long> voteIds);
 
+  Vote detail(Long voteId);
 }

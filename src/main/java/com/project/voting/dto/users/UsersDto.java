@@ -16,13 +16,13 @@ import lombok.NoArgsConstructor;
 public class UsersDto {
     private String usersPhone;
     private String usersName;
-    private Election election;
+    private Long electionId;
 
     public static UsersDto of(Users users){
         return UsersDto.builder()
           .usersPhone(users.getUsersPhone())
           .usersName(users.getUsersName())
-          .election(users.getElection())
+          .electionId(users.getElection().getElectionId())
           .build();
     }
     public static List<UsersDto> of(List<Users> usersList) {

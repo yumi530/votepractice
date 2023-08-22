@@ -1,8 +1,11 @@
 package com.project.voting.domain.vote;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.voting.domain.count.Count;
 import com.project.voting.domain.election.Election;
 import com.project.voting.dto.vote.VoteDto;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,9 +33,13 @@ public class Vote {
     @JoinColumn(name = "election_election_id")
     private Election election;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "vote")
+    private List<Count> counts = new ArrayList<>();
+
     @Builder
     public Vote(Long voteId, String voteTitle, String candidateName,
-                String candidateInfo, Election election) {
+                String candidateInfo, Election election, List<Count> counts) {
         this.voteId = voteId;
         this.voteTitle = voteTitle;
 //    this.voteType = voteType;
@@ -41,6 +48,7 @@ public class Vote {
 //    this.agreeYn = agreeYn;
 //    this.preference = preference;
         this.election = election;
+        this.counts = counts;
     }
 
     public static Vote toEntity(VoteDto voteDto) {

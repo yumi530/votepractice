@@ -1,0 +1,64 @@
+//package com.project.voting.security;
+//
+//import com.project.voting.domain.admin.Admin;
+//import com.project.voting.domain.admin.AdminRepository;
+//import com.project.voting.service.admin.AdminService;
+//import com.project.voting.service.admin.AdminServiceImpl;
+//import lombok.RequiredArgsConstructor;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.security.authentication.AuthenticationManager;
+//import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+//import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+//
+//@EnableWebSecurity
+//@RequiredArgsConstructor
+//public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+//
+//  private final AdminService adminService;
+//  @Bean
+//  UserAuthenticationFailureHandler getFailureHandler() {
+//    return new UserAuthenticationFailureHandler();
+//  }
+//
+//  @Bean
+//  public BCryptPasswordEncoder getPasswordEncoder()
+//  {
+//    return new BCryptPasswordEncoder();
+//  }
+//
+//  @Override
+//  protected void configure(HttpSecurity http) throws Exception {
+//    http
+//      .formLogin()
+//      .loginPage("/admin/login")
+//      .failureHandler(getFailureHandler())
+//      .usernameParameter("username")
+//      .passwordParameter("password")
+//      .permitAll()
+//      .and()
+//      .logout()
+//      .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//      .logoutSuccessUrl("/")
+//      .invalidateHttpSession(true)
+//      .and()
+//      .exceptionHandling()
+//      .accessDeniedPage("/error/denied")
+//      .and()
+//      .httpBasic().disable()
+//      .csrf().disable()
+//      .authorizeRequests()
+//      .antMatchers("/admin/**")
+//      .hasAuthority("ADMIN");
+//  }
+//  public AuthenticationManager authenticationManager(HttpSecurity http)
+//    throws Exception {
+//    return http.getSharedObject(AuthenticationManagerBuilder.class)
+//      .userDetailsService(adminService)
+//      .and()
+//      .build();
+//  }
+//}

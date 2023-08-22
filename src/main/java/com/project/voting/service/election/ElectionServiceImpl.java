@@ -113,13 +113,15 @@ public class ElectionServiceImpl implements ElectionService {
 
   @Override
   public List<ElectionDto> detailList(String usersPhone) {
-    List<Election> electionList = electionRepository.findAll(usersPhone);
+    List<Election> electionList = electionRepository.findAllByUsersPhone(usersPhone);
     return ElectionDto.of(electionList);
   }
 
+
+
   @Override
-  public Election detail(ElectionDto electionDto) {
-    Election election = electionRepository.findById(electionDto.getElectionId()).get();
+  public Election detail(Long electionId) {
+    Election election = electionRepository.findById(electionId).get();
     return election;
   }
 

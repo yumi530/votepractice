@@ -50,8 +50,9 @@ public class UsersController {
 
   @PostMapping("/users/verify")
   public String verifyCode(@RequestParam(required = false) String phoneNumber,
-    @RequestParam("code") String code) {
+    @RequestParam("code") String code, Model model) {
     smsService.verifyCode(phoneNumber, code);
+    model.addAttribute("phoneNumber", phoneNumber);
     return "index";
   }
 }

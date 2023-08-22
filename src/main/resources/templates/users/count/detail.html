@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<table class="table">
+  <tr>
+    <td th:text="선거명"></td>
+    <td th:text="${detail.electionTitle}"></td>
+  </tr>
+  <tr>
+    <td th:text="이용기관"></td>
+    <td th:text="${detail.groupName}"></td>
+  </tr>
+  <tr>
+    <td th:text="선거시작"></td>
+    <td th:text="${detail.electionStartDt}"></td>
+  </tr>
+  <tr>
+    <td th:text="선거종료"></td>
+    <td th:text="${detail.electionEndDt}"></td>
+  </tr>
+  <tr th:each="vote : ${detail.votes}">
+    <td th:text="투표명"></td>
+    <td th:text="${vote.voteTitle}"></td>
+    <td><a th:href="@{/users/count/voteCount/{voteId}(voteId=${vote.voteId})}">
+      <button type="button">투표 및 개표 하기</button>
+    </a></td>
+  </tr>
+</table>
+</form>
+</body>
+</html>

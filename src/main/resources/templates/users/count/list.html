@@ -5,10 +5,10 @@
   <title>Title</title>
 </head>
 <body>
-<tr th:each="election : ${electionDtoList}">
+<tr th:each="users : ${usersDtoList}">
   <td>
-    <a th:text="${election.electionId}"
-       th:href="${'/users/count/detail/' + election.electionId}">
+    <a th:text="${users.electionId}"
+    th:href="@{/users/count/detail/{electionId}(electionId=${users.electionId})}">
     </a>
 
   </td>

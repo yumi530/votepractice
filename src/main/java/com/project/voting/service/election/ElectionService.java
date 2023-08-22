@@ -26,7 +26,7 @@ public interface ElectionService {
 
   List<ElectionDto> detailList(String userPhone);
 
-  Election detail(ElectionDto electionDto);
+  Election detail(Long electionId);
 
 
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.voting.config.RedisService;
 import com.project.voting.domain.users.Users;
 import com.project.voting.domain.users.UsersRepository;
+import com.project.voting.service.users.UsersService;
 import com.project.voting.sms.dto.MessageDto;
 import com.project.voting.sms.dto.SmsRequestDto;
 import com.project.voting.sms.dto.SmsResponseDto;
@@ -14,6 +15,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -38,6 +43,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class SmsService {
     private final UsersRepository usersRepository;
+    private final UsersService usersService;
     private final String smsConfirmNum = createSmsKey();
     private final String VERIFICATION_PREFIX = "sms:";
     private final int VERIFICATION_TIME_LIMIT = 3 * 60;
@@ -143,6 +149,19 @@ public class SmsService {
             throw new RuntimeException("ErrorCode.MISMATCH_VERIFICATION_CODE");
         }
         if(redisService.getValue(key).equals(code));
+
+        Users users = usersRepository.findById(phoneNumber).orElse(null);
+//        if (users != null) {
+//
+//            List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+//            grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
+//            UserDetails userDetails = new User(users.getUsersPhone(), "", authorities);
+//
+//            // 사용자 엔티티에 UserDetails 설정
+//            users.setUserDetails(userDetails);
+//
+//            usersRepository.save(users);
+//        }
 
         redisService.deleteValues(key);
 

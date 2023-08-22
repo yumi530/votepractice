@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface ElectionRepository extends JpaRepository<Election, Long> {
 
 
-  List<Election> findAll(String usersPhone);
+  List<Election> findAllByUsersPhone(String usersPhone);
 }

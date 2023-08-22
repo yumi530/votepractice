@@ -13,17 +13,18 @@ import lombok.NoArgsConstructor;
 public class Count {
   @Id
   @GeneratedValue
-  private Long voteCountId;
+  private Long countId;
   private boolean isAgreed;
 
-//  @OneToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "vote_vote_id")
-//  private Vote vote;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "vote_vote_id")
+  private Vote vote;
 
   @Builder
-  public Count(Long voteCountId, boolean isAgreed){
-    this.voteCountId = voteCountId;
+  public Count(Long countId, boolean isAgreed, Vote vote){
+    this.countId = countId;
     this.isAgreed = isAgreed;
+    this.vote = vote;
 
   }
 

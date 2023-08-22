@@ -7,6 +7,7 @@
 <body>
 <h1>main</h1>
 <form action="/users/count/list" method="get">
+    <input type="hidden" th:value="${phoneNumber}" id="phoneNumber" name="phoneNumber">
     <button type="submit">투표 및 개표</button>
 </form>
 </body>

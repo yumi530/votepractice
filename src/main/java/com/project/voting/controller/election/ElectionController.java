@@ -64,8 +64,8 @@ public class ElectionController {
     }
 
     @GetMapping("/election/detail")
-    public String electionDetail(Model model, ElectionDto electionDto) {
-        Election detail = electionService.detail(electionDto);
+    public String electionDetail(Model model, Long electionId) {
+        Election detail = electionService.detail(electionId);
         model.addAttribute("detail", detail);
         return "admin/election/election-detail";
     }

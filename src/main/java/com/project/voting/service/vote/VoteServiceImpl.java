@@ -42,4 +42,10 @@ public class VoteServiceImpl implements VoteService {
         List<Vote> voteList = voteRepository.findAllById(voteIds);
         return voteList;
     }
+
+    @Override
+    public Vote detail(Long voteId) {
+        Vote vote = voteRepository.findById(voteId).get();
+        return vote;
+    }
 }

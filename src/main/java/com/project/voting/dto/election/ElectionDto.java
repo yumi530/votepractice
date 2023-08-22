@@ -1,6 +1,7 @@
 package com.project.voting.dto.election;
 
 import com.project.voting.domain.election.Election;
+import com.project.voting.domain.vote.Vote;
 import com.project.voting.dto.vote.VoteDto;
 import java.util.ArrayList;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ public class ElectionDto {
     private String electionStartDt;
     private String electionEndDt;
     private List<VoteDto> votes;
+    private String usersPhone;
 
     public static ElectionDto of(Election election){
         return ElectionDto.builder()
@@ -29,6 +31,8 @@ public class ElectionDto {
           .groupName(election.getGroupName())
           .electionStartDt(election.getElectionStartDt())
           .electionEndDt(election.getElectionEndDt())
+          .usersPhone(election.getUsersPhone())
+//          .votes(election.getVotes())
           .build();
     }
     public static List<ElectionDto> of(List<Election> electionList) {

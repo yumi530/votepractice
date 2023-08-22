@@ -28,6 +28,9 @@ public class Election extends BaseEntity {
   private String electionStartDt;
   private String electionEndDt;
 
+  @Column
+  private String usersPhone;
+
   @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
   private Admin admin;
@@ -36,13 +39,9 @@ public class Election extends BaseEntity {
   @OneToMany(mappedBy = "election")
   private List<Vote> votes = new ArrayList<>();
 
-  @JsonIgnore
-  @OneToMany(mappedBy = "election")
-  private List<Users> users = new ArrayList<>();
-
 
   @Builder
-  public Election(Long electionId, String electionTitle, String groupName, String electionStartDt, String electionEndDt, List<Vote>votes, Admin admin) {
+  public Election(Long electionId, String electionTitle, String groupName, String electionStartDt, String electionEndDt, List<Vote>votes, Admin admin, String usersPhone) {
     this.electionId = electionId;
     this.electionTitle = electionTitle;
     this.groupName = groupName;
@@ -50,7 +49,7 @@ public class Election extends BaseEntity {
     this.electionEndDt = electionEndDt;
     this.votes = votes;
     this.admin =admin;
-
+    this.usersPhone = usersPhone;
   }
 
 /*
