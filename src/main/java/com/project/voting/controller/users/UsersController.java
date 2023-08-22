@@ -29,57 +29,29 @@ import static org.apache.tika.metadata.DublinCore.CREATED;
 @Controller
 @RequiredArgsConstructor
 public class UsersController {
-    private final SmsService smsService;
 
-//    private final SmsCertificationService smsCertificationService;
-    private final StringRedisTemplate redisTemplate;
+  private final SmsService smsService;
 
-    @GetMapping("/users/login")
-    public String getSmsPage() {
-        return "users/login";
-    }
+  //    private final SmsCertificationService smsCertificationService;
+  private final StringRedisTemplate redisTemplate;
 
-    @PostMapping("/users/logins")
-    public String sendSms(MessageDto messageDto, Model model) throws UnsupportedEncodingException, URISyntaxException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {
-        smsService.sendSms(messageDto.getTo());
-        model.addAttribute("message", messageDto);
-        return "users/phone-auth";
-    }
+  @GetMapping("/users/login")
+  public String getSmsPage() {
+    return "users/login";
+  }
 
+  @PostMapping("/users/logins")
+  public String sendSms(MessageDto messageDto, Model model)
+    throws UnsupportedEncodingException, URISyntaxException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {
+    smsService.sendSms(messageDto.getTo());
+    model.addAttribute("message", messageDto);
+    return "users/phone-auth";
+  }
 
-//    @PostMapping("/users/logins")
-//    public String sendMessageWithVerificationCode(NaverSmsMessageDTO messageDto) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException, URISyntaxException {
-//        smsCertificationService.sendVerificationMessage(messageDto);
-//        return "users/phone-auth";
-//    }
-
-
-
-//        @PostMapping("/send")
-//        public CommonApiResponse<String> sendMessageWithVerificationCode(@RequestBody @Valid SmsVerificationCodeRequestDTO dto) {
-//            String result = smsCertificationService.sendVerificationMessage(dto.getPhoneNumber());
-//            return CommonApiResponse.of(result);
-//        }
-
-        @PostMapping("/users/verify")
-        public String verifyCode(String phoneNumber, String code) {
-            smsService.verifyCode(phoneNumber, code);
-            return "index";
-        }
-    }
-
-//        //인증번호 발송
-//        @PostMapping("/sms-certification/sends")
-//        public ResponseEntity<Void> sendSms(@RequestBody SmsCertificationRequest requestDto) {
-//            smsCertificationService.sendSms(requestDto.getPhone());
-//            return CREATED;
-//        }
-//
-//        //인증번호 확인
-//        @PostMapping("/sms-certification/confirms")
-//        public ResponseEntity<Void> SmsVerification(@RequestBody SmsCertificationRequest requestDto) {
-//            smsCertificationService.verifySms(requestDto);
-//            return OK;
-//        }
-//    }
-
+  @PostMapping("/users/verify")
+  public String verifyCode(@RequestParam(required = false) String phoneNumber,
+    @RequestParam("code") String code) {
+    smsService.verifyCode(phoneNumber, code);
+    return "index";
+  }
+}

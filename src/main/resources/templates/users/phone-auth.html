@@ -11,7 +11,7 @@
 <!--    <button type="submit">인증완료</button>-->
 <!--</form>-->
 <form action="/users/verify" method="post">
-    <input type="hidden" th:hidden="${message.to}" id="phoneNumber" name="phoneNumber" required>
+    <input type="hidden" id="phoneNumber" name="phoneNumber" th:value="${message.to}" required>
     <input type="text" id="code" name="code" required>
     <button type="submit">인증완료</button>
 </form>

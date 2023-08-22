@@ -6,32 +6,22 @@ import com.project.voting.config.RedisService;
 import com.project.voting.domain.users.Users;
 import com.project.voting.domain.users.UsersRepository;
 import com.project.voting.sms.dto.MessageDto;
-import com.project.voting.sms.dto.SmsCertificationRequestDTO;
 import com.project.voting.sms.dto.SmsRequestDto;
 import com.project.voting.sms.dto.SmsResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
 import javax.crypto.Mac;
-import javax.crypto.SecretKeyFactorySpi;
 import javax.crypto.spec.SecretKeySpec;
 import javax.transaction.Transactional;
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -40,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 
 @PropertySource("classpath:application.yml")
@@ -52,8 +41,9 @@ public class SmsService {
     private final String smsConfirmNum = createSmsKey();
     private final String VERIFICATION_PREFIX = "sms:";
     private final int VERIFICATION_TIME_LIMIT = 3 * 60;
-    private final StringRedisTemplate redisTemplate;
+
     private final WebClient webClient;
+
     private final RedisService redisService;
 
 
@@ -127,7 +117,6 @@ public class SmsService {
                 .build();
         final String body = new ObjectMapper().writeValueAsString(request);
 
-//            final ResponseMessageDTO responseMessageDTO =
         webClient.post().uri("https://sens.apigw.ntruss.com/sms/v2/services/" + serviceId + "/messages")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("x-ncp-apigw-timestamp", time)
@@ -138,42 +127,23 @@ public class SmsService {
                 .retrieve()
                 .bodyToMono(SmsResponseDto.class).block();
 
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String body = objectMapper.writeValueAsString(request);
-//
-//        HttpEntity<String> httpBody = new HttpEntity<>(body, headers);
-//
-//        RestTemplate restTemplate = new RestTemplate();
-//        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-//
-//        SmsResponseDto smsResponseDto = restTemplate.postForObject(new URI("https://sens.apigw.ntruss.com/sms/v2/services/" + serviceId + "/messages"), httpBody, SmsResponseDto.class);
-//        SmsResponseDto responseDto = new SmsResponseDto(smsConfirmNum);
-
-//            redisTemplate.opsForValue().set(messageDto.getTo(), smsConfirmNum, 3, TimeUnit.MINUTES);
         redisService.setValues(VERIFICATION_PREFIX + messageDto.getTo(), smsConfirmNum, verificationTimeLimit);
 
         return "전송 성공";
     }
 
     public String verifyCode(String phoneNumber, String code) {
-//        String phoneNumber = smsCertificationRequestDto.getPhoneNumber();
-//        String code = smsCertificationRequestDto.getCode();
         String key = VERIFICATION_PREFIX + phoneNumber;
 
-//        redisService.setValues(key, code);
+        if (!redisService.hasKey(key)) {
+            throw new RuntimeException("ErrorCode. EXPIRED_VERIFICATION_CODE");
+        }
 
-//        redis 에 해당 번호의 키가 없는 경우는 인증번호(3분) 만료로 처리
-//        if (!redisService.hasKey(key)) {
-//            throw new RuntimeException("ErrorCode. EXPIRED_VERIFICATION_CODE");
-//        }
-
-        //redis 에 해당 번호의 키와 인증번호가 일치하지 않는 경우
-//        if (!redisService.getValue(key).equals(code)) {
-//            throw new RuntimeException("ErrorCode.MISMATCH_VERIFICATION_CODE");
-//        }
+        if (!redisService.getValue(key).equals(code)) {
+            throw new RuntimeException("ErrorCode.MISMATCH_VERIFICATION_CODE");
+        }
         if(redisService.getValue(key).equals(code));
 
-        //필터를 모두 통과, 인증이 완료되었으니 redis 에서 전화번호 삭제
         redisService.deleteValues(key);
 
         return "인증 성공";
@@ -190,6 +160,6 @@ public class SmsService {
     }
     private String generateMessageWithCode(String code) {
         final String provider = "투표";
-        return "[" + provider + "] 인증번호 [" + code + "] 를 입력해주세요 :)";
+        return "[" + provider + "] 인증번호 [" + code + "] 를 입력해주세요.";
     }
 }
