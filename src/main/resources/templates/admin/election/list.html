@@ -7,7 +7,7 @@
 </head>
 <body>
 <h2>투표현황</h2>
-<button th:onclick="'location.href=\''+ @{/admin/insert} + '\''">투표 개설하기</button>
+<button th:onclick="'location.href=\''+ @{/admin/election/insert} + '\''">투표 개설하기</button>
 <table>
   <th>번호</th>
   <th>선거명</th>
@@ -30,7 +30,7 @@
 
 
 <span class="page-item">
-    <a class="page-link" th:href="@{/admin/electionList(page=0)}">
+    <a class="page-link" th:href="@{/admin/election/electionList(page=0)}">
       <span>&laquo;</span>
     </a>
   </span>
@@ -38,14 +38,14 @@
 <span class="page-item"
       th:each="page : ${#numbers.sequence(startPage, endPage)}">
     <a th:if="${page != nowPage}"
-       th:href="@{/admin/electionList(page = ${page - 1})}"
+       th:href="@{/admin/election/electionList(page = ${page - 1})}"
        th:text="${page}"></a>
     <strong th:if="${page == nowPage}" th:text="${page}"
             style="color: rebeccapurple"></strong>
   </span>
 <span class="page-item">
     <a class="page-link"
-       th:href="@{/admin/electionList(page = ${endPage - 1})}">
+       th:href="@{/admin/election/electionList(page = ${endPage - 1})}">
 
 
       <span>&raquo;</span>

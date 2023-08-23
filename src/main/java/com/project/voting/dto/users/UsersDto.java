@@ -9,11 +9,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsersDto {
+    @NotBlank(message = "휴대전화번호는 필수 입력 값입니다.")
     private String usersPhone;
     private String usersName;
     private Long electionId;

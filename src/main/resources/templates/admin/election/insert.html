@@ -10,22 +10,23 @@
     <table>
         <tr>
             <td>대표선거명</td>
-            <td><input type="text" name="electionTitle"></td>
+            <td><input type="text" name="electionTitle" required></td>
         </tr>
         <tr>
             <td>이용기관명</td>
-            <td><input type="text" name="groupName"></td>
+            <td><input type="text" name="groupName" required></td>
         </tr>
         <tr>
             <td>투표기간</td>
-            <td><input type="datetime-local" name="electionStartDt"><input
-                    type="datetime-local"
-                    name="electionEndDt"></td>
+            <td>
+                <input type="datetime-local" id="startDt" name="electionStartDt" required>
+                <input type="datetime-local" id="endDt" name="electionEndDt" required>
+            </td>
         </tr>
         <tr>
             <div class="mb-3">
                 <td><label for="file" class="form-label">명부등록</label></td>
-                <td><input class="form-control" type="file" id="file" name="file"></td>
+                <td><input class="form-control" type="file" id="file" name="file" required></td>
             </div>
         </tr>
     </table>
@@ -57,6 +58,7 @@
 
         document.getElementById("myVote").appendChild(voteTemplate);
     }
+
 </script>
 </body>
 </html>

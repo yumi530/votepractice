@@ -40,6 +40,12 @@
     </tr>
 </table>
 </form>
+<form action="/admin/election/delete" method="post">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit">삭제</button>
+<input type="hidden" th:value="${detail.electionId}" name="electionId">
+</form>
+<a th:href="@{/admin/election/electionList}">목록으로 돌아가기</a>
 <script>
 </script>
 </body>

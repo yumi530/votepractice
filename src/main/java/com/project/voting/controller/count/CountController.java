@@ -11,6 +11,8 @@ import com.project.voting.service.count.CountService;
 import com.project.voting.service.election.ElectionService;
 import com.project.voting.service.users.UsersService;
 import com.project.voting.service.vote.VoteService;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,13 +40,20 @@ public class CountController {
   @GetMapping("/count/list")
   public String countList(@AuthenticationPrincipal @RequestParam(name = "phoneNumber") String usersPhone, Model model){
     List<UsersDto> usersDtoList = usersService.detailList(usersPhone);
+
     model.addAttribute("usersDtoList", usersDtoList);
     return "users/count/list";
   }
   @GetMapping("/count/detail/{electionId}")
-  public String countDetail(Model model, @PathVariable Long electionId){
+  public String countDetail(Model model, @PathVariable Long electionId) {
     Election detail = electionService.detail(electionId);
     model.addAttribute("detail", detail);
+
+    LocalDateTime currentDate = LocalDateTime.now();
+    LocalDateTime endDate = detail.getElectionEndDt();
+    boolean isBefore = currentDate.isBefore(endDate);
+    model.addAttribute("isBefore", isBefore);
+
     return "users/count/detail";
   }
   @GetMapping("/count/voteCount/{voteId}")
@@ -71,7 +80,7 @@ public class CountController {
 //  @PostMapping("/count/voteCount/complete")
 //  public String electionComplete(@RequestParam(name = "phoneNumber")String userPhone, Users users) {
 //    countService.complete(users);
-//    return "redirect:/users/count/list?phoneNumber=" + userPhone;
+//    return "redirect:/users/count/list?phoneNumber=" + ;
 //  }
 }
 

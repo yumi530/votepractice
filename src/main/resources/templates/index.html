@@ -7,8 +7,17 @@
 <body>
 <h1>main</h1>
 <form action="/users/count/list" method="get">
-    <input type="hidden" th:value="${phoneNumber}" id="phoneNumber" name="phoneNumber">
-    <button type="submit">투표 및 개표</button>
+    <input type="hidden" th:value="${phoneNumber}" id="phoneNumber"
+           name="phoneNumber">
+    <button type="submit">투표 및 개표 참여하기</button>
+</form>
+
+<a href="/users/login">로그인</a>
+
+<form action="/users/logout" method="post">
+    <input type="submit">
+        로그아웃
+    </input>
 </form>
 </body>
 </html>

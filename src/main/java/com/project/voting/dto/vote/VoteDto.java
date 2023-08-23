@@ -7,14 +7,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class VoteDto {
 
     private Long voteId;
+    @NotBlank(message = "투표명은 필수 입력 값입니다.")
     private String voteTitle;
+    @NotBlank(message = "후보자 이름은 필수 입력 값입니다.")
     private String candidateName;
+    @NotBlank(message = "후보자 정보는 필수 입력 값입니다.")
     private String candidateInfo;
     private Long electionId;
     private List<Count> counts;

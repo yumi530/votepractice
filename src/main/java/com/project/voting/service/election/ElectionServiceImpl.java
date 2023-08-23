@@ -12,6 +12,7 @@ import com.project.voting.dto.election.ElectionDto;
 
 import java.io.IOException;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import com.project.voting.dto.vote.VoteDto;
@@ -49,11 +50,24 @@ public class ElectionServiceImpl implements ElectionService {
 
     Admin adminId = adminRepository.findById(admin.getUsername()).get();
 
+    LocalDateTime now = LocalDateTime.now();
+
+    LocalDateTime electionStartDt = electionDto.getElectionStartDt();
+    LocalDateTime electionEndDt = electionDto.getElectionEndDt();
+
+    if (electionStartDt.isBefore(now)) {
+      throw new RuntimeException("시작일시는 현재 시각 이후로 설정해야 합니다.");
+    }
+
+    if (electionEndDt.isBefore(electionStartDt)) {
+      throw new RuntimeException("종료일시는 시작일시 이후로 설정해야 합니다.");
+    }
+
     Election election = Election.builder()
       .electionTitle(electionDto.getElectionTitle())
       .groupName(electionDto.getGroupName())
-      .electionStartDt(electionDto.getElectionStartDt())
-      .electionEndDt(electionDto.getElectionEndDt())
+      .electionStartDt(electionStartDt)
+      .electionEndDt(electionEndDt)
       .admin(adminId)
       .build();
 

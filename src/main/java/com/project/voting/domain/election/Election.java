@@ -11,6 +11,7 @@ import javax.persistence.*;
 import com.project.voting.domain.vote.Vote;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +26,8 @@ public class Election extends BaseEntity {
   private Long electionId;
   private String electionTitle;
   private String groupName;
-  private String electionStartDt;
-  private String electionEndDt;
+  private LocalDateTime electionStartDt;
+  private LocalDateTime electionEndDt;
 
   @Column
   private String usersPhone;
@@ -41,7 +42,7 @@ public class Election extends BaseEntity {
 
 
   @Builder
-  public Election(Long electionId, String electionTitle, String groupName, String electionStartDt, String electionEndDt, List<Vote>votes, Admin admin, String usersPhone) {
+  public Election(Long electionId, String electionTitle, String groupName, LocalDateTime electionStartDt, LocalDateTime electionEndDt, List<Vote>votes, Admin admin, String usersPhone) {
     this.electionId = electionId;
     this.electionTitle = electionTitle;
     this.groupName = groupName;
