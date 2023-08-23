@@ -19,4 +19,5 @@ public class VoteDto {
     private Long electionId;
     private List<Count> counts;
 
+
 }

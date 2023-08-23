@@ -7,26 +7,27 @@
 <body>
 <form th:action="@{/users/save}" method="post">
 
-<table class="table">
-  <tr>
-    <td><input type="hidden" th:value="${detailVote.voteId}" name="voteId"></td>
-  </tr>
-  <tr>
-    <td th:text="투표명"></td>
-    <td th:text="${detailVote.voteTitle}"></td>
-  </tr>
-  <tr>
-    <td th:text="후보자명"></td>
-    <td th:text="${detailVote.candidateName}"></td>
-  </tr>
-  <tr>
-    <td th:text="후보자정보"></td>
-    <td th:text="${detailVote.candidateInfo}"></td>
-<!--  </tr>-->
-<!--  <td><button onclick="countVote(true, ${detailVote.voteId})">찬성</button></td>-->
-<!--  <td><button onclick="countVote(false, ${detailVote.voteId})">반대</button></td>-->
-<!--  </tr>-->
-</table>
+  <table class="table">
+    <tr>
+      <td><input type="hidden" th:value="${detailVote.voteId}" name="voteId"></td>
+    </tr>
+    <tr>
+      <td th:text="투표명"></td>
+      <td th:text="${detailVote.voteTitle}"></td>
+    </tr>
+    <tr>
+      <td th:text="후보자명"></td>
+      <td th:text="${detailVote.candidateName}"></td>
+    </tr>
+    <tr>
+      <td th:text="후보자정보"></td>
+      <td th:text="${detailVote.candidateInfo}"></td>
+      <!--  </tr>-->
+      <!--  <td><button onclick="countVote(true, ${detailVote.voteId})">찬성</button></td>-->
+      <!--  <td><button onclick="countVote(false, ${detailVote.voteId})">반대</button></td>-->
+      <!--  </tr>-->
+  </table>
+  <input type="hidden" id="hadVoted" name="hadVoted" value="true">
   <input type="checkbox" id="isAgreed" name="isAgreed" value="true">
   <label for="isAgreed">찬성</label>
   <input type="checkbox" id="isDisagreed" name="isAgreed" value="false">

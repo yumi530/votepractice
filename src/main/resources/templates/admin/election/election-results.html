@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<!--<form action="/admin/election/results" method="post">-->
+<table class="table">
+  <tr>
+    <td><input type="hidden" th:value="${voteResult.voteId}" id="voteId" name="voteId"></td>
+  </tr>
+  <tr>
+    <td><input type="hidden" th:value="${voteResult.election}" id="electionId" name="electionId"></td>
+  </tr>
+  <tr>
+    <td th:text="투표명"></td>
+    <td th:text="${voteResult.voteTitle}"></td>
+  </tr>
+  <tr>
+    <td th:text="후보자명"></td>
+    <td th:text="${voteResult.candidateName}"></td>
+  </tr>
+  <tr>
+    <td th:text="후보자정보"></td>
+    <td th:text="${voteResult.candidateInfo}"></td>
+  </tr>
+  <tr>
+    <td th:text="투표결과"></td>
+    <td th:text="${voteResult.result}"></td>
+  </tr>
+</table>
+</form>
+</body>
+</html>

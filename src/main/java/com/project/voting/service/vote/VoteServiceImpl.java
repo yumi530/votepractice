@@ -1,10 +1,14 @@
 package com.project.voting.service.vote;
 
+import com.project.voting.domain.count.Count;
+import com.project.voting.domain.count.CountRepository;
 import com.project.voting.domain.election.ElectionRepository;
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteRepository;
+import com.project.voting.dto.count.CountDto;
 import com.project.voting.dto.vote.VoteDto;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +18,7 @@ public class VoteServiceImpl implements VoteService {
 
     private final VoteRepository voteRepository;
     private final ElectionRepository electionRepository;
+    private final CountRepository countRepository;
 
 
 

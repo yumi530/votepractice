@@ -19,8 +19,10 @@ public class Users extends BaseEntity{
 
   private String usersName;
 
+//  private boolean isCompleted;
+
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "election_election_id")
+  @JoinColumn(name = "election_election_id",referencedColumnName = "electionId")
   private Election election;
 
   @Builder
@@ -28,6 +30,7 @@ public class Users extends BaseEntity{
     this.usersPhone = usersPhone;
     this.usersName = usersName;
     this.election = election;
+//    this.isCompleted = isCompleted;
 
   }
 

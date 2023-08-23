@@ -48,18 +48,25 @@ public class CountController {
     return "users/count/detail";
   }
   @GetMapping("/count/voteCount/{voteId}")
-  public String voteCount(Model model, @PathVariable Long voteId){
+  public String voteCount(Model model, @PathVariable(name = "voteId") Long voteId){
     Vote detail = voteService.detail(voteId);
     model.addAttribute("detailVote", detail);
     return "users/count/vote-count";
   }
 
+  //수정 필요(세션 로그인), dto
   @PostMapping("/save")
-  public String countSave(@RequestParam Long voteId, @RequestParam boolean isAgreed, @RequestParam(name = "phoneNumber") String userPhone) {
-    countService.save(isAgreed, voteId);
-    return "redirect:/users/count/list?phoneNumber=" + userPhone;
+  public String countSave(@RequestParam Long voteId, @RequestParam boolean isAgreed, @RequestParam boolean hadVoted) {
+    countService.save(isAgreed, voteId, hadVoted);
+    return "index";
   }
 
+
+//  @PostMapping("/count/voteCount/complete")
+//  public String electionComplete(@RequestParam(name = "phoneNumber")String userPhone, Users users) {
+//    countService.complete(users);
+//    return "redirect:/users/count/list?phoneNumber=" + userPhone;
+//  }
 }
 
 

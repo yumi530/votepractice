@@ -8,6 +8,9 @@
 
 <table class="table">
   <tr>
+    <td><input type="hidden" th:value="${detail.electionId}" id="electionId" name="electionId"></td>
+  </tr>
+  <tr>
     <td th:text="선거명"></td>
     <td th:text="${detail.electionTitle}"></td>
   </tr>
@@ -31,6 +34,7 @@
     </a></td>
   </tr>
 </table>
-</form>
+<!--  <button type="submit">선거 참여 완료</button>-->
+<!--</form>-->
 </body>
 </html>

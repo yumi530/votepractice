@@ -5,7 +5,11 @@
     <title>Title</title>
 </head>
 <body>
+<form th:action="@{/admin/election/results}" method="get">
 <table class="table">
+    <tr>
+        <td><input type="hidden" th:value="${detail.electionId}" id="electionId" name="electionId"></td>
+    </tr>
     <tr>
         <td th:text="선거명"></td>
         <td th:text="${detail.electionTitle}"></td>
@@ -22,22 +26,21 @@
         <td th:text="선거종료"></td>
         <td th:text="${detail.electionEndDt}"></td>
     </tr>
-
-
     <tr th:each="vote : ${detail.votes}">
-        <td th:text="${vote.voteTitle}">
-            <button type="button" onclick="countButton()"></button>
-        </td>
+        <input type="hidden" th:value="${vote.voteId}" name="voteId">
+        <td th:text="투표명"></td>
+        <td th:text="${vote.voteTitle}"></td>
+<!--        <div th:if="${#dates.createNow() &gt; detail.electionEndDt}">-->
+<!--        <td><button th:onclick="'location.href=\''+ @{/admin/election/results(voteId=${vote.voteId})} + '\''">개표 하기</button></td>-->
+        <td><button type="submit">개표 하기</button></td>
+<!--        </div>-->
+<!--        <div th:unless="${#dates.createNow() &gt; detail.electionEndDt}">-->
+<!--            <p>선거 종료일이 지나지 않아 개표가 불가능합니다.</p>-->
+<!--        </div>-->
     </tr>
-
 </table>
-
-
-
+</form>
 <script>
-    function countButton() {
-
-    }
 </script>
 </body>
 </html>

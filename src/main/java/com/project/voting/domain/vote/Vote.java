@@ -12,57 +12,65 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Setter
 public class Vote {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long voteId;
-    private String voteTitle;
-    //  private int voteType;
-    private String candidateName;
-    private String candidateInfo;
-//  private boolean agreeYn;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long voteId;
+  private String voteTitle;
+  //  private int voteType;
+  private String candidateName;
+  private String candidateInfo;
+  //  private boolean agreeYn;
 //  private int preference;
+  private boolean result;
+  private double prosRatio;
+  private double consRatio;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "election_election_id")
-    private Election election;
+  @JsonIgnore
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "election_election_id")
+  private Election election;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "vote")
-    private List<Count> counts = new ArrayList<>();
+  @JsonIgnore
+  @OneToMany(mappedBy = "vote")
+  private List<Count> counts = new ArrayList<>();
 
-    @Builder
-    public Vote(Long voteId, String voteTitle, String candidateName,
-                String candidateInfo, Election election, List<Count> counts) {
-        this.voteId = voteId;
-        this.voteTitle = voteTitle;
+  @Builder
+  public Vote(Long voteId, String voteTitle, String candidateName,
+    String candidateInfo, Election election, List<Count> counts, boolean result, double prosRatio, double consRatio) {
+    this.voteId = voteId;
+    this.voteTitle = voteTitle;
 //    this.voteType = voteType;
-        this.candidateName = candidateName;
-        this.candidateInfo = candidateInfo;
+    this.candidateName = candidateName;
+    this.candidateInfo = candidateInfo;
 //    this.agreeYn = agreeYn;
 //    this.preference = preference;
-        this.election = election;
-        this.counts = counts;
-    }
+    this.election = election;
+    this.counts = counts;
+    this.result = result;
+    this.prosRatio = prosRatio;
+    this.consRatio = consRatio;
+  }
 
-    public static Vote toEntity(VoteDto voteDto) {
-        return Vote.builder()
-                .voteId(voteDto.getVoteId())
-                .voteTitle(voteDto.getVoteTitle())
+  public static Vote toEntity(VoteDto voteDto) {
+    return Vote.builder()
+      .voteId(voteDto.getVoteId())
+      .voteTitle(voteDto.getVoteTitle())
 //      .voteType(voteDto.getVoteType())
-                .candidateName(voteDto.getCandidateName())
-                .candidateInfo(voteDto.getCandidateInfo())
+      .candidateName(voteDto.getCandidateName())
+      .candidateInfo(voteDto.getCandidateInfo())
 //      .agreeYn(voteDto.isAgreeYn())
 //      .election(voteDto.getElectionId())
-                .build();
+      .build();
 
-    }
+  }
 }
 
 //    public static Vote toEntity(VoteDto voteDto) {

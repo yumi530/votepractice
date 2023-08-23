@@ -17,11 +17,13 @@ public class UsersDto {
     private String usersPhone;
     private String usersName;
     private Long electionId;
+    private boolean isCompleted;
 
     public static UsersDto of(Users users){
         return UsersDto.builder()
           .usersPhone(users.getUsersPhone())
           .usersName(users.getUsersName())
+//          .isCompleted(users.isCompleted())
           .electionId(users.getElection().getElectionId())
           .build();
     }

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ElectionRepository extends JpaRepository<Election, Long> {
 
-
   List<Election> findAllByUsersPhone(String usersPhone);
+
 }

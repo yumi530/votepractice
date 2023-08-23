@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CountDto {
+
   private Long countId;
   private boolean isAgreed;
   private Long voteId;
-
-
+  private boolean hadVoted;
 
 }

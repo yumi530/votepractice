@@ -10,5 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface UsersRepository extends JpaRepository<Users, String> {
   List<Users> findAll();
   List<Users> findAllByElection_ElectionId(Long electionId);
+  Long countAllByElectionElectionId(Long electionId);
+
 
 }
