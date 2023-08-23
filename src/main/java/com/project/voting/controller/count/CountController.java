@@ -12,6 +12,8 @@ import com.project.voting.service.election.ElectionService;
 import com.project.voting.service.users.UsersService;
 import com.project.voting.service.vote.VoteService;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -40,7 +45,6 @@ public class CountController {
   @GetMapping("/count/list")
   public String countList(@AuthenticationPrincipal @RequestParam(name = "phoneNumber") String usersPhone, Model model){
     List<UsersDto> usersDtoList = usersService.detailList(usersPhone);
-
     model.addAttribute("usersDtoList", usersDtoList);
     return "users/count/list";
   }

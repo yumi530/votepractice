@@ -29,6 +29,6 @@
     <td th:text="${voteResult.result}"></td>
   </tr>
 </table>
-<a th:href="@{/users/count/list}">목록으로 돌아가기</a>
+<a th:href="@{/users/count/list(phoneNumber=${session.loginUser})}">목록으로 돌아가기</a>
 </body>
 </html>
