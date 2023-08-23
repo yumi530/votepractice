@@ -14,5 +14,7 @@ public interface CountService {
 
   Vote countVotesResult(Long electionId, Long voteId);
 
+  Vote countVotesResultConfirm(Long voteId);
+
 //  Users complete(Users users);
 }

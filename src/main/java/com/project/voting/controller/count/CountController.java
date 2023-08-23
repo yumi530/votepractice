@@ -53,6 +53,12 @@ public class CountController {
     model.addAttribute("detailVote", detail);
     return "users/count/vote-count";
   }
+  @GetMapping("/count/voteResult/{voteId}")
+  public String voteResult(Model model, @PathVariable Long voteId){
+    Vote voteResult = countService.countVotesResultConfirm(voteId);
+    model.addAttribute("voteResult", voteResult);
+    return "users/count/vote-result";
+  }
 
   //수정 필요(세션 로그인), dto
   @PostMapping("/save")

@@ -30,7 +30,10 @@
     <td th:text="투표명"></td>
     <td th:text="${vote.voteTitle}"></td>
     <td><a th:href="@{/users/count/voteCount/{voteId}(voteId=${vote.voteId})}">
-      <button type="button">투표 및 개표 하기</button>
+      <button type="button">투표 하기</button>
+    </a></td>
+    <td><a th:href="@{/users/count/voteResult/{voteId}(voteId=${vote.voteId})}">
+      <button type="button">개표 확인</button>
     </a></td>
   </tr>
 </table>
