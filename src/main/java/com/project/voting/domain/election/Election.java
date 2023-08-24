@@ -14,6 +14,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @NoArgsConstructor
@@ -26,8 +27,8 @@ public class Election extends BaseEntity {
   private Long electionId;
   private String electionTitle;
   private String groupName;
-  private LocalDateTime electionStartDt;
-  private LocalDateTime electionEndDt;
+  private String electionStartDt;
+  private String electionEndDt;
 
   @Column
   private String usersPhone;
@@ -42,7 +43,7 @@ public class Election extends BaseEntity {
 
 
   @Builder
-  public Election(Long electionId, String electionTitle, String groupName, LocalDateTime electionStartDt, LocalDateTime electionEndDt, List<Vote>votes, Admin admin, String usersPhone) {
+  public Election(Long electionId, String electionTitle, String groupName, String electionStartDt, String electionEndDt, List<Vote>votes, Admin admin, String usersPhone) {
     this.electionId = electionId;
     this.electionTitle = electionTitle;
     this.groupName = groupName;

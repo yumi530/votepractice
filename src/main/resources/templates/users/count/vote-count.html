@@ -1,34 +1,63 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns="http://www.w3.org/1999/html">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<head th:replace="common/head.html :: head(title)">
+  <meta charset="UTF-8">
+  <title th:text="${title}">투표 하기</title>
 </head>
-<body>
-<form th:action="@{/users/save}" method="post">
+<body th:align="center">
+<nav th:replace="common/nav.html :: nav">
+</nav>
+<div class="card"  style="width: 18rem;">
+  <div class="card-header">
+    <h3 class="fw-bold">투표 하기</h3>
+  </div>
+  <ul class="list-group list-group-flush">
+    <form th:action="@{/users/save}" method="post">
+      <input type="hidden" th:value="${detailVote.voteId}"
+             name="voteId">
+      <li th:text="'투표명: ' + ${detailVote.voteTitle}"></li>
+      <li th:text="'후보자명: ' + ${detailVote.candidateName}"></li>
+      <li th:text="'후보자정보: ' + ${detailVote.candidateInfo}"></li>
 
-    <table class="table">
-        <tr>
-            <td><input type="hidden" th:value="${detailVote.voteId}"
-                       name="voteId"></td>
-        </tr>
-        <tr>
-            <td th:text="투표명"></td>
-            <td th:text="${detailVote.voteTitle}"></td>
-        </tr>
-        <tr>
-            <td th:text="후보자명"></td>
-            <td th:text="${detailVote.candidateName}"></td>
-        </tr>
-        <tr>
-            <td th:text="후보자정보"></td>
-    </table>
-    <input type="hidden" id="hadVoted" name="hadVoted" value="true">
-    <input type="radio" id="isAgreed" name="isAgreed" value="true" checked>
-    <label for="isAgreed">찬성</label>
-    <input type="radio" id="isDisagreed" name="isAgreed" value="false">
-    <label for="isDisagreed">반대</label>
-</form>
+      <input type="hidden" id="hadVoted" name="hadVoted" value="true">
+      <input type="radio" id="isAgreed" name="isAgreed" value="true" checked>
+      <label for="isAgreed">찬성</label>
+      <input type="radio" id="isDisagreed" name="isAgreed" value="false">
+      <label for="isDisagreed">반대</label>
+      <button class="btn btn-secondary" type="submit">투표 하기</button>
+    </form>
+  </ul>
+</div>
+<!--<div class="p-3 mb-2">-->
+<!--  <div class="d-flex justify-content-center">-->
+<!--    <h3 class="fw-bold">투표 하기</h3>-->
+<!--  </div>-->
+<!--</div>-->
+<!--<div class="container">-->
+<!--  <form th:action="@{/users/save}" method="post">-->
+<!--    <table class="table">-->
+<!--      <tr>-->
+<!--        <td><input type="hidden" th:value="${detailVote.voteId}"-->
+<!--                   name="voteId"></td>-->
+<!--      </tr>-->
+<!--      <tr>-->
+<!--        <td th:text="투표명"></td>-->
+<!--        <td th:text="${detailVote.voteTitle}"></td>-->
+<!--      </tr>-->
+<!--      <tr>-->
+<!--        <td th:text="후보자명"></td>-->
+<!--        <td th:text="${detailVote.candidateName}"></td>-->
+<!--      </tr>-->
+<!--      <tr>-->
+<!--        <td th:text="후보자정보"></td>-->
+<!--    </table>-->
+<!--    <input type="hidden" id="hadVoted" name="hadVoted" value="true">-->
+<!--    <input type="radio" id="isAgreed" name="isAgreed" value="true" checked>-->
+<!--    <label for="isAgreed">찬성</label>-->
+<!--    <input type="radio" id="isDisagreed" name="isAgreed" value="false">-->
+<!--    <label for="isDisagreed">반대</label>-->
+<!--  </form>-->
+<!--</div>-->
 </body>
 </html>

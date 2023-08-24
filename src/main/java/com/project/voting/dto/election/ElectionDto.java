@@ -25,12 +25,12 @@ public class ElectionDto {
     private String electionTitle;
     @NotBlank(message = "기관명은 필수 입력 값입니다.")
     private String groupName;
-    @NotBlank(message = "선거 시작일은 필수 입력 값입니다.")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime electionStartDt;
-    @NotBlank(message = "선거 종료일은 필수 입력 값입니다.")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime electionEndDt;
+//    @NotBlank(message = "선거 시작일은 필수 입력 값입니다.")
+//    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private String electionStartDt;
+//    @NotBlank(message = "선거 종료일은 필수 입력 값입니다.")
+//    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private String electionEndDt;
 
     private List<VoteDto> votes;
     private String usersPhone;

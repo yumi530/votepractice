@@ -23,6 +23,8 @@ public class VoteDto {
     private String candidateInfo;
     private Long electionId;
     private List<Count> counts;
+    private String filename;
+    private String filepath;
 
 
 }

@@ -54,7 +54,7 @@ public class CountController {
     model.addAttribute("detail", detail);
 
     LocalDateTime currentDate = LocalDateTime.now();
-    LocalDateTime endDate = detail.getElectionEndDt();
+    LocalDateTime endDate = LocalDateTime.parse(detail.getElectionEndDt());
     boolean isBefore = currentDate.isBefore(endDate);
     model.addAttribute("isBefore", isBefore);
 

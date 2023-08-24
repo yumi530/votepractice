@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head th:replace="common/head.html :: head(title)">
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title th:text="${title}">관리자 개표 결과 확인</title>
 </head>
-<body>
-<!--<form action="/admin/election/results" method="post">-->
+<div class="p-3 mb-2 bg-light rounded-1">
+<div class="d-flex justify-content-center">
+  <h3 class="fw-bold">관리자 개표 결과 확인</h3>
+</div>
+</div>
+<body th:align="center">
+<nav th:replace="common/nav.html :: nav">
+</nav>
+<div class="container">
 <table class="table">
-  <tr>
+
     <td><input type="hidden" th:value="${voteResult.voteId}" id="voteId" name="voteId"></td>
-  </tr>
-  <tr>
     <td><input type="hidden" th:value="${voteResult.election}" id="electionId" name="electionId"></td>
-  </tr>
+
   <tr>
     <td th:text="투표명"></td>
     <td th:text="${voteResult.voteTitle}"></td>
@@ -27,10 +32,15 @@
   </tr>
   <tr>
     <td th:text="투표결과"></td>
-    <td th:text="${voteResult.result}"></td>
+    <td>
+    <span th:if="${voteResult.result}">찬성</span>
+    <span th:unless="${voteResult.result}">반대</span>
+    </td>
   </tr>
 </table>
-<!--</form>-->
+</div>
+<div class="d-flex justify-content-center">
 <a th:href="@{/admin/election/electionList}">목록으로 돌아가기</a>
+</div>
 </body>
 </html>

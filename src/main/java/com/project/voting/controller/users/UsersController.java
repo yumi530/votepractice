@@ -65,6 +65,6 @@ public class UsersController {
     if (session != null) {
       session.invalidate();
     }
-    return "redirect:/users/login";
+    return "redirect:/";
   }
 }

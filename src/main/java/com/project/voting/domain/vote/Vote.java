@@ -32,6 +32,8 @@ public class Vote {
   private boolean result;
   private double prosRatio;
   private double consRatio;
+  private String filename;
+  private String filepath;
 
   @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
@@ -44,19 +46,18 @@ public class Vote {
 
   @Builder
   public Vote(Long voteId, String voteTitle, String candidateName,
-    String candidateInfo, Election election, List<Count> counts, boolean result, double prosRatio, double consRatio) {
+    String candidateInfo, Election election, List<Count> counts, boolean result, double prosRatio, double consRatio, String filename, String filepath) {
     this.voteId = voteId;
     this.voteTitle = voteTitle;
-//    this.voteType = voteType;
     this.candidateName = candidateName;
     this.candidateInfo = candidateInfo;
-//    this.agreeYn = agreeYn;
-//    this.preference = preference;
     this.election = election;
     this.counts = counts;
     this.result = result;
     this.prosRatio = prosRatio;
     this.consRatio = consRatio;
+    this.filename = filename;
+    this.filepath = filepath;
   }
 
   public static Vote toEntity(VoteDto voteDto) {

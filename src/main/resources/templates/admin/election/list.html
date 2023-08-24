@@ -1,56 +1,69 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html"
       xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:replace="common/head.html :: head('투표 개설 목록')">
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title th:text="${title}">투표 개설 목록</title>
 </head>
-<body>
-<h2>투표현황</h2>
-<button th:onclick="'location.href=\''+ @{/admin/election/insert} + '\''">투표 개설하기</button>
-<table>
-  <th>번호</th>
-  <th>선거명</th>
-  <th>이용기관</th>
-  <th>선거기간</th>
+<body th:align="center">
+<nav th:replace="common/nav.html :: nav">
+</nav>
+<div class="container">
+<div class="p-3 mb-2">
+  <div class="d-flex justify-content-center">
+    <h3 class="fw-bold">투표 개설 목록</h3>
+  </div>
+</div>
+<div class="container">
+<button class="btn btn-success" th:onclick="'location.href=\''+ @{/admin/election/insert} + '\''">선거 개설하기</button>
+  <br>
+  <table class="table">
+    <thead>
+    <tr class="table-secondary">
+      <th scope="col">번호</th>
+      <th scope="col">선거명</th>
+      <th scope="col">이용기관</th>
+      <th scope="col">선거기간</th>
+      <th scope="col"></th>
   </tr>
+    </thead>
+    <tbody>
   <tr th:each="addElection : ${electionList}">
+    <th scope="row">1</th>
     <td th:text="${addElection.electionId}">
     <td>
       <a th:href="@{/admin/election/detail(electionId=${addElection.electionId})}"
          th:text="${addElection.electionTitle}"></a></td>
-    <!--    <a th:href="@{/board/read(boardNo=${board.boardNo})}"</a>-->
-
     <td th:text="${addElection.groupName}">
     <td th:text="${addElection.electionStartDt}"><td th:text="${addElection.electionEndDt}"></td>
     <td th:hidden="${addElection.votes}"></td>
   </tr>
-
+    </tbody>
 </table>
-
-
-<span class="page-item">
+</div>
+<ul class="pagination justify-content-center">
+  <li class="page-item">
     <a class="page-link" th:href="@{/admin/election/electionList(page=0)}">
       <span>&laquo;</span>
     </a>
   </span>
+  </li>
 
-<span class="page-item"
+<li class="page-item"
       th:each="page : ${#numbers.sequence(startPage, endPage)}">
     <a th:if="${page != nowPage}"
        th:href="@{/admin/election/electionList(page = ${page - 1})}"
        th:text="${page}"></a>
     <strong th:if="${page == nowPage}" th:text="${page}"
             style="color: rebeccapurple"></strong>
-  </span>
-<span class="page-item">
+  </li>
+<li class="page-item">
     <a class="page-link"
        th:href="@{/admin/election/electionList(page = ${endPage - 1})}">
-
-
       <span>&raquo;</span>
     </a>
-  </span>
-
+  </li>
+</ul>
+</div>
 </body>
 </html>

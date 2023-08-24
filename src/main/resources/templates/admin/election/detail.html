@@ -1,51 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head.html :: head(title)">
+  <title th:text="${title}">관리자 개표</title>
 </head>
-<body>
-<form th:action="@{/admin/election/results}" method="get">
-<table class="table">
-    <tr>
-        <td><input type="hidden" th:value="${detail.electionId}" id="electionId" name="electionId"></td>
-    </tr>
-    <tr>
+<body th:align="center">
+<nav th:replace="common/nav.html :: nav">
+</nav>
+<div class="p-3 mb-2 bg-light rounded-1">
+  <div class="d-flex justify-content-center">
+    <h3 class="fw-bold">관리자 개표</h3>
+  </div>
+</div>
+<div class="container">
+  <form th:action="@{/admin/election/results}" method="get">
+    <table class="table">
+      <tr>
+        <td><input type="hidden" th:value="${detail.electionId}" id="electionId" name="electionId">
+        </td>
+      </tr>
+      <tr>
         <td th:text="선거명"></td>
         <td th:text="${detail.electionTitle}"></td>
-    </tr>
-    <tr>
+      </tr>
+      <tr>
         <td th:text="이용기관"></td>
         <td th:text="${detail.groupName}"></td>
-    </tr>
-    <tr>
+      </tr>
+      <tr>
         <td th:text="선거시작"></td>
         <td th:text="${detail.electionStartDt}"></td>
-    </tr>
-    <tr>
+      </tr>
+      <tr>
         <td th:text="선거종료"></td>
         <td th:text="${detail.electionEndDt}"></td>
-    </tr>
-    <tr th:each="vote : ${detail.votes}">
+      </tr>
+      <tr th:each="vote : ${detail.votes}">
         <input type="hidden" th:value="${vote.voteId}" name="voteId">
         <td th:text="투표명"></td>
         <td th:text="${vote.voteTitle}"></td>
-<!--        <div th:if="${#dates.createNow() &gt; detail.electionEndDt}">-->
-<!--        <td><button th:onclick="'location.href=\''+ @{/admin/election/results(voteId=${vote.voteId})} + '\''">개표 하기</button></td>-->
-        <td><button type="submit">개표 하기</button></td>
-<!--        </div>-->
-<!--        <div th:unless="${#dates.createNow() &gt; detail.electionEndDt}">-->
-<!--            <p>선거 종료일이 지나지 않아 개표가 불가능합니다.</p>-->
-<!--        </div>-->
-    </tr>
-</table>
-</form>
+
+        <td>
+          <button class="btn btn-secondary" type="submit">개표 및 결과 확인</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
 <form action="/admin/election/delete" method="post">
-    <input type="hidden" name="_method" value="DELETE">
-    <button type="submit">삭제</button>
-<input type="hidden" th:value="${detail.electionId}" name="electionId">
+  <input type="hidden" name="_method" value="DELETE">
+  <div class="d-flex justify-content-center align-items-center">
+    <button class="btn btn-danger" type="submit">삭제</button>
+  </div>
+  <input type="hidden" th:value="${detail.electionId}" name="electionId">
 </form>
-<a th:href="@{/admin/election/electionList}">목록으로 돌아가기</a>
+<div class="d-flex justify-content-center align-items-center">
+  <a th:href="@{/admin/election/electionList}">목록으로 돌아가기</a>
+</div>
 <script>
 </script>
 </body>

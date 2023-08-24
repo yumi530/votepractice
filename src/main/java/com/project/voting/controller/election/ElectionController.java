@@ -1,5 +1,6 @@
 package com.project.voting.controller.election;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.voting.domain.admin.Admin;
 import com.project.voting.domain.election.Election;
 import com.project.voting.dto.election.ElectionDto;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -52,7 +54,7 @@ public class ElectionController {
     }
 
     @PostMapping("/election")
-    public String addElectionSubmit(ElectionDto electionDto, @AuthenticationPrincipal Admin admin, RedirectAttributes redirectAttributes, @RequestPart MultipartFile file) throws IOException {
+    public String addElectionSubmit(@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") ElectionDto electionDto, @AuthenticationPrincipal Admin admin, RedirectAttributes redirectAttributes, @RequestPart MultipartFile file) throws IOException {
         electionService.addElectionAndVote(electionDto, admin, file);
         redirectAttributes.addFlashAttribute("message", "addElectionAndVote Success");
         return "redirect:/admin/election/electionList";
