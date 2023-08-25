@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <img src="/images/chunsik.jpeg" class="card-img-top mx-auto d-block"
+         alt="chunsik image" style="width: 24rem; height: 26rem;">
+    <div class="card-body">
+      <h5 class="card-title text-center">투표가 완료되었습니다 !</h5>
+    </div>
+    <ul class="list-group list-group-flush">
+      <input type="hidden" th:value="${save.vote.voteId}"/>
+      <li class="list-group-item">투표명 : <span th:text="${save.vote.voteTitle}"
+                                               th:value="${save.vote.voteTitle}"></span>
+      </li>
+      <li class="list-group-item">의견 : <span
+          th:text="${save.isAgreed()}"
+          th:value="${save.isAgreed()}"></span></li>
+    </ul>
+    <div class="card-body">
+      <a href="/" class="card-link">메인 화면으로</a>
+      <a href="javascript:history.go(-2)">추가 투표 하기</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

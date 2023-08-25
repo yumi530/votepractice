@@ -1,15 +1,19 @@
 package com.project.voting.service.count;
 
 import com.project.voting.domain.count.Count;
-import com.project.voting.domain.election.Election;
 import com.project.voting.domain.users.Users;
 import com.project.voting.domain.vote.Vote;
-import com.project.voting.dto.count.CountDto;
-import java.time.LocalDateTime;
+import com.project.voting.dto.users.UsersDto;
+import javax.servlet.http.HttpSession;
 
 public interface CountService {
 
-  Count save(boolean isAgreed, Long voteId, boolean hadVoted);
+
+  boolean hadVoted(HttpSession session, Long voteId);
+
+  void confirmVoted(HttpSession session, Long voteId);
+
+  Count save(boolean isAgreed, Long voteId);
 
   Vote countVotes(Long voteId);
 
@@ -17,5 +21,6 @@ public interface CountService {
 
   Vote countVotesResultConfirm(Long voteId);
 
-//  Users complete(Users users);
+//  Users complete(UsersDto users);
+
 }

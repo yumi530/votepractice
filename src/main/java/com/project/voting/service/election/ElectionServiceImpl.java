@@ -10,7 +10,7 @@ import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteRepository;
 import com.project.voting.dto.election.ElectionDto;
 
-import java.io.File;
+import com.project.voting.dto.users.UsersDto;
 import java.io.IOException;
 
 import java.time.LocalDateTime;
@@ -132,13 +132,20 @@ public class ElectionServiceImpl implements ElectionService {
     return ElectionDto.of(electionList);
   }
 
-
-
   @Override
   public Election detail(Long electionId) {
     Election election = electionRepository.findById(electionId).get();
     return election;
   }
+//  @Override
+//  public Election detail(Long electionId, String usersPhone, boolean isUsersCompleted) {
+//    Users users = usersRepository.findById(usersPhone).get();
+//    if (isUsersCompleted){
+//      throw new RuntimeException("기존에 선거를 완료한 참가자 입니다.");
+//    }
+//    Election election = electionRepository.findById(electionId).get();
+//    return election;
+//  }
 
   private boolean isExcelFile(MultipartFile file) {
     String[] allowedExtensions = {"xls", "xlsx"};

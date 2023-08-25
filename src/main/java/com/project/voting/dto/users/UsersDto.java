@@ -20,13 +20,13 @@ public class UsersDto {
     private String usersPhone;
     private String usersName;
     private Long electionId;
-    private boolean isCompleted;
+    private boolean usersCompleted;
 
     public static UsersDto of(Users users){
         return UsersDto.builder()
           .usersPhone(users.getUsersPhone())
           .usersName(users.getUsersName())
-//          .isCompleted(users.isCompleted())
+          .usersCompleted(users.isUsersCompleted())
           .electionId(users.getElection().getElectionId())
           .build();
     }

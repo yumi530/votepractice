@@ -9,6 +9,7 @@ import com.project.voting.dto.count.CountDto;
 import com.project.voting.dto.vote.VoteDto;
 import java.util.List;
 import java.util.Optional;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,41 +17,34 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class VoteServiceImpl implements VoteService {
 
-    private final VoteRepository voteRepository;
-    private final ElectionRepository electionRepository;
-    private final CountRepository countRepository;
+  private final VoteRepository voteRepository;
+  private final CountRepository countRepository;
+
+  @Override
+  public void deleteVote(Long voteId) {
+    voteRepository.deleteById(voteId);
+  }
 
 
+  @Override
+  public Vote save(VoteDto voteDto) {
 
-
-    @Override
-    public void deleteVote(Long voteId) {
-        voteRepository.deleteById(voteId);
-    }
-
-//    public List<Vote> detail(Long voteId) {
-//        List<Vote> votes = voteRepository.findAllById(voteId);
-////        voteRepository.save(vote);
-//        return votes;
-//    }
-
-
-    @Override
-    public Vote save(VoteDto voteDto) {
 //        electionRepository.findById(voteDto.getElectionId()).ifPresent(voteDto::setElection);
-        Vote vote = Vote.toEntity(voteDto);
-        return voteRepository.save(vote);
-    }
+    Vote vote = Vote.toEntity(voteDto);
+    return voteRepository.save(vote);
+  }
 
-    @Override
-    public List<Vote> detail(List<Long> voteIds) {
-        List<Vote> voteList = voteRepository.findAllById(voteIds);
-        return voteList;
-    }
+  @Override
+  public List<Vote> detail(List<Long> voteIds) {
+    List<Vote> voteList = voteRepository.findAllById(voteIds);
+    return voteList;
+  }
 
-    @Override
-    public Vote detail(Long voteId) {
-        Vote vote = voteRepository.findById(voteId).get();
-        return vote;
-    }
+  @Override
+  public Vote detail(Long voteId) {
+
+    Vote vote = voteRepository.findById(voteId).get();
+    return vote;
+  }
 }
+

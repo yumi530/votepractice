@@ -12,7 +12,8 @@
     </div>
 </div>
 <div class="container">
-    <table class="table">
+    <form th:action="@{/users/logout}" method ="post">
+        <table class="table">
         <tr>
         <tr>
             <td th:text="선거명"></td>
@@ -45,6 +46,9 @@
             </td>
         </tr>
     </table>
+        <input type="hidden" th:value="${detail.usersPhone}" name="usersPhone">
+        <button type="submit">선거 참여 완료</button>
+    </form>
 </div>
 </body>
 </html>

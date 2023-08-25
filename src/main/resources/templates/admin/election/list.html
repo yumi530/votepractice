@@ -29,7 +29,6 @@
     </thead>
     <tbody>
   <tr th:each="addElection : ${electionList}">
-    <th scope="row">1</th>
     <td th:text="${addElection.electionId}">
     <td>
       <a th:href="@{/admin/election/detail(electionId=${addElection.electionId})}"

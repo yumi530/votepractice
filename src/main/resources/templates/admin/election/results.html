@@ -38,9 +38,46 @@
     </td>
   </tr>
 </table>
+  <canvas id="myChart" width="100" height="50"></canvas>
 </div>
 <div class="d-flex justify-content-center">
 <a th:href="@{/admin/election/electionList}">목록으로 돌아가기</a>
 </div>
+<script>
+  /*<![CDATA[*/
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var positiveData = [[${voteResult.prosRatio}]];
+  var negativeData = [[${voteResult.consRatio}]];
+
+
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['찬성', '반대'],
+      datasets: [{
+        label: '개표 결과',
+        data: [positiveData, negativeData],
+        backgroundColor: [
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  /*]]>*/
+</script>
 </body>
 </html>

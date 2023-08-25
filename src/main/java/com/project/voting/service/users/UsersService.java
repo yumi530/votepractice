@@ -11,5 +11,7 @@ public interface UsersService {
 
   List<UsersDto> detailList(String usersPhone);
 
+//  Users complete(String usersPhone, boolean usersCompleted);
 
+//  Users detail(UsersDto usersDto);
 }

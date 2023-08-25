@@ -14,10 +14,10 @@
 <div class="container">
   <form th:action="@{/admin/election/results}" method="get">
     <table class="table">
-      <tr>
-        <td><input type="hidden" th:value="${detail.electionId}" id="electionId" name="electionId">
-        </td>
-      </tr>
+
+      <input type="hidden" th:value="${detail.electionId}" id="electionId" name="electionId">
+
+
       <tr>
         <td th:text="선거명"></td>
         <td th:text="${detail.electionTitle}"></td>

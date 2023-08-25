@@ -1,6 +1,7 @@
 package com.project.voting.controller.count;
 
 
+import com.project.voting.domain.count.Count;
 import com.project.voting.domain.election.Election;
 import com.project.voting.domain.users.Users;
 import com.project.voting.domain.vote.Vote;
@@ -17,6 +18,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.Banner.Mode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -66,6 +69,17 @@ public class CountController {
     model.addAttribute("detailVote", detail);
     return "users/count/vote-count";
   }
+  @PostMapping("/save")
+  public String countSave(@RequestParam Long voteId, @RequestParam boolean isAgreed, HttpSession session, Model model) {
+    if (countService.hadVoted(session, voteId)) {
+      throw new RuntimeException("이미 투표를 완료하였습니다.");
+    }
+    Count save = countService.save(isAgreed, voteId);
+    countService.confirmVoted(session, voteId);
+    model.addAttribute("save", save);
+    return "users/count/vote-complete";
+  }
+
   @GetMapping("/count/voteResult/{voteId}")
   public String voteResult(Model model, @PathVariable Long voteId){
     Vote voteResult = countService.countVotesResultConfirm(voteId);
@@ -73,18 +87,10 @@ public class CountController {
     return "users/count/vote-result";
   }
 
-  //수정 필요(세션 로그인), dto
-  @PostMapping("/save")
-  public String countSave(@RequestParam Long voteId, @RequestParam boolean isAgreed, @RequestParam boolean hadVoted) {
-    countService.save(isAgreed, voteId, hadVoted);
-    return "index";
-  }
-
-
 //  @PostMapping("/count/voteCount/complete")
-//  public String electionComplete(@RequestParam(name = "phoneNumber")String userPhone, Users users) {
-//    countService.complete(users);
-//    return "redirect:/users/count/list?phoneNumber=" + ;
+//  public String electionComplete(String usersPhone, boolean usersCompleted) {
+//    usersService.complete(usersPhone, usersCompleted);
+//    return "index";
 //  }
 }
 
