@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{common/layout.html}">
+<head>
+  <title>참여 선거 목록</title>
+</head>
+
+<section layout:fragment="content">
+  <div class="p-3 mb-2">
+    <div class="d-flex justify-content-center">
+      <h3 class="fw-bold">참여 선거 목록</h3>
+    </div>
+  </div>
+  <div class="container">
+    <table class="table">
+      <thead>
+      <tr class="table-secondary">
+        <th scope="col"></th>
+        <th scope="col">참여선거번호</th>
+        <th scope="col">선거인명</th>
+        <th scope="col">휴대전화번호</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="users : ${usersDtoList}">
+        <th scope="row">1</th>
+        <td>
+          <a th:text="${users.electionId}"
+             th:href="@{/users/count/detail/{electionId}(electionId=${users.electionId})}">
+          </a>
+        </td>
+        <td th:text="${users.usersName}"></td>
+        <td th:text="${users.usersPhone}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</html>

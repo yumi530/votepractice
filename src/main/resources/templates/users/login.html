@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{common/layout.html}">
+<head>
+  <title>사용자 로그인</title>
+</head>
+
+<section layout:fragment="content">
+  <div class="d-flex justify-content-center">
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <div class="d-flex justify-content-center">
+          <h5 class="card-title">투표 인증번호</h5>
+        </div>
+        <div class="d-flex justify-content-center">
+          <p class="card-text">
+          <form action="/users/logins" method="post">
+            <input type="text" id="to" name="to" placeholder="휴대전화번호 입력" required>
+            <button class="btn btn-dark" type="submit">인증번호 발송</button>
+          </form>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+</html>
+
+

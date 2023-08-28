@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{common/layout.html}">
+<head>
+    <title>메인</title>
+</head>
+
+<section layout:fragment="content">
+    <div class="d-flex justify-content-center">
+        <h2 class="fw-normal">온라인 투표 서비스</h2>
+    </div>
+    <hr>
+    <div class="d-flex justify-content-center">
+        <form action="/users/count/list" method="get">
+            <input type="hidden" th:value="${phoneNumber}" id="phoneNumber" name="phoneNumber">
+            <button class="btn btn-dark" type="submit">투표 및 개표 참여하기</button>
+        </form>
+    </div>
+</section>
+</html>

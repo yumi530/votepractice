@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{common/layout.html}">
+<head>
+  <title>투표 개설 목록</title>
+</head>
+
+<section layout:fragment="content">
+  <div class="container">
+    <div class="p-3 mb-2">
+      <div class="d-flex justify-content-center">
+        <h3 class="fw-bold">투표 개설 목록</h3>
+      </div>
+    </div>
+    <div class="container">
+      <button class="btn btn-success" th:onclick="'location.href=\''+ @{/admin/election/insert} + '\''">선거 개설하기</button>
+      <br>
+      <table class="table">
+        <thead>
+        <tr class="table-secondary">
+          <th scope="col">번호</th>
+          <th scope="col">선거명</th>
+          <th scope="col">이용기관</th>
+          <th scope="col">선거기간</th>
+          <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="addElection : ${electionList}">
+          <td th:text="${addElection.electionId}">
+          <td>
+            <a th:href="@{/admin/election/detail(electionId=${addElection.electionId})}"
+               th:text="${addElection.electionTitle}"></a></td>
+          <td th:text="${addElection.groupName}">
+          <td th:text="${addElection.electionStartDt}"><td th:text="${addElection.electionEndDt}"></td>
+          <td th:hidden="${addElection.votes}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="pagination justify-content-center">
+      <li class="page-item">
+        <a class="page-link" th:href="@{/admin/election/electionList(page=0)}">
+          <span>&laquo;</span>
+        </a>
+        </span>
+      </li>
+
+      <li class="page-item"
+          th:each="page : ${#numbers.sequence(startPage, endPage)}">
+        <a th:if="${page != nowPage}"
+           th:href="@{/admin/election/electionList(page = ${page - 1})}"
+           th:text="${page}"></a>
+        <strong th:if="${page == nowPage}" th:text="${page}"
+                style="color: rebeccapurple"></strong>
+      </li>
+      <li class="page-item">
+        <a class="page-link"
+           th:href="@{/admin/election/electionList(page = ${endPage - 1})}">
+          <span>&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+</html>
+
