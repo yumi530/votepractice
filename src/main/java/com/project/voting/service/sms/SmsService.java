@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.voting.config.RedisService;
 import com.project.voting.domain.users.Users;
 import com.project.voting.domain.users.UsersRepository;
+import com.project.voting.service.cache.CacheService;
 import com.project.voting.service.users.UsersService;
 import com.project.voting.dto.sms.MessageDto;
 import com.project.voting.dto.sms.SmsRequestDto;
@@ -39,7 +40,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class SmsService {
     private final UsersRepository usersRepository;
-    private final UsersService usersService;
+
     private final String smsConfirmNum = createSmsKey();
     private final String VERIFICATION_PREFIX = "sms:";
     private final int VERIFICATION_TIME_LIMIT = 3 * 60;
@@ -47,6 +48,8 @@ public class SmsService {
     private final WebClient webClient;
 
     private final RedisService redisService;
+
+    private final CacheService cacheService;
 
 
     @Value("${naver-cloud-sms.accessKey}")
@@ -71,14 +74,14 @@ public class SmsService {
 
 
         String message = new StringBuilder()
-                .append(method)
-                .append(space)
-                .append(url)
-                .append(newLine)
-                .append(time)
-                .append(newLine)
-                .append(accessKey)
-                .toString();
+          .append(method)
+          .append(space)
+          .append(url)
+          .append(newLine)
+          .append(time)
+          .append(newLine)
+          .append(accessKey)
+          .toString();
 
         SecretKeySpec signingKey = new SecretKeySpec(secretKey.getBytes("UTF-8"), "HmacSHA256");
         Mac mac = Mac.getInstance("HmacSHA256");
@@ -92,7 +95,7 @@ public class SmsService {
 
 
     public String sendSms(String to) throws JsonProcessingException, RestClientException, URISyntaxException, InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
-        final Duration verificationTimeLimit = Duration.ofSeconds(VERIFICATION_TIME_LIMIT);
+        Duration verificationTimeLimit = Duration.ofSeconds(VERIFICATION_TIME_LIMIT);
         Optional<Users> optionalUsers = usersRepository.findById(to);
         if (!optionalUsers.isPresent()) {
             throw new RuntimeException("선거인 명부에 존재하지 않습니다.");
@@ -110,26 +113,27 @@ public class SmsService {
         messages.add(messageDto);
 
         SmsRequestDto request = SmsRequestDto.builder()
-                .type("SMS")
-                .contentType("COMM")
-                .countryCode("82")
-                .from(phone)
-                .content("인증번호 [" + smsConfirmNum + "]를 입력해주세요")
-                .messages(messages)
-                .build();
+          .type("SMS")
+          .contentType("COMM")
+          .countryCode("82")
+          .from(phone)
+          .content("인증번호 [" + smsConfirmNum + "]를 입력해주세요")
+          .messages(messages)
+          .build();
         final String body = new ObjectMapper().writeValueAsString(request);
 
         webClient.post().uri("https://sens.apigw.ntruss.com/sms/v2/services/" + serviceId + "/messages")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("x-ncp-apigw-timestamp", time)
-                .header("x-ncp-iam-access-key", accessKey)
-                .header("x-ncp-apigw-signature-v2", getSignature(time))
-                .accept(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(body))
-                .retrieve()
-                .bodyToMono(SmsResponseDto.class).block();
+          .contentType(MediaType.APPLICATION_JSON)
+          .header("x-ncp-apigw-timestamp", time)
+          .header("x-ncp-iam-access-key", accessKey)
+          .header("x-ncp-apigw-signature-v2", getSignature(time))
+          .accept(MediaType.APPLICATION_JSON)
+          .body(BodyInserters.fromValue(body))
+          .retrieve()
+          .bodyToMono(SmsResponseDto.class).block();
 
-        redisService.setValues(VERIFICATION_PREFIX + messageDto.getTo(), smsConfirmNum, verificationTimeLimit);
+//        redisService.setValues(VERIFICATION_PREFIX + messageDto.getTo(), smsConfirmNum, verificationTimeLimit);
+        cacheService.setValues(VERIFICATION_PREFIX + messageDto.getTo(), smsConfirmNum, verificationTimeLimit);
 
         return "전송 성공";
     }
@@ -137,32 +141,41 @@ public class SmsService {
     public String verifyCode(String phoneNumber, String code) {
         String key = VERIFICATION_PREFIX + phoneNumber;
 
-        if (!redisService.hasKey(key)) {
+        if (!cacheService.hasKey(key)) {
             throw new RuntimeException("ErrorCode. EXPIRED_VERIFICATION_CODE");
         }
 
-        if (!redisService.getValue(key).equals(code)) {
+        if (!cacheService.getValue(key).equals(code)) {
             throw new RuntimeException("ErrorCode.MISMATCH_VERIFICATION_CODE");
         }
-        if(redisService.getValue(key).equals(code));
+        if(cacheService.getValue(key).equals(code));
 
-        Users users = usersRepository.findById(phoneNumber).orElse(null);
-//        if (users != null) {
-//
-//            List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-//            grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
-//            UserDetails userDetails = new User(users.getUsersPhone(), "", authorities);
-//
-//            // 사용자 엔티티에 UserDetails 설정
-//            users.setUserDetails(userDetails);
-//
-//            usersRepository.save(users);
-//        }
+        usersRepository.findById(phoneNumber).orElse(null);
 
-        redisService.deleteValues(key);
+        cacheService.deleteValues(key);
 
         return "인증 성공";
+
     }
+
+//    public String verifyCode(String phoneNumber, String code) {
+//        String key = VERIFICATION_PREFIX + phoneNumber;
+//
+//        if (!redisService.hasKey(key)) {
+//            throw new RuntimeException("ErrorCode. EXPIRED_VERIFICATION_CODE");
+//        }
+//
+//        if (!redisService.getValue(key).equals(code)) {
+//            throw new RuntimeException("ErrorCode.MISMATCH_VERIFICATION_CODE");
+//        }
+//        if(redisService.getValue(key).equals(code));
+//
+//        usersRepository.findById(phoneNumber).orElse(null);
+//
+//        redisService.deleteValues(key);
+//
+//        return "인증 성공";
+//    }
 
     public static String createSmsKey() {
         StringBuffer smsKey = new StringBuffer();
