@@ -24,16 +24,11 @@ public class Vote {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long voteId;
   private String voteTitle;
-  //  private int voteType;
   private String candidateName;
   private String candidateInfo;
-  //  private boolean agreeYn;
-//  private int preference;
   private boolean result;
   private double prosRatio;
   private double consRatio;
-//  private String filename;
-//  private String filepath;
 
   @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
@@ -44,9 +39,14 @@ public class Vote {
   @OneToMany(mappedBy = "vote")
   private List<Count> counts = new ArrayList<>();
 
+  @Enumerated(EnumType.STRING)
+  private VoteType voteType;
+
+
   @Builder
   public Vote(Long voteId, String voteTitle, String candidateName,
-    String candidateInfo, Election election, List<Count> counts, boolean result, double prosRatio, double consRatio, String filename, String filepath) {
+    String candidateInfo, Election election, List<Count> counts, boolean result, double prosRatio,
+    double consRatio, VoteType voteType) {
     this.voteId = voteId;
     this.voteTitle = voteTitle;
     this.candidateName = candidateName;
@@ -56,21 +56,17 @@ public class Vote {
     this.result = result;
     this.prosRatio = prosRatio;
     this.consRatio = consRatio;
-//    this.filename = filename;
-//    this.filepath = filepath;
+    this.voteType = voteType;
   }
 
   public static Vote toEntity(VoteDto voteDto) {
     return Vote.builder()
       .voteId(voteDto.getVoteId())
       .voteTitle(voteDto.getVoteTitle())
-//      .voteType(voteDto.getVoteType())
       .candidateName(voteDto.getCandidateName())
       .candidateInfo(voteDto.getCandidateInfo())
-//      .agreeYn(voteDto.isAgreeYn())
-//      .election(voteDto.getElectionId())
+      .voteType(VoteType.valueOf(voteDto.getVoteType()))
       .build();
-
   }
 }
 

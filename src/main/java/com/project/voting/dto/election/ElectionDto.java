@@ -1,7 +1,6 @@
 package com.project.voting.dto.election;
 
 import com.project.voting.domain.election.Election;
-import com.project.voting.domain.vote.Vote;
 import com.project.voting.dto.vote.VoteDto;
 
 import java.time.LocalDateTime;
@@ -12,7 +11,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -57,5 +55,4 @@ public class ElectionDto {
         }
         return electionDtoList;
     }
-
 }
