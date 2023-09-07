@@ -37,6 +37,8 @@
       <div class="d-flex justify-content-center">
         <button class="btn btn-secondary" type="button" onclick="insertVoteTemplate('PROS_CONS')">찬반 투표 추가</button>
         <button class="btn btn-secondary" type="button" onclick="insertVoteTemplate('CHOICE')">선택 투표 추가</button>
+        <button class="btn btn-secondary" type="button" onclick="insertVoteTemplate('SCORE')">점수 투표 추가</button>
+        <button class="btn btn-secondary" type="button" onclick="insertVoteTemplate('PREFERENCE')">선호도 투표 추가</button>
       </div>
 
       <div id="voteTemplates" class="m-3"></div>
@@ -72,7 +74,24 @@
             <button type="button" onclick="addCandidate(${voteIndex})">후보자 추가</button>
           </div>
         `;
+      } else if (voteType === 'SCORE') {
+        templateContent += `
+          <input type="text" class="form-control" name="votes[${voteIndex}].voteTitle" placeholder="투표명" required>
+          <div id="candidatesContainer_${voteIndex}">
+            <button type="button" onclick="addCandidate(${voteIndex})">후보자 추가</button>
+          </div>
+        `;
+      } else if (voteType === 'PREFERENCE' +
+          '' +
+          '') {
+        templateContent += `
+          <input type="text" class="form-control" name="votes[${voteIndex}].voteTitle" placeholder="투표명" required>
+          <div id="candidatesContainer_${voteIndex}">
+            <button type="button" onclick="addCandidate(${voteIndex})">후보자 추가</button>
+          </div>
+        `;
       }
+
 
       voteTemplate.innerHTML = templateContent;
       document.getElementById("voteTemplates").appendChild(voteTemplate);
@@ -98,7 +117,6 @@
       hiddenInput.type = "hidden";
       hiddenInput.name = "voteTypes";
       hiddenInput.value = voteTypes.join(',');
-      // hiddenInput.value = JSON.stringify(voteTypes);
       this.appendChild(hiddenInput);
     });
   </script>

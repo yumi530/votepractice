@@ -87,22 +87,23 @@ public class ElectionServiceImpl implements ElectionService {
       String voteType = voteTypes.get(i);
       VoteDto dto = voteList.get(i);
 
-
       if ("PROS_CONS".equals(voteType)) {
-//        for (VoteDto dto : voteList) {
-          Vote vote = Vote.builder()
-            .voteTitle(dto.getVoteTitle())
-            .voteType(VoteType.PROS_CONS)
-            .election(election)
-            .candidateName(dto.getCandidateName())
-            .candidateInfo(dto.getCandidateInfo())
-            .build();
-          voteRepository.save(vote);
+
+        Vote vote = Vote.builder()
+          .voteTitle(dto.getVoteTitle())
+          .voteType(VoteType.PROS_CONS)
+          .election(election)
+          .candidateName(dto.getCandidateName())
+          .candidateInfo(dto.getCandidateInfo())
+          .build();
+        voteRepository.save(vote);
 
       } else if ("CHOICE".equals(voteType)) {
 
-          List<String> candidateNames = dto.getCandidateNames();
-          List<String> candidateInfos = dto.getCandidateInfos();
+        List<String> candidateNames = dto.getCandidateNames();
+        List<String> candidateInfos = dto.getCandidateInfos();
+
+        if (candidateNames.size() >= 2) {
 
           for (int j = 0; j < candidateNames.size(); j++) {
             String candidateName = candidateNames.get(j);
@@ -116,8 +117,57 @@ public class ElectionServiceImpl implements ElectionService {
               .build();
             voteRepository.save(vote);
           }
+        } else {
+          throw new RuntimeException("후보자를 2명 이상 등록해주세요.");
         }
+
+      } else if ("SCORE".equals(voteType)) {
+
+        List<String> candidateNames = dto.getCandidateNames();
+        List<String> candidateInfos = dto.getCandidateInfos();
+
+        if (candidateNames.size() >= 2) {
+
+          for (int j = 0; j < candidateNames.size(); j++) {
+            String candidateName = candidateNames.get(j);
+            String candidateInfo = candidateInfos.get(j);
+            Vote vote = Vote.builder()
+              .voteTitle(dto.getVoteTitle())
+              .voteType(VoteType.SCORE)
+              .election(election)
+              .candidateName(candidateName)
+              .candidateInfo(candidateInfo)
+              .build();
+            voteRepository.save(vote);
+          }
+        } else {
+          throw new RuntimeException("후보자를 2명 이상 등록해주세요.");
+        }
+      } else if ("PREFERENCE".equals(voteType)) {
+
+        List<String> candidateNames = dto.getCandidateNames();
+        List<String> candidateInfos = dto.getCandidateInfos();
+
+        if (candidateNames.size() >= 3) {
+
+          for (int j = 0; j < candidateNames.size(); j++) {
+            String candidateName = candidateNames.get(j);
+            String candidateInfo = candidateInfos.get(j);
+            Vote vote = Vote.builder()
+              .voteTitle(dto.getVoteTitle())
+              .voteType(VoteType.PREFERENCE)
+              .election(election)
+              .candidateName(candidateName)
+              .candidateInfo(candidateInfo)
+              .build();
+
+            voteRepository.save(vote);
+          }
+        }
+      } else {
+        throw new RuntimeException("후보자를 3명 이상 등록해주세요.");
       }
+    }
 
     String fileName = "";
 
