@@ -41,9 +41,9 @@ public class Election extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Admin admin;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "election")
-    private List<Vote> votes = new ArrayList<>();
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "election")
+//    private List<Vote> votes = new ArrayList<>();
 
 
     @Builder
@@ -53,7 +53,7 @@ public class Election extends BaseEntity {
         this.groupName = groupName;
         this.electionStartDt = electionStartDt;
         this.electionEndDt = electionEndDt;
-        this.votes = votes;
+//        this.votes = votes;
         this.admin = admin;
         this.usersPhone = usersPhone;
     }

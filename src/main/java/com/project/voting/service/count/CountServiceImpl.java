@@ -64,86 +64,85 @@ public class CountServiceImpl implements CountService {
     votedSessionsMap.put(voteId, countSessionsMap);
   }
 
-  @Override
-  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-  public Vote countVotesResult(Long voteId, Long electionId, VoteType voteType,
-    String candidateName) {
-
-    Election election = electionRepository.findById(electionId).get();
-    LocalDateTime now = LocalDateTime.now();
-
-    if (election.getElectionEndDt().isAfter(now)) {
-      throw new RuntimeException("선거 종료일 전에는 개표할 수 없습니다.");
-    }
-
-    if (voteType == VoteType.PROS_CONS) {
-
-      Long countIds = countRepository.countAllByVoteVoteId(voteId);
-      Long countPros = countRepository.countByVoteTypeAndIsAgreedTrueAndVoteVoteId(
-        VoteType.PROS_CONS, voteId);
-      Long countCons = countRepository.countByVoteTypeAndIsAgreedFalseAndVoteVoteId(
-        VoteType.PROS_CONS, voteId);
-
-      double prosRatio = pros(countIds, countPros);
-      double consRatio = cons(countIds, countCons);
-
-      Vote votes = voteRepository.findById(voteId).get();
-
-      votes.setResult(prosCons(countIds, countPros));
-      votes.setProsRatio(prosRatio);
-      votes.setConsRatio(consRatio);
-
-      return voteRepository.save(votes);
-
-    } else if (voteType == VoteType.CHOICE) {
-
-      Long countIds = countRepository.countAllByVoteVoteId(voteId);
-      Long countChosen = countRepository.countByVoteTypeAndIsAgreedTrueAndVoteVoteId(
-        VoteType.CHOICE, voteId);
-      Long countUnChosen = countRepository.countByVoteTypeAndIsAgreedFalseAndVoteVoteId(
-        VoteType.CHOICE, voteId);
-
-      double chosenRatio = chosen(countIds, countChosen);
-      double unChosenRatio = unChosen(countIds, countUnChosen);
-
-      Vote votes = voteRepository.findById(voteId).get();
-
-      votes.setResult(prosCons(countIds, countChosen));
-      votes.setProsRatio(chosenRatio);
-      votes.setConsRatio(unChosenRatio);
-
-      return voteRepository.save(votes);
-
-    } else if (voteType == VoteType.SCORE) {
-
-      Long countIds = countRepository.countAllByVoteVoteId(voteId);
-      Long sumScore = countRepository.sumScoresByVoteTypeAndVoteVoteIdAndCandidateName(voteId,
-        VoteType.SCORE, candidateName);
-
-      Vote votes = voteRepository.findById(voteId).get();
-
-      votes.setScores(averageScores(countIds, sumScore));
-
-      List<Vote> allVotes = voteRepository.findAllById(Collections.singleton(voteId));
-
-      votes.setRanks(getRanks(allVotes, candidateName));
-
-      return voteRepository.save(votes);
-
-
+//  @Override
+//  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+//  public Vote countVotesResult(Long voteId, Long electionId, VoteType voteType,
+//    String candidateName) {
+//
+//    Election election = electionRepository.findById(electionId).get();
+//    LocalDateTime now = LocalDateTime.now();
+//
+//    if (election.getElectionEndDt().isAfter(now)) {
+//      throw new RuntimeException("선거 종료일 전에는 개표할 수 없습니다.");
 //    }
-    }
+//
+//    if (voteType == VoteType.PROS_CONS) {
+//
+//      Long countIds = countRepository.countAllByVoteVoteId(voteId);
+//      Long countPros = countRepository.countByVoteTypeAndIsAgreedTrueAndVoteVoteId(
+//        VoteType.PROS_CONS, voteId);
+//      Long countCons = countRepository.countByVoteTypeAndIsAgreedFalseAndVoteVoteId(
+//        VoteType.PROS_CONS, voteId);
+//
+//      double prosRatio = pros(countIds, countPros);
+//      double consRatio = cons(countIds, countCons);
+//
+//      Vote votes = voteRepository.findById(voteId).get();
+//
+//      votes.setResult(prosCons(countIds, countPros));
+//      votes.setProsRatio(prosRatio);
+//      votes.setConsRatio(consRatio);
+//
+//      return voteRepository.save(votes);
+//
+//    } else if (voteType == VoteType.CHOICE) {
+//
+//      Long countIds = countRepository.countAllByVoteVoteId(voteId);
+//      Long countChosen = countRepository.countByVoteTypeAndIsAgreedTrueAndVoteVoteId(
+//        VoteType.CHOICE, voteId);
+//      Long countUnChosen = countRepository.countByVoteTypeAndIsAgreedFalseAndVoteVoteId(
+//        VoteType.CHOICE, voteId);
+//
+//      double chosenRatio = chosen(countIds, countChosen);
+//      double unChosenRatio = unChosen(countIds, countUnChosen);
+//
+//      Vote votes = voteRepository.findById(voteId).get();
+//
+//      votes.setResult(prosCons(countIds, countChosen));
+//      votes.setProsRatio(chosenRatio);
+//      votes.setConsRatio(unChosenRatio);
+//
+//      return voteRepository.save(votes);
+//
+//    } else if (voteType == VoteType.SCORE) {
+//
+//      Long countIds = countRepository.countAllByVoteVoteId(voteId);
+//      Long sumScore = countRepository.sumScoresByVoteTypeAndVoteVoteIdAndCandidateName(voteId,
+//        VoteType.SCORE, candidateName);
+//
+//      Vote votes = voteRepository.findById(voteId).get();
+//
+//      votes.setScores(averageScores(countIds, sumScore));
+//
+//      List<Vote> allVotes = voteRepository.findAllById(Collections.singleton(voteId));
+//
+//      votes.setRanks(getRanks(allVotes, candidateName));
+//
+//      return voteRepository.save(votes);
+//
+//
+//    }
+//
+//    return null;
+//  }
 
-    return null;
-  }
 
 
-
-  @Override
-  public Vote countVotesResultConfirm(Long voteId) {
-    Vote votes = voteRepository.findById(voteId).get();
-    return voteRepository.save(votes);
-  }
+//  @Override
+//  public Vote countVotesResultConfirm(Long voteId) {
+//    Vote votes = voteRepository.findById(voteId).get();
+//    return voteRepository.save(votes);
+//  }
 
   private boolean prosCons(Long countIds, Long countPros) {
     if ((countIds / 2) < countPros) {

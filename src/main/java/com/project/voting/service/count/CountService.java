@@ -19,9 +19,9 @@ public interface CountService {
 
     Count save(boolean isAgreed, Long voteId);
 
-    Vote countVotesResult(Long voteId, Long electionId, VoteType voteType, String candidateName);
-
-    Vote countVotesResultConfirm(Long voteId);
+//    Vote countVotesResult(Long voteId, Long electionId, VoteType voteType, String candidateName);
+//
+//    Vote countVotesResultConfirm(Long voteId);
 
 
 }

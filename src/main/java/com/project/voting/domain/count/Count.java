@@ -22,9 +22,9 @@ public class Count {
     private Long scores;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vote_vote_id")
-    private Vote vote;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "vote_vote_id")
+//    private Vote vote;
 
     private String candidateName;
 
@@ -35,7 +35,7 @@ public class Count {
     public Count(Long countId, boolean isAgreed, Vote vote, boolean hadVoted, Long scores, String candidateName, VoteType voteType) {
         this.countId = countId;
         this.isAgreed = isAgreed;
-        this.vote = vote;
+//        this.vote = vote;
         this.hadVoted = hadVoted;
         this.scores = scores;
         this.candidateName = candidateName;

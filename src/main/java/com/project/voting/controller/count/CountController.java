@@ -58,28 +58,25 @@ public class CountController {
         return "users/count/vote-count";
     }
 
-    @PostMapping("/save")
-    public String countSave(@RequestParam Long voteId, @RequestParam boolean isAgreed, HttpSession session, RedirectAttributes redirectAttributes, Model model) {
-        if (countService.hadVoted(session, voteId)) {
-            throw new RuntimeException("이미 투표를 완료하였습니다.");
-        }
-        countService.save(isAgreed, voteId);
-        countService.confirmVoted(session, voteId);
+//    @PostMapping("/save")
+//    public String countSave(@RequestParam Long voteId, @RequestParam boolean isAgreed, HttpSession session, RedirectAttributes redirectAttributes, Model model) {
+//        if (countService.hadVoted(session, voteId)) {
+//            throw new RuntimeException("이미 투표를 완료하였습니다.");
+//        }
+//        countService.save(isAgreed, voteId);
+//        countService.confirmVoted(session, voteId);
+//
+//        redirectAttributes.addFlashAttribute("message", "save success");
+//        Long electionId = voteService.detail(voteId).getElection().getElectionId();
+//        return "redirect:/users/count/detail/" + electionId;
+//    }
 
-//        model.addAttribute("save", save);
-//        return "users/count/vote-complete";
-
-        redirectAttributes.addFlashAttribute("message", "save success");
-        Long electionId = voteService.detail(voteId).getElection().getElectionId();
-        return "redirect:/users/count/detail/" + electionId;
-    }
-
-    @GetMapping("/count/voteResult/{voteId}")
-    public String voteResult(Model model, @PathVariable Long voteId) {
-        Vote voteResult = countService.countVotesResultConfirm(voteId);
-        model.addAttribute("voteResult", voteResult);
-        return "users/count/vote-result";
-    }
+//    @GetMapping("/count/voteResult/{voteId}")
+//    public String voteResult(Model model, @PathVariable Long voteId) {
+//        Vote voteResult = countService.countVotesResultConfirm(voteId);
+//        model.addAttribute("voteResult", voteResult);
+//        return "users/count/vote-result";
+//    }
 }
 
 

@@ -17,11 +17,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@IdClass(VoteId.class)
 public class Vote {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long electionId;
+  @Id
   private Long voteId;
+
   private String voteTitle;
   private String candidateName;
   private String candidateInfo;
@@ -31,14 +34,14 @@ public class Vote {
   private double scores;
   private int ranks;
 
-  @JsonIgnore
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "election_election_id")
-  private Election election;
+//  @JsonIgnore
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "election_election_id")
+//  private Election election;
 
-  @JsonIgnore
-  @OneToMany(mappedBy = "vote")
-  private List<Count> counts = new ArrayList<>();
+//  @JsonIgnore
+//  @OneToMany(mappedBy = "vote")
+//  private List<Count> counts = new ArrayList<>();
 
   @Enumerated(EnumType.STRING)
   private VoteType voteType;
@@ -52,8 +55,8 @@ public class Vote {
     this.voteTitle = voteTitle;
     this.candidateName = candidateName;
     this.candidateInfo = candidateInfo;
-    this.election = election;
-    this.counts = counts;
+//    this.election = election;
+//    this.counts = counts;
     this.result = result;
     this.prosRatio = prosRatio;
     this.consRatio = consRatio;
