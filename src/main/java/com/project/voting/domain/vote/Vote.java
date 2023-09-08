@@ -6,7 +6,6 @@ import com.project.voting.domain.election.Election;
 import com.project.voting.dto.vote.VoteDto;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ import javax.persistence.*;
 import lombok.Setter;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
 @Setter
 public class Vote {
@@ -29,6 +28,8 @@ public class Vote {
   private boolean result;
   private double prosRatio;
   private double consRatio;
+  private double scores;
+  private int ranks;
 
   @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
@@ -46,7 +47,7 @@ public class Vote {
   @Builder
   public Vote(Long voteId, String voteTitle, String candidateName,
     String candidateInfo, Election election, List<Count> counts, boolean result, double prosRatio,
-    double consRatio, VoteType voteType) {
+    double consRatio, VoteType voteType, double scores, int ranks) {
     this.voteId = voteId;
     this.voteTitle = voteTitle;
     this.candidateName = candidateName;
@@ -57,6 +58,8 @@ public class Vote {
     this.prosRatio = prosRatio;
     this.consRatio = consRatio;
     this.voteType = voteType;
+    this.scores = scores;
+    this.ranks = ranks;
   }
 
   public static Vote toEntity(VoteDto voteDto) {
@@ -70,28 +73,4 @@ public class Vote {
   }
 }
 
-//    public static Vote toEntity(VoteDto voteDto) {
-//        return Vote.builder()
-//                .voteId(voteDto.getVoteId())
-//                .voteTitle(voteDto.getVoteTitle())
-//                .voteType(voteDto.getVoteType())
-//                .candidateName(voteDto.getCandidateName())
-//                .candidateInfo(voteDto.getCandidateInfo())
-//                .agreeYn(voteDto.isAgreeYn())
-//                .build();
-//        if (voteDto.getElectionId() != null) {
-//            Election election = new Election();
-//            election.setId(voteDto.getElection().getElectionId());
-//            vote.setElection(election);
-//        }
-//        return vote;
-//    }
-//    public Vote(int voteId, String voteTitle, int voteType, String candidateName, String candidateInfo, int preference){
-//        this.voteId = voteId;
-//        this.voteTitle = voteTitle;
-//        this.voteType = voteType;
-//        this.candidateName = candidateName;
-//        this.candidateInfo = candidateInfo;
-//        this.preference = preference;
-//    }
 

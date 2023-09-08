@@ -105,128 +105,142 @@ public class ElectionServiceImpl implements ElectionService {
 
         if (candidateNames.size() >= 2) {
 
-          for (int j = 0; j < candidateNames.size(); j++) {
-            String candidateName = candidateNames.get(j);
-            String candidateInfo = candidateInfos.get(j);
-            Vote vote = Vote.builder()
-              .voteTitle(dto.getVoteTitle())
-              .voteType(VoteType.CHOICE)
-              .election(election)
-              .candidateName(candidateName)
-              .candidateInfo(candidateInfo)
-              .build();
-            voteRepository.save(vote);
-          }
-        } else {
-          throw new RuntimeException("후보자를 2명 이상 등록해주세요.");
-        }
+          List<Vote> votesList = new ArrayList<>();
 
-      } else if ("SCORE".equals(voteType)) {
-
-        List<String> candidateNames = dto.getCandidateNames();
-        List<String> candidateInfos = dto.getCandidateInfos();
-
-        if (candidateNames.size() >= 2) {
-
-          for (int j = 0; j < candidateNames.size(); j++) {
-            String candidateName = candidateNames.get(j);
-            String candidateInfo = candidateInfos.get(j);
-            Vote vote = Vote.builder()
-              .voteTitle(dto.getVoteTitle())
-              .voteType(VoteType.SCORE)
-              .election(election)
-              .candidateName(candidateName)
-              .candidateInfo(candidateInfo)
-              .build();
-            voteRepository.save(vote);
-          }
-        } else {
-          throw new RuntimeException("후보자를 2명 이상 등록해주세요.");
-        }
-      } else if ("PREFERENCE".equals(voteType)) {
-
-        List<String> candidateNames = dto.getCandidateNames();
-        List<String> candidateInfos = dto.getCandidateInfos();
-
-        if (candidateNames.size() >= 3) {
-
-          for (int j = 0; j < candidateNames.size(); j++) {
-            String candidateName = candidateNames.get(j);
-            String candidateInfo = candidateInfos.get(j);
-            Vote vote = Vote.builder()
-              .voteTitle(dto.getVoteTitle())
-              .voteType(VoteType.PREFERENCE)
-              .election(election)
-              .candidateName(candidateName)
-              .candidateInfo(candidateInfo)
-              .build();
-
-            voteRepository.save(vote);
-          }
-        }
-      } else {
-        throw new RuntimeException("후보자를 3명 이상 등록해주세요.");
-      }
-    }
-
-    String fileName = "";
-
-    File fileInput = null;
-    if (file != null && !file.isEmpty()) {
-      String filePath =
-        System.getProperty("user.dir") + "\\src\\main\\resources\\statics\\files";
-      fileName = file.getOriginalFilename();
-      fileInput = new File(filePath, fileName);
-      file.transferTo(fileInput);
-
-      try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileInput))) {
-
-        bufferedReader.readLine();
-
-        List<Map<String, String>> listMap = bufferedReader.lines()
-          .map(line -> {
-            String[] parts = line.split(",");
-            Map<String, String> map = new HashMap<>();
-            map.put("0", parts[0]);
-            map.put("1", parts[1]);
-            return map;
-          })
-          .collect(Collectors.toList());
-
-        List<UsersVo> listUser = new ArrayList<>();
-
-        for (Map<String, String> map : listMap) {
-          UsersVo userInfo = UsersVo.builder()
-            .usersPhone(map.get("0"))
-            .usersName(map.get("1"))
-            .build();
-          listUser.add(userInfo);
-        }
-
-        for (UsersVo oneUsersVo : listUser) {
-          Users users = Users.builder()
-            .usersPhone(oneUsersVo.getUsersPhone())
-            .usersName(oneUsersVo.getUsersName())
+          Vote vote = Vote.builder()
+            .voteTitle(dto.getVoteTitle())
+            .voteType(VoteType.PROS_CONS)
             .election(election)
             .build();
-          usersRepository.save(users);
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
+          voteRepository.save(vote);
 
-    boolean fileDeleted = fileInput.delete();
+          Long voteId = voteRepository.findById(vote.getVoteId()).get().getVoteId();
 
-    {
-      if (fileDeleted) {
-        System.out.println("삭제 완료");
+          for (int j = 0; j < candidateNames.size(); j++) {
+            String candidateName = candidateNames.get(j);
+            String candidateInfo = candidateInfos.get(j);
+
+            vote.setVoteId(voteId);
+            vote.setCandidateName(candidateName);
+            vote.setCandidateInfo(candidateInfo);
+
+            votesList.add(vote);
+          }
+
+          voteRepository.saveAll(votesList);
+
+
       } else {
-        throw new RuntimeException("삭제 안됨..........");
+        throw new RuntimeException("후보자를 2명 이상 등록해주세요.");
       }
+    }else if ("SCORE".equals(voteType)) {
+
+      List<String> candidateNames = dto.getCandidateNames();
+      List<String> candidateInfos = dto.getCandidateInfos();
+
+      if (candidateNames.size() >= 2) {
+
+        for (int j = 0; j < candidateNames.size(); j++) {
+          String candidateName = candidateNames.get(j);
+          String candidateInfo = candidateInfos.get(j);
+          Vote vote = Vote.builder()
+            .voteTitle(dto.getVoteTitle())
+            .voteType(VoteType.SCORE)
+            .election(election)
+            .candidateName(candidateName)
+            .candidateInfo(candidateInfo)
+            .build();
+          voteRepository.save(vote);
+        }
+      } else {
+        throw new RuntimeException("후보자를 2명 이상 등록해주세요.");
+      }
+    } else if ("PREFERENCE".equals(voteType)) {
+
+      List<String> candidateNames = dto.getCandidateNames();
+      List<String> candidateInfos = dto.getCandidateInfos();
+
+      if (candidateNames.size() >= 3) {
+
+        for (int j = 0; j < candidateNames.size(); j++) {
+          String candidateName = candidateNames.get(j);
+          String candidateInfo = candidateInfos.get(j);
+          Vote vote = Vote.builder()
+            .voteTitle(dto.getVoteTitle())
+            .voteType(VoteType.PREFERENCE)
+            .election(election)
+            .candidateName(candidateName)
+            .candidateInfo(candidateInfo)
+            .build();
+
+          voteRepository.save(vote);
+        }
+      }
+    } else {
+      throw new RuntimeException("후보자를 3명 이상 등록해주세요.");
     }
-    return election;
   }
+
+  String fileName = "";
+
+  File fileInput = null;
+    if(file !=null&&!file.isEmpty())
+
+  {
+    String filePath =
+      System.getProperty("user.dir") + "\\src\\main\\resources\\statics\\files";
+    fileName = file.getOriginalFilename();
+    fileInput = new File(filePath, fileName);
+    file.transferTo(fileInput);
+
+    try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileInput))) {
+
+      bufferedReader.readLine();
+
+      List<Map<String, String>> listMap = bufferedReader.lines()
+        .map(line -> {
+          String[] parts = line.split(",");
+          Map<String, String> map = new HashMap<>();
+          map.put("0", parts[0]);
+          map.put("1", parts[1]);
+          return map;
+        })
+        .collect(Collectors.toList());
+
+      List<UsersVo> listUser = new ArrayList<>();
+
+      for (Map<String, String> map : listMap) {
+        UsersVo userInfo = UsersVo.builder()
+          .usersPhone(map.get("0"))
+          .usersName(map.get("1"))
+          .build();
+        listUser.add(userInfo);
+      }
+
+      for (UsersVo oneUsersVo : listUser) {
+        Users users = Users.builder()
+          .usersPhone(oneUsersVo.getUsersPhone())
+          .usersName(oneUsersVo.getUsersName())
+          .election(election)
+          .build();
+        usersRepository.save(users);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  boolean fileDeleted = fileInput.delete();
+
+  {
+    if (fileDeleted) {
+      System.out.println("삭제 완료");
+    } else {
+      throw new RuntimeException("삭제 안됨..........");
+    }
+  }
+    return election;
+}
 
   @Override
   public void deleteElection(Long electionId) {

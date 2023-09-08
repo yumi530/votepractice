@@ -1,67 +1,72 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{common/layout.html}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{common/layout.html}">
 <head>
-    <title>관리자 개표</title>
+  <title>관리자 개표</title>
 </head>
 
 <section layout:fragment="content">
-    <div class="container p-3 mb-2 rounded-1">
-        <div class="d-flex justify-content-center">
-            <h3 class="fw-bold">관리자 개표</h3>
-        </div>
+  <div class="container p-3 mb-2 rounded-1">
+    <div class="d-flex justify-content-center">
+      <h3 class="fw-bold">관리자 개표</h3>
     </div>
-    <div class="container p-3 mb-2 d-flex justify-content-center">
-<!--        <form th:action="@{/admin/election/results}" method="post">-->
-            <table class="table">
-                <input type="hidden" th:value="${detail.electionId}"
-                       id="electionId" name="electionId">
-                <input type="hidden" th:value="${detail.electionEndDt}"
-                       id="electionEndDt" name="electionEndDt">
+  </div>
+  <div class="container p-3 mb-2 d-flex justify-content-center">
+    <!--        <form th:action="@{/admin/election/results}" method="post">-->
 
-                <tr>
-                    <td th:text="선거명"></td>
-                    <td th:text="${detail.electionTitle}"></td>
-                </tr>
-                <tr>
-                    <td th:text="이용기관"></td>
-                    <td th:text="${detail.groupName}"></td>
-                </tr>
-                <tr>
-                    <td th:text="선거시작"></td>
-                    <td th:text="${detail.electionStartDt}"></td>
-                </tr>
-                <tr>
-                    <td th:text="선거종료"></td>
-                    <td th:text="${detail.electionEndDt}"></td>
-                </tr>
-                <tr th:each="vote : ${detail.votes}">
-                    <input type="hidden" th:value="${vote.voteId}"
-                           name="voteId">
-                    <td th:text="투표명"></td>
-                    <td th:text="${vote.voteTitle}"></td>
+    <table class="table">
+      <input type="hidden" th:value="${detail.electionId}"
+             id="electionId" name="electionId">
+      <input type="hidden" th:value="${detail.electionEndDt}"
+             id="electionEndDt" name="electionEndDt">
 
-<!--                    <td>-->
-<!--                        <button class="btn btn-secondary" type="submit">개표 및 결과-->
-<!--                            확인-->
-<!--                        </button>-->
-<!--                    </td>-->
-                    <td>
-                    <a class="btn btn-dark" th:href="@{/admin/election/results(voteId=${vote.voteId}, electionId=${vote.election.electionId})}">개표 및 결과 확인</a>
-                    </td>
-                </tr>
-            </table>
-<!--        </form>-->
-    </div>
+      <tr>
+        <td th:text="선거명"></td>
+        <td th:text="${detail.electionTitle}"></td>
+      </tr>
+      <tr>
+        <td th:text="이용기관"></td>
+        <td th:text="${detail.groupName}"></td>
+      </tr>
+      <tr>
+        <td th:text="선거시작"></td>
+        <td th:text="${detail.electionStartDt}"></td>
+      </tr>
+      <tr>
+        <td th:text="선거종료"></td>
+        <td th:text="${detail.electionEndDt}"></td>
+      </tr>
+      <tr th:each="vote : ${detail.votes}">
+        <input type="hidden" th:value="${vote.voteId}"
+               name="voteId">
+        <td th:text="투표명"></td>
+        <td th:text="${vote.voteTitle}"></td>
+        <input type="hidden" th:value="${vote.voteType}" name="voteType">
+        <input type="hidden" th:value="${vote.candidateName}" name="candidateName">
 
-    <form action="/admin/election/delete" method="post">
-        <input type="hidden" name="_method" value="DELETE">
-        <div class="d-flex justify-content-center align-items-center">
-            <button class="btn btn-danger" type="submit">삭제</button>
-        </div>
-        <input type="hidden" th:value="${detail.electionId}" name="electionId">
-    </form>
+        <!--                    <td>-->
+        <!--                        <button class="btn btn-secondary" type="submit">개표 및 결과-->
+        <!--                            확인-->
+        <!--                        </button>-->
+        <!--                    </td>-->
+        <td>
+          <a class="btn btn-dark" th:href="@{/admin/election/results(voteId=${vote.voteId}, electionId=${vote.election.electionId}, voteType=${vote.voteType})}">개표 및 결과 확인</a>
+        </td>
+      </tr>
+
+    </table>
+
+  </div>
+
+  <form action="/admin/election/delete" method="post">
+    <input type="hidden" name="_method" value="DELETE">
     <div class="d-flex justify-content-center align-items-center">
-        <a th:href="@{/admin/election/electionList}">목록으로 돌아가기</a>
+      <button class="btn btn-danger" type="submit">삭제</button>
     </div>
+    <input type="hidden" th:value="${detail.electionId}" name="electionId">
+  </form>
+  <div class="d-flex justify-content-center align-items-center">
+    <a th:href="@{/admin/election/electionList}">목록으로 돌아가기</a>
+  </div>
 </section>
 </html>
