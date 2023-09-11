@@ -1,10 +1,8 @@
 package com.project.voting.domain.vote;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.voting.domain.count.Count;
 import com.project.voting.domain.election.Election;
 import com.project.voting.dto.vote.VoteDto;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@IdClass(VoteId.class)
+@IdClass(ElectionVoteId.class)
 public class Vote {
 
   @Id
@@ -46,12 +44,11 @@ public class Vote {
   @Enumerated(EnumType.STRING)
   private VoteType voteType;
 
-
   @Builder
   public Vote(Long voteId, String voteTitle, String candidateName,
     String candidateInfo, Election election, List<Count> counts, boolean result, double prosRatio,
-    double consRatio, VoteType voteType, double scores, int ranks) {
-    this.voteId = voteId;
+    double consRatio, VoteType voteType, double scores, int ranks,
+    Long electionId) {
     this.voteTitle = voteTitle;
     this.candidateName = candidateName;
     this.candidateInfo = candidateInfo;
@@ -63,11 +60,25 @@ public class Vote {
     this.voteType = voteType;
     this.scores = scores;
     this.ranks = ranks;
+    this.electionId = electionId;
+    this.voteId = voteId;
   }
 
+//  public void setVoteId(Long voteId) {
+//    if (electionVoteId == null) {
+//      electionVoteId = new ElectionVoteId();
+//    }
+//    electionVoteId.setElectionId(electionId);
+//    electionVoteId.setVoteId(voteId);
+//  }
+
+
   public static Vote toEntity(VoteDto voteDto) {
+    Long voteId = voteDto.getElectionVoteId();
+    Long electionId = voteDto.getElectionId();
     return Vote.builder()
-      .voteId(voteDto.getVoteId())
+      .voteId(voteId)
+      .electionId(electionId)
       .voteTitle(voteDto.getVoteTitle())
       .candidateName(voteDto.getCandidateName())
       .candidateInfo(voteDto.getCandidateInfo())

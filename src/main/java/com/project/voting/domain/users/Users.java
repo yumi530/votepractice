@@ -11,9 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Users extends BaseEntity {
-//  @EmbeddedId
-//  private UsersElectionKey id;
+public class Users {
 
     @Id
     private String usersPhone;
@@ -23,17 +21,19 @@ public class Users extends BaseEntity {
     private boolean usersCompleted;
 
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "election_election_id", referencedColumnName = "electionId")
-    private Election election;
+//    @OneToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "election_election_id", referencedColumnName = "electionId")
+//    private Election election;
 
     @Builder
     public Users(String usersPhone, String usersName, Election election, boolean usersCompleted) {
         this.usersPhone = usersPhone;
         this.usersName = usersName;
-        this.election = election;
+//        this.election = election;
         this.usersCompleted = usersCompleted;
 
     }
-
+//    public void setElectionId(Long electionId) {
+//        this.electionId = electionId;
+//    }
 }

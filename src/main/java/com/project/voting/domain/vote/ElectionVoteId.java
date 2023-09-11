@@ -4,11 +4,13 @@ import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class VoteId implements Serializable {
+@Setter
+public class ElectionVoteId implements Serializable {
 
   private Long electionId;
   private Long voteId;
