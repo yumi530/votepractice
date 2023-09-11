@@ -47,7 +47,6 @@ public class ElectionServiceImpl implements ElectionService {
   private final AdminRepository adminRepository;
   private final UsersRepository usersRepository;
   private final CandidateRepository candidateRepository;
-  private EntityManager entityManager;
 //    private final ExcelUtil excelUtil;
 
 
@@ -155,46 +154,79 @@ public class ElectionServiceImpl implements ElectionService {
         }
       } else if ("SCORE".equals(voteType)) {
 
+        Long voteId = generateVoteId(election.getElectionId());
+
         List<String> candidateNames = dto.getCandidateNames();
         List<String> candidateInfos = dto.getCandidateInfos();
+        List<Long> candidateIds = generateCandidateIds(election.getElectionId(), voteId,
+          candidateNames);
 
         if (candidateNames.size() >= 2) {
+
+          Vote vote = Vote.builder()
+            .electionId(election.getElectionId())
+            .voteId(voteId)
+            .voteTitle(dto.getVoteTitle())
+            .voteType(VoteType.SCORE)
+            .build();
+          voteRepository.save(vote);
+
+          List<Candidate> candidates = new ArrayList<>();
 
           for (int j = 0; j < candidateNames.size(); j++) {
             String candidateName = candidateNames.get(j);
             String candidateInfo = candidateInfos.get(j);
-            Vote vote = Vote.builder()
-              .voteTitle(dto.getVoteTitle())
-              .voteType(VoteType.SCORE)
-              .election(election)
+            Long candidateId = candidateIds.get(j);
+
+            Candidate candidate = Candidate.builder()
+              .electionId(election.getElectionId())
+              .voteId(vote.getVoteId())
+              .candidateId(candidateId)
               .candidateName(candidateName)
               .candidateInfo(candidateInfo)
               .build();
-            voteRepository.save(vote);
+            candidates.add(candidate);
           }
+          candidateRepository.saveAll(candidates);
         } else {
           throw new RuntimeException("후보자를 2명 이상 등록해주세요.");
         }
       } else if ("PREFERENCE".equals(voteType)) {
 
+        Long voteId = generateVoteId(election.getElectionId());
+
         List<String> candidateNames = dto.getCandidateNames();
         List<String> candidateInfos = dto.getCandidateInfos();
+        List<Long> candidateIds = generateCandidateIds(election.getElectionId(), voteId,
+          candidateNames);
 
         if (candidateNames.size() >= 3) {
+
+          Vote vote = Vote.builder()
+            .electionId(election.getElectionId())
+            .voteId(voteId)
+            .voteTitle(dto.getVoteTitle())
+            .voteType(VoteType.PREFERENCE)
+            .build();
+          voteRepository.save(vote);
+
+          List<Candidate> candidates = new ArrayList<>();
 
           for (int j = 0; j < candidateNames.size(); j++) {
             String candidateName = candidateNames.get(j);
             String candidateInfo = candidateInfos.get(j);
-            Vote vote = Vote.builder()
-              .voteTitle(dto.getVoteTitle())
-              .voteType(VoteType.PREFERENCE)
-              .election(election)
+            Long candidateId = candidateIds.get(j);
+
+            Candidate candidate = Candidate.builder()
+              .electionId(election.getElectionId())
+              .voteId(vote.getVoteId())
+              .candidateId(candidateId)
               .candidateName(candidateName)
               .candidateInfo(candidateInfo)
               .build();
-
-            voteRepository.save(vote);
+            candidates.add(candidate);
           }
+          candidateRepository.saveAll(candidates);
         }
       } else {
         throw new RuntimeException("후보자를 3명 이상 등록해주세요.");
