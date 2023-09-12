@@ -1,10 +1,12 @@
 package com.project.voting.controller.count;
 
 
+import com.project.voting.domain.candidate.Candidate;
 import com.project.voting.domain.count.Count;
 import com.project.voting.domain.election.Election;
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.dto.users.UsersDto;
+import com.project.voting.service.candidate.CandidateService;
 import com.project.voting.service.count.CountService;
 import com.project.voting.service.election.ElectionService;
 import com.project.voting.service.users.UsersService;
@@ -29,6 +31,7 @@ public class CountController {
     private final UsersService usersService;
     private final CountService countService;
     private final VoteService voteService;
+    private final CandidateService candidateService;
 
     @GetMapping("/count/list")
     public String list(@AuthenticationPrincipal @RequestParam(name = "phoneNumber") String usersPhone, Model model) {
@@ -53,8 +56,10 @@ public class CountController {
 
     @GetMapping("/count/voteCount/{voteId}")
     public String voteCount(Model model, @PathVariable(name = "voteId") Long voteId) {
-        Vote detail = voteService.detail(voteId);
-        model.addAttribute("detailVote", detail);
+        Candidate detailCand = candidateService.detail(voteId);
+        Vote detailVote = voteService.detail(voteId);
+        model.addAttribute("detailCand", detailCand);
+        model.addAttribute("detailVote", detailVote);
         return "users/count/vote-count";
     }
 

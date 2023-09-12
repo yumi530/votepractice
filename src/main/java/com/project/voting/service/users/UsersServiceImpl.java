@@ -20,7 +20,7 @@ public class UsersServiceImpl implements UsersService {
 
   @Override
   public List<UsersDto> detailList(String usersPhone) {
-    List<Users> usersList = usersRepository.findAllById(Collections.singleton(usersPhone));
+    List<Users> usersList = usersRepository.findAllElectionIdByUsersPhone(usersPhone);
     if (usersList.isEmpty()) {
       throw new RuntimeException("로그인을 해주십시오.");
     }

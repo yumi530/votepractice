@@ -15,9 +15,10 @@ import lombok.*;
 public class Users {
 
     @Id
-    private Long electionId;
-    @Id
     private String usersPhone;
+
+    @Id
+    private Long electionId;
 
     private String usersName;
 

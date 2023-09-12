@@ -27,7 +27,7 @@ public class UsersDto {
           .usersPhone(users.getUsersPhone())
           .usersName(users.getUsersName())
           .usersCompleted(users.isUsersCompleted())
-//          .electionId(users.getElectionId())
+          .electionId(users.getElectionId())
           .build();
     }
     public static List<UsersDto> of(List<Users> usersList) {

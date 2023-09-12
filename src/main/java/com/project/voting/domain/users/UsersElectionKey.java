@@ -11,6 +11,6 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @Data
 public class UsersElectionKey implements Serializable {
-    private Long electionId;
     private String usersPhone;
+    private Long electionId;
 }
