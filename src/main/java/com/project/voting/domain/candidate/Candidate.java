@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@IdClass(CandId.class)
+@IdClass(CandIdKey.class)
 public class Candidate {
 
   @Id

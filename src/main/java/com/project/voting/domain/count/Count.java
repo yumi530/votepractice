@@ -29,6 +29,7 @@ public class Count {
     private String candidateName;
 
     @Enumerated(EnumType.STRING)
+
     VoteType voteType;
 
     @Builder

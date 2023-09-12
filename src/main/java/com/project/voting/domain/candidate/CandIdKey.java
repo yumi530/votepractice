@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class CandId implements Serializable {
+public class CandIdKey implements Serializable {
 
   private Long electionId;
   private Long voteId;

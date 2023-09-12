@@ -171,20 +171,20 @@ public class CountServiceImpl implements CountService {
     return ((double) sumScore / countIds);
   }
 
-  private int getRanks(List<Vote> votes, String candidateName) {
-    List<Vote> candidateVotes = votes.stream()
-      .filter(vote -> candidateName.equals(vote.getCandidateName()))
-      .collect(Collectors.toList());
-
-    candidateVotes.sort(Comparator.comparing(Vote::getScores).reversed());
-
-    int rank = 1;
-    for (Vote vote : candidateVotes) {
-      vote.setRanks(rank);
-      rank++;
-    }
-    return rank;
-  }
+//  private int getRanks(List<Vote> votes, String candidateName) {
+//    List<Vote> candidateVotes = votes.stream()
+//      .filter(vote -> candidateName.equals(vote.getCandidateName()))
+//      .collect(Collectors.toList());
+//
+//    candidateVotes.sort(Comparator.comparing(Vote::getScores).reversed());
+//
+//    int rank = 1;
+//    for (Vote vote : candidateVotes) {
+//      vote.setRanks(rank);
+//      rank++;
+//    }
+//    return rank;
+//  }
 
 
 

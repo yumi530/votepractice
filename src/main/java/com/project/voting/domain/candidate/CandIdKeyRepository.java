@@ -1,5 +1,5 @@
 package com.project.voting.domain.candidate;
 
-public interface CandIdRepository {
+public interface CandIdKeyRepository {
 
 }
