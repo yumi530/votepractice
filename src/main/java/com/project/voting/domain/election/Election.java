@@ -1,11 +1,9 @@
 package com.project.voting.domain.election;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.project.voting.domain.BaseEntity;
 import com.project.voting.domain.admin.Admin;
 
-import com.project.voting.domain.vote.ElectionVoteId;
-
+import java.util.ArrayList;
 import javax.persistence.*;
 
 import com.project.voting.domain.vote.Vote;
@@ -39,23 +37,21 @@ public class Election {
   @ManyToOne(fetch = FetchType.LAZY)
   private Admin admin;
 
-  //    @JsonIgnore
-//    @OneToMany(mappedBy = "election")
-//    private List<Vote> votes = new ArrayList<>();
-
-
-
+  @JsonIgnore
+  @OneToMany(fetch = FetchType.LAZY)
+  @JoinColumn(name = "electionId")
+  private List<Vote> votes;
 
   @Builder
   public Election(Long electionId, String electionTitle, String groupName,
-    LocalDateTime electionStartDt, LocalDateTime electionEndDt, List<Vote> votes, Admin admin,
+    LocalDateTime electionStartDt, LocalDateTime electionEndDt, Admin admin, List<Vote> votes,
     String usersPhone) {
     this.electionId = electionId;
     this.electionTitle = electionTitle;
     this.groupName = groupName;
     this.electionStartDt = electionStartDt;
     this.electionEndDt = electionEndDt;
-//        this.votes = votes;
+    this.votes = votes;
     this.admin = admin;
     this.usersPhone = usersPhone;
 

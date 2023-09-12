@@ -2,10 +2,12 @@ package com.project.voting.controller.election;
 
 import com.project.voting.domain.admin.Admin;
 import com.project.voting.domain.election.Election;
+import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.dto.election.ElectionDto;
 import com.project.voting.service.election.ElectionServiceImpl;
 
+import com.project.voting.service.vote.VoteService;
 import java.io.IOException;
 
 import java.util.List;
@@ -30,6 +32,7 @@ import javax.validation.Valid;
 public class ElectionController {
 
     private final ElectionServiceImpl electionService;
+    private final VoteService voteService;
     private final String fileStoragePath = "static/files/";
 
     @RequestMapping("/election/electionList")
@@ -55,7 +58,6 @@ public class ElectionController {
 
     @PostMapping("/election")
     public String addElectionSubmit(ElectionDto electionDto, @AuthenticationPrincipal Admin admin, RedirectAttributes redirectAttributes, @RequestPart MultipartFile file, @RequestParam(name = "voteTypes") List<String> voteTypes) throws IOException {
-
         electionService.addElectionAndVote(electionDto, admin, file, voteTypes);
         redirectAttributes.addFlashAttribute("message", "addElectionAndVote Success");
         return "redirect:/admin/election/electionList";

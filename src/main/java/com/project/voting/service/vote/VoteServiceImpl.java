@@ -41,7 +41,6 @@ public class VoteServiceImpl implements VoteService {
 
   @Override
   public Vote detail(Long voteId) {
-
     Vote vote = voteRepository.findById(voteId).get();
     return vote;
   }

@@ -9,8 +9,6 @@ import com.project.voting.domain.election.Election;
 import com.project.voting.domain.election.ElectionRepository;
 import com.project.voting.domain.users.Users;
 import com.project.voting.domain.users.UsersRepository;
-import com.project.voting.domain.vote.ElectionVoteId;
-import com.project.voting.domain.vote.ElectionVoteIdRepository;
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteRepository;
 import com.project.voting.domain.vote.VoteType;
@@ -27,8 +25,6 @@ import java.util.*;
 import com.project.voting.dto.vote.VoteDto;
 import com.project.voting.vo.users.UsersVo;
 import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
-import javax.persistence.StoredProcedureQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -271,7 +267,7 @@ public class ElectionServiceImpl implements ElectionService {
           Users users = Users.builder()
             .usersPhone(oneUsersVo.getUsersPhone())
             .usersName(oneUsersVo.getUsersName())
-            .election(election)
+            .electionId(election.getElectionId())
             .build();
           usersRepository.save(users);
         }
