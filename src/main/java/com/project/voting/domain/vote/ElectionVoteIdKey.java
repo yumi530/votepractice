@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Setter
-public class ElectionVoteId implements Serializable {
+public class ElectionVoteIdKey implements Serializable {
 
   private Long electionId;
   private Long voteId;

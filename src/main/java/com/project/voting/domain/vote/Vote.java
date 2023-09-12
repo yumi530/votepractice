@@ -1,9 +1,6 @@
 package com.project.voting.domain.vote;
 
-import com.project.voting.domain.count.Count;
-import com.project.voting.domain.election.Election;
 import com.project.voting.dto.vote.VoteDto;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@IdClass(ElectionVoteId.class)
+@IdClass(ElectionVoteIdKey.class)
 public class Vote {
 
   @Id
@@ -24,54 +21,17 @@ public class Vote {
   private Long voteId;
 
   private String voteTitle;
-  private String candidateName;
-  private String candidateInfo;
-  private boolean result;
-  private double prosRatio;
-  private double consRatio;
-  private double scores;
-  private int ranks;
-
-//  @JsonIgnore
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "election_election_id")
-//  private Election election;
-
-//  @JsonIgnore
-//  @OneToMany(mappedBy = "vote")
-//  private List<Count> counts = new ArrayList<>();
 
   @Enumerated(EnumType.STRING)
   private VoteType voteType;
 
   @Builder
-  public Vote(Long voteId, String voteTitle, String candidateName,
-    String candidateInfo, Election election, List<Count> counts, boolean result, double prosRatio,
-    double consRatio, VoteType voteType, double scores, int ranks,
-    Long electionId) {
+  public Vote(Long voteId, String voteTitle, VoteType voteType, Long electionId) {
     this.voteTitle = voteTitle;
-    this.candidateName = candidateName;
-    this.candidateInfo = candidateInfo;
-//    this.election = election;
-//    this.counts = counts;
-    this.result = result;
-    this.prosRatio = prosRatio;
-    this.consRatio = consRatio;
     this.voteType = voteType;
-    this.scores = scores;
-    this.ranks = ranks;
     this.electionId = electionId;
     this.voteId = voteId;
   }
-
-//  public void setVoteId(Long voteId) {
-//    if (electionVoteId == null) {
-//      electionVoteId = new ElectionVoteId();
-//    }
-//    electionVoteId.setElectionId(electionId);
-//    electionVoteId.setVoteId(voteId);
-//  }
-
 
   public static Vote toEntity(VoteDto voteDto) {
     Long voteId = voteDto.getElectionVoteId();
@@ -80,8 +40,6 @@ public class Vote {
       .voteId(voteId)
       .electionId(electionId)
       .voteTitle(voteDto.getVoteTitle())
-      .candidateName(voteDto.getCandidateName())
-      .candidateInfo(voteDto.getCandidateInfo())
       .voteType(VoteType.valueOf(voteDto.getVoteType()))
       .build();
   }
