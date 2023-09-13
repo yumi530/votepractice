@@ -4,14 +4,19 @@ package com.project.voting.controller.count;
 import com.project.voting.domain.candidate.Candidate;
 import com.project.voting.domain.count.Count;
 import com.project.voting.domain.election.Election;
+import com.project.voting.domain.users.Users;
 import com.project.voting.domain.vote.Vote;
+import com.project.voting.domain.vote.VoteType;
 import com.project.voting.dto.users.UsersDto;
+import com.project.voting.dto.voteBox.VoteBoxDto;
 import com.project.voting.service.candidate.CandidateService;
 import com.project.voting.service.count.CountService;
 import com.project.voting.service.election.ElectionService;
 import com.project.voting.service.users.UsersService;
 import com.project.voting.service.vote.VoteService;
+import com.project.voting.service.voteBox.VoteBoxService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.Banner.Mode;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,41 +32,45 @@ import java.util.List;
 @RequestMapping("/users")
 public class CountController {
 
-    private final ElectionService electionService;
-    private final UsersService usersService;
-    private final CountService countService;
-    private final VoteService voteService;
-    private final CandidateService candidateService;
+  private final ElectionService electionService;
+  private final UsersService usersService;
+  private final CountService countService;
+  private final VoteService voteService;
+  private final CandidateService candidateService;
+  private final VoteBoxService voteBoxService;
 
-    @GetMapping("/count/list")
-    public String list(@AuthenticationPrincipal @RequestParam(name = "phoneNumber") String usersPhone, Model model) {
-        List<UsersDto> usersDtoList = usersService.detailList(usersPhone);
-        model.addAttribute("usersDtoList", usersDtoList);
-        return "users/count/list";
-    }
+  @GetMapping("/count/list")
+  public String list(@AuthenticationPrincipal @RequestParam(name = "phoneNumber") String usersPhone,
+    Model model) {
+    List<UsersDto> usersDtoList = usersService.detailList(usersPhone);
+    model.addAttribute("usersDtoList", usersDtoList);
+    return "users/count/list";
+  }
 
-    @GetMapping("/count/detail/{electionId}")
-    public String detail(Model model, @PathVariable Long electionId) {
-        Election detail = electionService.detail(electionId);
-        model.addAttribute("detail", detail);
+  @GetMapping("/count/detail/{electionId}")
+  public String detail(Model model, @PathVariable Long electionId) {
+    Election detail = electionService.detail(electionId);
+    model.addAttribute("detail", detail);
 
-        LocalDateTime currentDate = LocalDateTime.now();
-//    LocalDateTime endDate = LocalDateTime.parse(detail.getElectionEndDt());
-        LocalDateTime endDate = detail.getElectionEndDt();
-        boolean isBefore = currentDate.isBefore(endDate);
-        model.addAttribute("isBefore", isBefore);
+    LocalDateTime currentDate = LocalDateTime.now();
+    LocalDateTime endDate = detail.getElectionEndDt();
+    boolean isBefore = currentDate.isBefore(endDate);
+    model.addAttribute("isBefore", isBefore);
 
-        return "users/count/detail";
-    }
+    return "users/count/detail";
+  }
 
-    @GetMapping("/count/voteCount/{voteId}")
-    public String voteCount(Model model, @PathVariable(name = "voteId") Long voteId) {
-        Candidate detailCand = candidateService.detail(voteId);
-        Vote detailVote = voteService.detail(voteId);
-        model.addAttribute("detailCand", detailCand);
-        model.addAttribute("detailVote", detailVote);
-        return "users/count/vote-count";
-    }
+  @GetMapping("/count/voteCount/{voteId}")
+  public String voteCount(Model model, @PathVariable(name = "voteId") Long voteId) {
+    List<Candidate> detailCand = candidateService.detail(voteId);
+    Vote detailVote = voteService.detail(voteId);
+    Election detailElection = electionService.detailElection(voteId);
+    model.addAttribute("detailCand", detailCand);
+    model.addAttribute("detailVote", detailVote);
+    model.addAttribute("detailElection", detailElection);
+
+    return "users/count/vote-count";
+  }
 
 //    @PostMapping("/save")
 //    public String countSave(@RequestParam Long voteId, @RequestParam boolean isAgreed, HttpSession session, RedirectAttributes redirectAttributes, Model model) {
@@ -75,6 +84,14 @@ public class CountController {
 //        Long electionId = voteService.detail(voteId).getElection().getElectionId();
 //        return "redirect:/users/count/detail/" + electionId;
 //    }
+  @PostMapping("/save")
+  public String saveVote(VoteType voteType, RedirectAttributes redirectAttributes, VoteBoxDto voteBoxDto) {
+    if (voteType == VoteType.PROS_CONS) {
+      voteBoxService.save(voteBoxDto);
+    }
+    redirectAttributes.addFlashAttribute("message", "save success");
+    return "redirect:/users/count/detail/" + voteBoxDto.getElectionId();
+  }
 
 //    @GetMapping("/count/voteResult/{voteId}")
 //    public String voteResult(Model model, @PathVariable Long voteId) {

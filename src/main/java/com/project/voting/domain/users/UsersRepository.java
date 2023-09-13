@@ -9,6 +9,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UsersRepository extends JpaRepository<Users, String> {
   List<Users> findAll();
-  List<Users> findAllElectionIdByUsersPhone(String usersPhone);
 
+  List<Users> findAllByUsersPhone(String usersPhone);
+
+  Optional<Users> findByUsersPhone(String phoneNumber);
+
+//  Optional<Users> findByUsersPhone(String to);
 }

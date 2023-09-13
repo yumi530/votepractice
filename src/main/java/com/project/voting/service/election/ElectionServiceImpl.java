@@ -300,6 +300,12 @@ public class ElectionServiceImpl implements ElectionService {
     return election;
   }
 
+  @Override
+  public Election detailElection(Long voteId) {
+    Election election = electionRepository.findElectionIdByVotes_VoteId(voteId);
+    return election;
+  }
+
   private Long generateVoteId(Long electionId) {
     return electionId * 1000 + System.currentTimeMillis();
   }

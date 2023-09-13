@@ -12,26 +12,54 @@
       </div>
       <div class="card-body">
         <form th:action="@{/users/save}" method="post" class="text-center">
+          <input type="hidden" th:value="${detailVote.electionId}" name="electionId">
           <input type="hidden" th:value="${detailVote.voteId}" name="voteId">
+          <input type="hidden" th:value="${detailElection.users}" name="usersPhone">
+          <input type="hidden" th:value="${detailVote.voteType}" name="voteType">
           <input type="hidden" id="hadVoted" name="hadVoted" value="true">
           <p class="card-text" th:text="'투표명: ' + ${detailVote.voteTitle}"></p>
 
-          <div th:each="candidateName : ${detailCand.candidateName}">
-            <p class="card-text" th:text="'후보자명: ' + ${candidateName}"></p>
+          <div th:each="candidate : ${detailCand}">
+            <input type="hidden" th:value="${candidate.candidateId}" name="candidateId" />
+            <div>
+            <p class="card-text" th:text="'후보자명: ' + ${candidate.candidateName}"></p>
+            <p class="card-text" th:text="'후보자정보: ' + ${candidate.candidateInfo}"></p>
+            </div>
           </div>
-          <div th:each="candidateInfo : ${detailCand.candidateInfo}">
-            <p class="card-text" th:text="'후보자정보: ' + ${candidateInfo}"></p>
-          </div>
+          <div>
           <p class="card-text" th:text="'투표 종류: ' + ${detailVote.voteType}"></p>
+          </div>
 
-          <label for="isAgreed">찬성</label>
-          <input type="radio" id="isAgreed" name="isAgreed" value="true" checked>
-          <label for="isDisagreed">반대</label>
-          <input type="radio" id="isDisagreed" name="isAgreed" value="false">
+          <div th:if="${#strings.equals(detailVote.voteType, 'PROS_CONS')}">
+            <label for="hadChosen">찬성</label>
+            <input type="radio" id="hadChosen" name="hadChosen" value="true"th:value="${detailCand}" checked>
+            <label for="unChosen">반대</label>
+            <input type="radio" id="unChosen" name="hadChosen" value="false" th:value="${detailCand}">
+          </div>
+
+          <div th:if="${#strings.equals(detailVote.voteType, 'CHOICE')}">
+            <div th:each="candidate : ${detailCand}">
+              <label th:text="${candidate.candidateName}"></label>
+              <input type="checkbox" th:id="'candidate-' + ${candidate.candidateId}" name="hadChosen" th:value="${candidate.candidateId}" />
+            </div>
+          </div>
+
+          <div th:if="${#strings.equals(detailVote.voteType, 'SCORE')}">
+            <div th:each="candidate : ${detailCand}">
+              <label th:text="${candidate.candidateName}"></label>
+              <input type="text" th:id="'candidate-' + ${candidate.candidateId}" name="scores"  />
+            </div>
+          </div>
+
+          <div th:if="${#strings.equals(detailVote.voteType, 'PREFERENCE')}">
+            <div th:each="candidate : ${detailCand}">
+              <label th:text="${candidate.candidateName}"></label>
+              <input type="number" th:id="'candidate-' + ${candidate.candidateId}" name="ranks"/>
+            </div>
+          </div>
 
           <button class="btn btn-secondary" type="submit">투표 하기</button>
         </form>
-
 
       </div>
     </div>

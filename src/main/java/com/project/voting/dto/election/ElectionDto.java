@@ -41,7 +41,7 @@ public class ElectionDto {
           .groupName(election.getGroupName())
           .electionStartDt(election.getElectionStartDt())
           .electionEndDt(election.getElectionEndDt())
-          .usersPhone(election.getUsersPhone())
+          .usersPhone(String.valueOf(election.getUsers()))
 //          .votes(election.getVotes())
           .build();
     }

@@ -96,7 +96,7 @@ public class SmsService {
 
     public String sendSms(String to) throws JsonProcessingException, RestClientException, URISyntaxException, InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
         Duration verificationTimeLimit = Duration.ofSeconds(VERIFICATION_TIME_LIMIT);
-        Optional<Users> optionalUsers = usersRepository.findById(to);
+        Optional<Users> optionalUsers = usersRepository.findByUsersPhone(to);
         if (!optionalUsers.isPresent()) {
             throw new RuntimeException("선거인 명부에 존재하지 않습니다.");
         }
@@ -150,7 +150,7 @@ public class SmsService {
         }
         if(cacheService.getValue(key).equals(code));
 
-        usersRepository.findById(phoneNumber).orElse(null);
+        usersRepository.findByUsersPhone(phoneNumber).orElse(null);
 
         cacheService.deleteValues(key);
 

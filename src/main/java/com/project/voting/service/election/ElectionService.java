@@ -2,7 +2,6 @@ package com.project.voting.service.election;
 
 import com.project.voting.domain.admin.Admin;
 import com.project.voting.domain.election.Election;
-import com.project.voting.domain.vote.VoteType;
 import com.project.voting.dto.election.ElectionDto;
 
 import java.io.IOException;
@@ -25,4 +24,5 @@ public interface ElectionService {
   Election detail(Long electionId);
 
 
+  Election detailElection(Long voteId);
 }

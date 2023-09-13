@@ -3,6 +3,7 @@ package com.project.voting.domain.election;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.voting.domain.admin.Admin;
 
+import com.project.voting.domain.users.Users;
 import java.util.ArrayList;
 import javax.persistence.*;
 
@@ -30,8 +31,8 @@ public class Election {
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
   private LocalDateTime electionEndDt;
 
-  @Column
-  private String usersPhone;
+//  @Column
+//  private String usersPhone;
 
   @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
@@ -42,10 +43,15 @@ public class Election {
   @JoinColumn(name = "electionId")
   private List<Vote> votes;
 
+  @JsonIgnore
+  @OneToMany(fetch = FetchType.LAZY)
+  @JoinColumn(name = "electionId")
+  private List<Users> users;
+
+
   @Builder
   public Election(Long electionId, String electionTitle, String groupName,
-    LocalDateTime electionStartDt, LocalDateTime electionEndDt, Admin admin, List<Vote> votes,
-    String usersPhone) {
+    LocalDateTime electionStartDt, LocalDateTime electionEndDt, Admin admin, List<Vote> votes) {
     this.electionId = electionId;
     this.electionTitle = electionTitle;
     this.groupName = groupName;
@@ -53,7 +59,6 @@ public class Election {
     this.electionEndDt = electionEndDt;
     this.votes = votes;
     this.admin = admin;
-    this.usersPhone = usersPhone;
 
   }
 

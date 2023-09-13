@@ -1,15 +1,9 @@
 package com.project.voting.service.vote;
 
-import com.project.voting.domain.count.Count;
-import com.project.voting.domain.count.CountRepository;
-import com.project.voting.domain.election.ElectionRepository;
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteRepository;
-import com.project.voting.dto.count.CountDto;
 import com.project.voting.dto.vote.VoteDto;
 import java.util.List;
-import java.util.Optional;
-import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,5 +35,8 @@ public class VoteServiceImpl implements VoteService {
     Vote vote = voteRepository.findByVoteId(voteId);
     return vote;
   }
+
+
+
 }
 
