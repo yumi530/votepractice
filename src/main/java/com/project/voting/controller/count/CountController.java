@@ -7,6 +7,7 @@ import com.project.voting.domain.election.Election;
 import com.project.voting.domain.users.Users;
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteType;
+import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.dto.users.UsersDto;
 import com.project.voting.dto.voteBox.VoteBoxDto;
 import com.project.voting.service.candidate.CandidateService;
@@ -62,17 +63,23 @@ public class CountController {
 
   @GetMapping("/count/voteCount/{voteId}")
   public String voteCount(Model model, @PathVariable(name = "voteId") Long voteId) {
-    List<Candidate> detailCand = candidateService.detail(voteId);
-    Vote detailVote = voteService.detail(voteId);
     Election detailElection = electionService.detailElection(voteId);
+    Vote detailVote = voteService.detail(voteId);
+    List<Candidate> detailCand = candidateService.detail(voteId);
+    List<VoteBox> detailVoteBox = voteBoxService.detailVoteBox(voteId);
+
+    VoteBoxDto voteBoxDto = new VoteBoxDto();
+    voteBoxDto.setDetailVoteBox(detailVoteBox);
+
     model.addAttribute("detailCand", detailCand);
     model.addAttribute("detailVote", detailVote);
     model.addAttribute("detailElection", detailElection);
+    model.addAttribute("voteBoxDto", voteBoxDto);
 
     return "users/count/vote-count";
   }
 
-//    @PostMapping("/save")
+  //    @PostMapping("/save")
 //    public String countSave(@RequestParam Long voteId, @RequestParam boolean isAgreed, HttpSession session, RedirectAttributes redirectAttributes, Model model) {
 //        if (countService.hadVoted(session, voteId)) {
 //            throw new RuntimeException("이미 투표를 완료하였습니다.");
@@ -85,10 +92,25 @@ public class CountController {
 //        return "redirect:/users/count/detail/" + electionId;
 //    }
   @PostMapping("/save")
-  public String saveVote(VoteType voteType, RedirectAttributes redirectAttributes, VoteBoxDto voteBoxDto) {
-    if (voteType == VoteType.PROS_CONS) {
-      voteBoxService.save(voteBoxDto);
+  public String saveVote(
+    RedirectAttributes redirectAttributes, @RequestParam(required = false) List<Integer> scores, @RequestParam(required = false) List<Integer> ranks, VoteBoxDto voteBoxDto) {
+
+    if (voteBoxDto.getVoteType() == VoteType.SCORE) {
+      if (scores != null && !scores.isEmpty()) {
+        for (Integer score : scores) {
+          voteBoxDto.addScore(score);
+        }
+      }
+    } else if (voteBoxDto.getVoteType() == VoteType.PREFERENCE) {
+      if (ranks != null && !ranks.isEmpty()) {
+        for (Integer rank : ranks) {
+          voteBoxDto.addRank(rank);
+        }
+      }
     }
+
+    voteBoxService.save(voteBoxDto);
+
     redirectAttributes.addFlashAttribute("message", "save success");
     return "redirect:/users/count/detail/" + voteBoxDto.getElectionId();
   }

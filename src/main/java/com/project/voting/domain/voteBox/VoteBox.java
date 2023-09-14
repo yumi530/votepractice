@@ -1,5 +1,6 @@
 package com.project.voting.domain.voteBox;
 
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -7,7 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -32,14 +32,15 @@ public class VoteBox {
 
   private int scores;
 
-  private int ranks;
+  private Integer ranks;
 
   private boolean hadVoted;
 
   private boolean electionCompleted;
 
+
   @Builder
-  public VoteBox(Long electionId, Long voteId, Long candidateId, String usersPhone, boolean hadChosen, int scores, int ranks, boolean hadVoted, boolean electionCompleted) {
+  public VoteBox(Long electionId, Long voteId, Long candidateId, String usersPhone, boolean hadChosen, int scores, Integer ranks, boolean hadVoted, boolean electionCompleted) {
     this.electionId = electionId;
     this.voteId = voteId;
     this.candidateId = candidateId;

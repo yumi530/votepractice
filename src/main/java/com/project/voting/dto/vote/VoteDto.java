@@ -26,4 +26,5 @@ public class VoteDto {
     private List<String> candidateInfos;
     private List<Long> candidateIds;
 
+
 }

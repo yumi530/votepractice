@@ -7,4 +7,6 @@ import java.util.List;
 public interface VoteBoxService {
 
   List<VoteBox> save(VoteBoxDto voteBoxDto);
+
+  List<VoteBox> detailVoteBox(Long voteId);
 }
