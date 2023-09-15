@@ -25,7 +25,8 @@
         <th scope="row">1</th>
         <td>
           <a th:text="${users.electionId}"
-             th:href="@{/users/count/detail/{electionId}(electionId=${users.electionId})}">
+             th:href="@{/users/count/detail/{electionId}(electionId=${users.electionId}, usersPhone=${users.usersPhone})}">
+
           </a>
         </td>
         <td th:text="${users.usersName}"></td>

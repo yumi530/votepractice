@@ -271,6 +271,8 @@ public class ElectionServiceImpl implements ElectionService {
             .build();
           usersRepository.save(users);
         }
+
+
       } catch (IOException e) {
         e.printStackTrace();
       }

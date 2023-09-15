@@ -11,6 +11,8 @@ public interface ElectionRepository extends JpaRepository<Election, Long> {
 
   Election findElectionIdByVotes_VoteId(Long voteId);
 
+  Election findUsers_UsersPhoneByElectionId(Long electionId);
+
 //  List<Election> findAllByUsersPhone(Users usersPhones);
 
 

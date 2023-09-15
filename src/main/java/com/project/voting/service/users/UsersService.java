@@ -12,4 +12,6 @@ public interface UsersService {
   List<UsersDto> detailList(String usersPhone);
 
     Users completed(String usersPhone);
+
+
 }

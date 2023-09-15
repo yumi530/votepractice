@@ -19,41 +19,70 @@ public class VoteBoxServiceImpl implements VoteBoxService {
   private final CandidateRepository candidateRepository;
 
   @Override
-  public List<VoteBox> save(VoteBoxDto voteBoxDto) {
+  public List<VoteBox> save(VoteBoxDto voteBoxDto, String usersPhone) {
 
-    List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(voteBoxDto.getVoteId());
+    List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
+      voteBoxDto.getVoteId());
 
-        if (candidateList == null) {
+    if (candidateList == null) {
       throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
     }
 
     List<VoteBox> voteBoxes = new ArrayList<>();
 
-    if (voteBoxDto.getVoteType() == VoteType.PROS_CONS || voteBoxDto.getVoteType() == VoteType.CHOICE) {
+    if (voteBoxDto.getVoteType() == VoteType.PROS_CONS) {
 
       if (candidateList != null && !candidateList.isEmpty()) {
-        for (Candidate c : candidateList) {
-          VoteBox voteBox = toVoteBox(voteBoxDto, c);
+        for (int i = 0; i < candidateList.size(); i++) {
+          Candidate c = candidateList.get(i);
+
+          Integer rank = 0;
+          Integer score = 0;
+
+          VoteBox voteBox = toVoteBox(voteBoxDto, c, rank, score, usersPhone);
           voteBoxes.add(voteBox);
         }
       }
-    }
-    else if (voteBoxDto.getVoteType() == VoteType.SCORE) {
+    } else if (voteBoxDto.getVoteType() == VoteType.CHOICE) {
+      List<Boolean> choiceList = voteBoxDto.getChoiceList();
+      if (choiceList != null && !choiceList.isEmpty()) {
+        for (int i = 0; i < candidateList.size(); i++) {
+          Candidate c = candidateList.get(i);
+          Boolean hadChosen = choiceList.get(i);
+          Integer rank = 0;
+          Integer score = 0;
+
+          VoteBox voteBox = toVoteBoxChoice(voteBoxDto, c, rank, score, hadChosen);
+          voteBoxes.add(voteBox);
+        }
+      }
+    } else if (voteBoxDto.getVoteType() == VoteType.SCORE) {
+      List<Integer> scoresList = voteBoxDto.getScoreList();
+
       if (candidateList != null && !candidateList.isEmpty()) {
-        List<Integer> scoresList = voteBoxDto.getScores();
+
         for (int i = 0; i < candidateList.size(); i++) {
           Integer score = scoresList.get(i);
           Candidate c = candidateList.get(i);
-          VoteBox voteBox = toVoteBoxScores(voteBoxDto, c, score);
+
+          Integer rank = 0;
+
+          VoteBox voteBox = toVoteBoxScores(voteBoxDto, c, score, rank);
           voteBoxes.add(voteBox);
         }
       }
-    }
+    } else if (voteBoxDto.getVoteType() == VoteType.PREFERENCE) {
+      List<Integer> ranksList = voteBoxDto.getRankList();
 
-    else if (voteBoxDto.getVoteType() == VoteType.PREFERENCE){
       if (candidateList != null && !candidateList.isEmpty()) {
-        for (Candidate c : candidateList) {
-          VoteBox voteBox = toVoteBoxRank(voteBoxDto, c);
+
+        for (int i = 0; i < candidateList.size(); i++) {
+          Integer rank = ranksList.get(i);
+          Candidate c = candidateList.get(i);
+
+          Integer score = 0;
+
+          VoteBox voteBox = toVoteBoxRank(voteBoxDto, c, score, rank);
           voteBoxes.add(voteBox);
         }
       }
@@ -61,48 +90,71 @@ public class VoteBoxServiceImpl implements VoteBoxService {
     return voteBoxRepository.saveAll(voteBoxes);
   }
 
+
   @Override
   public List<VoteBox> detailVoteBox(Long voteId) {
     return voteBoxRepository.findAllByVoteId(voteId);
   }
 
-  private VoteBox toVoteBox(VoteBoxDto voteBoxDto, Candidate candidate) {
+  private VoteBox toVoteBox(VoteBoxDto voteBoxDto, Candidate candidate, Integer rank, Integer score, String usersPhone) {
 
     VoteBox voteBox = new VoteBox();
     voteBox.setVoteId(voteBoxDto.getVoteId());
-    voteBox.setHadChosen(voteBoxDto.isHadChosen());
+    voteBox.setHadChosen(voteBox.isHadChosen());
     voteBox.setUsersPhone(voteBoxDto.getUsersPhone());
-    voteBox.setHadVoted(voteBox.isHadVoted());
+    voteBox.setHadVoted(true);
+    voteBox.setElectionId(candidate.getElectionId());
+    voteBox.setCandidateId(candidate.getCandidateId());
+    voteBox.setRanks(rank);
+    voteBox.setScores(score);
+    voteBox.setUsersPhone(usersPhone);
+
+    return voteBox;
+  }
+
+  private VoteBox toVoteBoxChoice(VoteBoxDto voteBoxDto, Candidate candidate, Integer rank, Integer score, Boolean hadChosen) {
+
+    VoteBox voteBox = new VoteBox();
+    voteBox.setVoteId(voteBoxDto.getVoteId());
+    voteBox.setUsersPhone(voteBoxDto.getUsersPhone());
+    voteBox.setHadVoted(true);
+    voteBox.setHadChosen(hadChosen);
+    voteBox.setElectionId(candidate.getElectionId());
+    voteBox.setCandidateId(candidate.getCandidateId());
+    voteBox.setRanks(rank);
+    voteBox.setScores(score);
+
+    return voteBox;
+  }
+
+  private VoteBox toVoteBoxRank(VoteBoxDto voteBoxDto, Candidate candidate, Integer score,
+    Integer rank) {
+
+    VoteBox voteBox = new VoteBox();
+    voteBox.setVoteId(voteBoxDto.getVoteId());
+    voteBox.setUsersPhone(voteBoxDto.getUsersPhone());
+    voteBox.setHadVoted(true);
+    voteBox.setElectionId(candidate.getElectionId());
+    voteBox.setCandidateId(candidate.getCandidateId());
+    voteBox.setRanks(rank);
+    voteBox.setScores(score);
+
+    return voteBox;
+  }
+
+  private VoteBox toVoteBoxScores(VoteBoxDto voteBoxDto, Candidate candidate, Integer score,
+    Integer rank) {
+
+    VoteBox voteBox = new VoteBox();
+    voteBox.setVoteId(voteBoxDto.getVoteId());
+    voteBox.setScores(score);
+    voteBox.setRanks(rank);
+    voteBox.setUsersPhone(voteBoxDto.getUsersPhone());
+    voteBox.setHadVoted(voteBoxDto.isHadVoted());
     voteBox.setElectionId(candidate.getElectionId());
     voteBox.setCandidateId(candidate.getCandidateId());
 
     return voteBox;
   }
 
-  private VoteBox toVoteBoxRank(VoteBoxDto voteBoxDto, Candidate candidate) {
-
-    VoteBox voteBox = new VoteBox();
-    voteBox.setVoteId(voteBoxDto.getVoteId());
-    voteBox.setUsersPhone(voteBoxDto.getUsersPhone());
-    voteBox.setHadVoted(voteBoxDto.isHadVoted());
-    voteBox.setElectionId(candidate.getElectionId());
-    voteBox.setCandidateId(candidate.getCandidateId());
-    voteBox.setRanks(voteBoxDto.getRanks());
-
-
-      return voteBox;
-  }
-
-  private VoteBox toVoteBoxScores(VoteBoxDto voteBoxDto, Candidate candidate, VoteBox score) {
-
-    VoteBox voteBox = new VoteBox();
-    voteBox.setVoteId(voteBoxDto.getVoteId());
-    voteBox.setScores(voteBoxDto.getScores());
-    voteBox.setUsersPhone(voteBoxDto.getUsersPhone());
-    voteBox.setHadVoted(voteBoxDto.isHadVoted());
-    voteBox.setElectionId(candidate.getElectionId());
-    voteBox.setCandidateId(candidate.getCandidateId());
-
-    return voteBox;
-  }
 }

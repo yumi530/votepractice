@@ -1,10 +1,12 @@
 package com.project.voting.domain.users;
 
-import com.project.voting.domain.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.project.voting.domain.candidate.Candidate;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
 
-import com.project.voting.domain.election.Election;
 import lombok.*;
 
 @Entity
@@ -24,12 +26,27 @@ public class Users {
 
     private boolean usersCompleted;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "users")
+    private List<Candidate> candidates;
+
+//    public void addCandidate(Candidate candidate) {
+//        if (candidateId == null) {
+//            candidateId = new ArrayList<>();
+//        }
+//        candidateId.add(candidate);
+//        candidate.setUsers(this);
+//    }
+
+
+
     @Builder
-    public Users(String usersPhone, String usersName, Long electionId, boolean usersCompleted) {
+    public Users(String usersPhone, String usersName, Long electionId, boolean usersCompleted, List<Candidate> candidates) {
         this.usersPhone = usersPhone;
         this.usersName = usersName;
         this.electionId = electionId;
         this.usersCompleted = usersCompleted;
+        this.candidates = candidates;
 
     }
 }
