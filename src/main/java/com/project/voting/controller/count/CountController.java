@@ -65,7 +65,7 @@ public class CountController {
   }
 
   @GetMapping("/count/voteCount/{voteId}")
-  public String voteCount(Model model, @PathVariable(name = "voteId") Long voteId, @RequestParam String usersPhone) {
+  public String voteCount(Model model, @PathVariable(name = "voteId") Long voteId, @RequestParam(name = "usersPhone") String usersPhone) {
     Election detailElection = electionService.detailElection(voteId);
     Vote detailVote = voteService.detail(voteId);
     List<Candidate> detailCand = candidateService.detail(voteId);

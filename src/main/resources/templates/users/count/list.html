@@ -28,6 +28,7 @@
              th:href="@{/users/count/detail/{electionId}(electionId=${users.electionId}, usersPhone=${users.usersPhone})}">
 
           </a>
+          <input type="hidden" th:value="${users.usersPhone}" name="usersPhone">
         </td>
         <td th:text="${users.usersName}"></td>
         <td th:text="${users.usersPhone}"></td>

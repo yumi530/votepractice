@@ -11,6 +11,8 @@
     <div class="d-flex justify-content-center">
 
       <form th:action="@{/users/logout}" method="post">
+        <input type="hidden" th:value="${usersPhone}" name="usersPhone">
+
 
         <table class="table">
           <tr>
@@ -33,7 +35,7 @@
           <tr th:each="vote : ${detail.votes}">
 
             <input type="hidden" th:value="${vote.voteId}" name="voteId">
-            <input type="hidden" th:value="${usersPhone}" name="usersPhone">
+
 
             <td>투표명</td>
             <td>
@@ -45,12 +47,12 @@
             <td>
               <button class="btn btn-secondary" type="button"
                       th:if="${isBefore}"
-                      th:onclick="'location.href=\''+ @{/users/count/voteCount/{voteId}(voteId=${vote.voteId})} + '\''">
+                      th:onclick="'location.href=\'' + @{/users/count/voteCount/{voteId}(voteId=${vote.voteId}, usersPhone=${usersPhone})} + '\''">
                 투표하기
               </button>
               <button class="btn btn-secondary" type="button"
                       th:unless="${isBefore}"
-                      th:onclick="'location.href=\''+ @{/users/count/voteResult/{voteId}(voteId=${vote.voteId})} + '\''">
+                      th:onclick="'location.href=\'' + @{/users/count/voteCount/{voteId}(voteId=${vote.voteId}, usersPhone=${usersPhone})} + '\''">
                 개표 확인
               </button>
             </td>
