@@ -18,6 +18,53 @@ public class VoteBoxServiceImpl implements VoteBoxService {
   private final VoteBoxRepository voteBoxRepository;
   private final CandidateRepository candidateRepository;
 
+//  @Override
+//  public List<VoteBox> save(VoteBoxDto voteBoxDto, String usersPhone) {
+//    List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(voteBoxDto.getVoteId());
+//
+//    if (candidateList == null) {
+//      throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
+//    }
+//
+//    List<VoteBox> voteBoxes = new ArrayList<>();
+//
+//    if (voteBoxDto.getVoteType() == VoteType.PROS_CONS) {
+//      saveProsConsVoteBoxes(voteBoxDto, candidateList, voteBoxes, usersPhone);
+//    } else if (voteBoxDto.getVoteType() == VoteType.CHOICE) {
+//      saveChoiceVoteBoxes(voteBoxDto, candidateList, voteBoxes);
+//    } else if (voteBoxDto.getVoteType() == VoteType.SCORE) {
+//      saveScoreVoteBoxes(voteBoxDto, candidateList, voteBoxes);
+//    } else if (voteBoxDto.getVoteType() == VoteType.PREFERENCE) {
+//      savePreferenceVoteBoxes(voteBoxDto, candidateList, voteBoxes);
+//    }
+//
+//    return voteBoxRepository.saveAll(voteBoxes);
+//  }
+//
+//  private void saveProsConsVoteBoxes(VoteBoxDto voteBoxDto, List<Candidate> candidateList, List<VoteBox> voteBoxes, String usersPhone) {
+//    for (Candidate c : candidateList) {
+//      Integer rank = 0;
+//      Integer score = 0;
+//
+//      VoteBox voteBox = toVoteBox(voteBoxDto, c, rank, score, usersPhone);
+//      voteBoxes.add(voteBox);
+//    }
+//  }
+//
+//  private void saveChoiceVoteBoxes(VoteBoxDto voteBoxDto, List<Candidate> candidateList, List<VoteBox> voteBoxes) {
+//    List<Boolean> choiceList = voteBoxDto.getChoiceList();
+//
+//    for (int i = 0; i < candidateList.size(); i++) {
+//      Candidate c = candidateList.get(i);
+//      Boolean hadChosen = choiceList.get(i);
+//      Integer rank = 0;
+//      Integer score = 0;
+//
+//      VoteBox voteBox = toVoteBoxChoice(voteBoxDto, c, rank, score, hadChosen);
+//      voteBoxes.add(voteBox);
+//    }
+//  }
+
   @Override
   public List<VoteBox> save(VoteBoxDto voteBoxDto, String usersPhone) {
 
@@ -52,7 +99,7 @@ public class VoteBoxServiceImpl implements VoteBoxService {
           Integer rank = 0;
           Integer score = 0;
 
-          VoteBox voteBox = toVoteBoxChoice(voteBoxDto, c, rank, score, hadChosen);
+          VoteBox voteBox = toVoteBoxChoice(voteBoxDto, c, hadChosen, rank, score);
           voteBoxes.add(voteBox);
         }
       }
@@ -90,7 +137,6 @@ public class VoteBoxServiceImpl implements VoteBoxService {
     return voteBoxRepository.saveAll(voteBoxes);
   }
 
-
   @Override
   public List<VoteBox> detailVoteBox(Long voteId) {
     return voteBoxRepository.findAllByVoteId(voteId);
@@ -107,12 +153,11 @@ public class VoteBoxServiceImpl implements VoteBoxService {
     voteBox.setCandidateId(candidate.getCandidateId());
     voteBox.setRanks(rank);
     voteBox.setScores(score);
-    voteBox.setUsersPhone(usersPhone);
 
     return voteBox;
   }
 
-  private VoteBox toVoteBoxChoice(VoteBoxDto voteBoxDto, Candidate candidate, Integer rank, Integer score, Boolean hadChosen) {
+  private VoteBox toVoteBoxChoice(VoteBoxDto voteBoxDto, Candidate candidate, Boolean hadChosen, Integer rank, Integer score) {
 
     VoteBox voteBox = new VoteBox();
     voteBox.setVoteId(voteBoxDto.getVoteId());
@@ -123,9 +168,9 @@ public class VoteBoxServiceImpl implements VoteBoxService {
     voteBox.setCandidateId(candidate.getCandidateId());
     voteBox.setRanks(rank);
     voteBox.setScores(score);
-
     return voteBox;
   }
+
 
   private VoteBox toVoteBoxRank(VoteBoxDto voteBoxDto, Candidate candidate, Integer score,
     Integer rank) {
