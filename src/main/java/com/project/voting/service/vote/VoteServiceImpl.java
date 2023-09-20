@@ -2,6 +2,7 @@ package com.project.voting.service.vote;
 
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteRepository;
+import com.project.voting.domain.voteBox.VoteBoxRepository;
 import com.project.voting.dto.vote.VoteDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class VoteServiceImpl implements VoteService {
 
   private final VoteRepository voteRepository;
+  private final VoteBoxRepository voteBoxRepository;
 
   @Override
   public void deleteVote(Long voteId) {

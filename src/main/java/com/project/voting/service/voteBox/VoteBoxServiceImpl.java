@@ -6,6 +6,7 @@ import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.domain.voteBox.VoteBoxRepository;
 import com.project.voting.dto.voteBox.VoteBoxDto;
 import java.util.ArrayList;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -20,125 +21,157 @@ public class VoteBoxServiceImpl implements VoteBoxService {
   @Override
   public List<VoteBox> saveProsCons(VoteBoxDto voteBoxDto, String usersPhone) {
 
-    List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
-      voteBoxDto.getVoteId());
-
-    if (candidateList == null) {
-      throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
+    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateId(
+      voteBoxDto.getCandidateId());
+    if (optionalVoteBox.isPresent()) {
+      throw new RuntimeException("중복 투표 불가 !");
     }
+     else {
+      List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
+        voteBoxDto.getVoteId());
 
-    List<VoteBox> voteBoxes = new ArrayList<>();
-
-    if (candidateList != null && !candidateList.isEmpty()) {
-      for (int i = 0; i < candidateList.size(); i++) {
-        Candidate c = candidateList.get(i);
-
-        Integer rank = 0;
-        Integer score = 0;
-        String choice = "0";
-
-        VoteBox voteBox = toVoteBox(voteBoxDto, c, rank, score, usersPhone, choice);
-        voteBoxes.add(voteBox);
+      if (candidateList == null) {
+        throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
       }
+
+      List<VoteBox> voteBoxes = new ArrayList<>();
+
+      if (candidateList != null && !candidateList.isEmpty()) {
+        for (int i = 0; i < candidateList.size(); i++) {
+          Candidate c = candidateList.get(i);
+
+          Integer rank = 0;
+          Integer score = 0;
+          String choice = "0";
+
+          VoteBox voteBox = toVoteBox(voteBoxDto, c, rank, score, usersPhone, choice);
+          voteBoxes.add(voteBox);
+        }
+      }
+      return voteBoxRepository.saveAll(voteBoxes);
     }
-    return voteBoxRepository.saveAll(voteBoxes);
   }
 
 
   @Override
   public VoteBox saveChoice(VoteBoxDto voteBoxDto, String usersPhone, String choices) {
 
-    List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
-      voteBoxDto.getVoteId());
-
-    if (candidateList == null) {
-      throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
-    }
-
-    List<VoteBox> voteBoxes = new ArrayList<>();
-
-    List<Candidate> candidate = candidateRepository.findAllByCandidateId(
+    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateId(
       voteBoxDto.getCandidateId());
+    if (optionalVoteBox.isPresent()) {
+      throw new RuntimeException("중복 투표 불가 !");
+    } else {
+      List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
+        voteBoxDto.getVoteId());
 
-    if (candidate != null && candidateList != null) {
-
-      for (int i = 0; i < candidateList.size(); i++) {
-        Candidate c = candidateList.get(i);
-
-        Integer rank = 0;
-        Integer score = 0;
-        String choice = "0";
-
-        VoteBox voteBox = toVoteBoxChoice(voteBoxDto, c, rank, score, usersPhone, choice);
-        voteBoxes.add(voteBox);
+      if (candidateList == null) {
+        throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
       }
-    }
-    voteBoxRepository.saveAllAndFlush(voteBoxes);
 
-    VoteBox candidateVoteBox = voteBoxRepository.findByCandidateId(Long.valueOf(choices));
-    candidateVoteBox.setChoices("1");
-    voteBoxRepository.save(candidateVoteBox);
-    return candidateVoteBox;
+      List<VoteBox> voteBoxes = new ArrayList<>();
+
+      List<Candidate> candidate = candidateRepository.findAllByCandidateId(
+        voteBoxDto.getCandidateId());
+
+      if (candidate != null && candidateList != null) {
+
+        for (int i = 0; i < candidateList.size(); i++) {
+          Candidate c = candidateList.get(i);
+
+          Integer rank = 0;
+          Integer score = 0;
+          String choice = "0";
+
+          VoteBox voteBox = toVoteBoxChoice(voteBoxDto, c, rank, score, usersPhone, choice);
+          voteBoxes.add(voteBox);
+        }
+      }
+      voteBoxRepository.saveAll(voteBoxes);
+
+      Optional<VoteBox> optionalCandVoteBox = voteBoxRepository.findByCandidateId(
+        Long.valueOf(choices));
+      if (optionalCandVoteBox.isEmpty()) {
+        throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
+      }
+      VoteBox candidateVoteBox = optionalVoteBox.get();
+      candidateVoteBox.setChoices("1");
+      voteBoxRepository.save(candidateVoteBox);
+      return candidateVoteBox;
+    }
   }
 
   @Override
   public List<VoteBox> saveScore(VoteBoxDto voteBoxDto, String usersPhone) {
 
-    List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
-      voteBoxDto.getVoteId());
+    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateId(
+      voteBoxDto.getCandidateId());
+    if (optionalVoteBox.isPresent()) {
+      throw new RuntimeException("중복 투표 불가 !");
+    } else {
 
-    if (candidateList == null) {
-      throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
-    }
+      List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
+        voteBoxDto.getVoteId());
 
-    List<VoteBox> voteBoxes = new ArrayList<>();
-
-    List<Integer> scoresList = voteBoxDto.getScoreList();
-
-    if (candidateList != null && !candidateList.isEmpty()) {
-
-      for (int i = 0; i < candidateList.size(); i++) {
-        Integer score = scoresList.get(i);
-        Candidate c = candidateList.get(i);
-
-        Integer rank = 0;
-        String choice = "0";
-
-        VoteBox voteBox = toVoteBoxScores(voteBoxDto, c, score, rank, choice);
-        voteBoxes.add(voteBox);
+      if (candidateList == null) {
+        throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
       }
+
+      List<VoteBox> voteBoxes = new ArrayList<>();
+
+      List<Integer> scoresList = voteBoxDto.getScoreList();
+
+      if (candidateList != null && !candidateList.isEmpty()) {
+
+        for (int i = 0; i < candidateList.size(); i++) {
+          Integer score = scoresList.get(i);
+          Candidate c = candidateList.get(i);
+
+          Integer rank = 0;
+          String choice = "0";
+
+          VoteBox voteBox = toVoteBoxScores(voteBoxDto, c, score, rank, choice);
+          voteBoxes.add(voteBox);
+        }
+      }
+      return voteBoxRepository.saveAll(voteBoxes);
     }
-    return voteBoxRepository.saveAll(voteBoxes);
   }
 
   @Override
   public List<VoteBox> savePrefer(VoteBoxDto voteBoxDto, String usersPhone) {
 
-    List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
-      voteBoxDto.getVoteId());
+    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateId(
+      voteBoxDto.getCandidateId());
+    if (optionalVoteBox.isPresent()) {
+      throw new RuntimeException("중복 투표 불가 !");
+    } else {
 
-    if (candidateList == null) {
-      throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
-    }
+      List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
+        voteBoxDto.getVoteId());
 
-    List<VoteBox> voteBoxes = new ArrayList<>();
-
-    List<Integer> ranksList = voteBoxDto.getRankList();
-
-    if (candidateList != null && !candidateList.isEmpty()) {
-
-      for (int i = 0; i < candidateList.size(); i++) {
-        Integer rank = ranksList.get(i);
-        Candidate c = candidateList.get(i);
-
-        Integer score = 0;
-        String choice = "0";
-
-        VoteBox voteBox = toVoteBoxRank(voteBoxDto, c, score, rank, choice);
-        voteBoxes.add(voteBox);
+      if (candidateList == null) {
+        throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
       }
+
+      List<VoteBox> voteBoxes = new ArrayList<>();
+
+      List<Integer> ranksList = voteBoxDto.getRankList();
+
+      if (candidateList != null && !candidateList.isEmpty()) {
+
+        for (int i = 0; i < candidateList.size(); i++) {
+          Integer rank = ranksList.get(i);
+          Candidate c = candidateList.get(i);
+
+          Integer score = 0;
+          String choice = "0";
+
+          VoteBox voteBox = toVoteBoxRank(voteBoxDto, c, score, rank, choice);
+          voteBoxes.add(voteBox);
+        }
+      }
+      return voteBoxRepository.saveAll(voteBoxes);
     }
-    return voteBoxRepository.saveAll(voteBoxes);
   }
 
 
