@@ -21,12 +21,11 @@ public class VoteBoxServiceImpl implements VoteBoxService {
   @Override
   public List<VoteBox> saveProsCons(VoteBoxDto voteBoxDto, String usersPhone) {
 
-    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateId(
-      voteBoxDto.getCandidateId());
+    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
+      voteBoxDto.getCandidateId(), usersPhone);
     if (optionalVoteBox.isPresent()) {
       throw new RuntimeException("중복 투표 불가 !");
-    }
-     else {
+    } else {
       List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
         voteBoxDto.getVoteId());
 
@@ -56,8 +55,8 @@ public class VoteBoxServiceImpl implements VoteBoxService {
   @Override
   public VoteBox saveChoice(VoteBoxDto voteBoxDto, String usersPhone, String choices) {
 
-    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateId(
-      voteBoxDto.getCandidateId());
+    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
+      voteBoxDto.getCandidateId(), usersPhone);
     if (optionalVoteBox.isPresent()) {
       throw new RuntimeException("중복 투표 불가 !");
     } else {
@@ -88,12 +87,7 @@ public class VoteBoxServiceImpl implements VoteBoxService {
       }
       voteBoxRepository.saveAll(voteBoxes);
 
-      Optional<VoteBox> optionalCandVoteBox = voteBoxRepository.findByCandidateId(
-        Long.valueOf(choices));
-      if (optionalCandVoteBox.isEmpty()) {
-        throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
-      }
-      VoteBox candidateVoteBox = optionalVoteBox.get();
+      VoteBox candidateVoteBox = voteBoxRepository.findByCandidateId(Long.valueOf(choices));
       candidateVoteBox.setChoices("1");
       voteBoxRepository.save(candidateVoteBox);
       return candidateVoteBox;
@@ -103,8 +97,8 @@ public class VoteBoxServiceImpl implements VoteBoxService {
   @Override
   public List<VoteBox> saveScore(VoteBoxDto voteBoxDto, String usersPhone) {
 
-    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateId(
-      voteBoxDto.getCandidateId());
+    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
+      voteBoxDto.getCandidateId(), usersPhone);
     if (optionalVoteBox.isPresent()) {
       throw new RuntimeException("중복 투표 불가 !");
     } else {
@@ -140,8 +134,8 @@ public class VoteBoxServiceImpl implements VoteBoxService {
   @Override
   public List<VoteBox> savePrefer(VoteBoxDto voteBoxDto, String usersPhone) {
 
-    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateId(
-      voteBoxDto.getCandidateId());
+    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
+      voteBoxDto.getCandidateId(), usersPhone);
     if (optionalVoteBox.isPresent()) {
       throw new RuntimeException("중복 투표 불가 !");
     } else {

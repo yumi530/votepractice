@@ -1,11 +1,8 @@
 package com.project.voting.controller.count;
 
 
-import ch.qos.logback.core.joran.conditional.IfAction;
 import com.project.voting.domain.candidate.Candidate;
-import com.project.voting.domain.count.Count;
 import com.project.voting.domain.election.Election;
-import com.project.voting.domain.users.Users;
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
@@ -17,18 +14,11 @@ import com.project.voting.service.election.ElectionService;
 import com.project.voting.service.users.UsersService;
 import com.project.voting.service.vote.VoteService;
 import com.project.voting.service.voteBox.VoteBoxService;
-import java.awt.datatransfer.DataFlavor;
-import java.util.ArrayList;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.Banner.Mode;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,7 +29,6 @@ public class CountController {
 
   private final ElectionService electionService;
   private final UsersService usersService;
-  private final CountService countService;
   private final VoteService voteService;
   private final CandidateService candidateService;
   private final VoteBoxService voteBoxService;
@@ -87,16 +76,14 @@ public class CountController {
   }
 
   @PostMapping("/save")
-  public String saveVote(
-    @RequestParam(required = false) List<Integer> scores,
+  public String saveVote(@RequestParam(required = false) List<Integer> scores,
     @RequestParam(required = false) List<Integer> ranks,
     @RequestParam(required = false) String choices, VoteBoxDto voteBoxDto,
     @RequestParam(name = "usersPhone") String usersPhone) {
 
     if (voteBoxDto.getVoteType() == VoteType.PROS_CONS) {
       voteBoxService.saveProsCons(voteBoxDto, usersPhone);
-      }
-    else if (voteBoxDto.getVoteType() == VoteType.CHOICE) {
+    } else if (voteBoxDto.getVoteType() == VoteType.CHOICE) {
       voteBoxService.saveChoice(voteBoxDto, usersPhone, choices);
     }
 
