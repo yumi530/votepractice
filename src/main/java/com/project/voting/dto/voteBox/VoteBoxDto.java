@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class VoteBoxDto {
 
-  private boolean hadChosen;
+  private boolean isAgreed;
   private Integer scores;
   private Integer ranks;
   private String choices;

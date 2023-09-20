@@ -179,7 +179,7 @@ public class VoteBoxServiceImpl implements VoteBoxService {
 
     VoteBox voteBox = new VoteBox();
     voteBox.setVoteId(voteBoxDto.getVoteId());
-    voteBox.setHadChosen(voteBoxDto.isHadChosen());
+    voteBox.setAgreed(voteBoxDto.isAgreed());
     voteBox.setUsersPhone(usersPhone);
     voteBox.setHadVoted(true);
     voteBox.setElectionId(candidate.getElectionId());

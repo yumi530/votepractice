@@ -9,10 +9,21 @@ public interface VoteBoxRepository extends JpaRepository<VoteBox, Long> {
 
   List<VoteBox> findAllByVoteId(Long voteId);
 
-  List<VoteBox> findAllScoresByCandidateId(Long candidateId);
-
   VoteBox findByCandidateId(Long candidateId);
 
 
   Optional<VoteBox> findByCandidateIdAndUsersPhone(Long candidateId, String usersPhone);
+
+
+  Long countAllByVoteId(Long voteId);
+
+  Long countByIsAgreedTrueAndCandidateId(Long candidateId);
+
+  Long countByIsAgreedFalseAndCandidateId(Long candidateId);
+
+  Integer sumChoicesByCandidateId(Long candidateId);
+
+  Integer sumScoresByCandidateId(Long candidateId);
+
+  Integer sumRanksByCandidateId(Long candidateId);
 }
