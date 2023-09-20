@@ -16,6 +16,7 @@ public class VoteBoxDto {
   private boolean hadChosen;
   private Integer scores;
   private Integer ranks;
+  private String choices;
   private Long voteId;
   private String usersPhone;
   private boolean hadVoted;
@@ -26,7 +27,7 @@ public class VoteBoxDto {
   private List<VoteBox> detailVoteBox;
   private List<Integer> scoreList = new ArrayList<>();
   private List<Integer> rankList = new ArrayList<>();
-  private List<Boolean> choiceList = new ArrayList<>();
+
 
   public void addScore(Integer scores) {
     this.scoreList.add(scores);
@@ -36,7 +37,4 @@ public class VoteBoxDto {
     this.rankList.add(ranks);
   }
 
-  public void setChoices(List<Boolean> hadChosen) {
-
-  }
 }

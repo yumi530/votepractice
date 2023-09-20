@@ -14,4 +14,6 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
   List<Candidate> findAllCandidateIdByVoteId(Long voteId);
 
   Optional<Candidate> findByUsersPhone(String usersPhone);
+
+  List<Candidate> findAllByCandidateId(Long candidateId);
 }

@@ -89,21 +89,24 @@ public class CountController {
   @PostMapping("/save")
   public String saveVote(
     @RequestParam(required = false) List<Integer> scores,
-    @RequestParam(required = false) List<Integer> ranks, VoteBoxDto voteBoxDto,
+    @RequestParam(required = false) List<Integer> ranks,
+    @RequestParam(required = false) String choices, VoteBoxDto voteBoxDto,
     @RequestParam(name = "usersPhone") String usersPhone) {
 
     if (voteBoxDto.getVoteType() == VoteType.PROS_CONS) {
-
+      voteBoxService.saveProsCons(voteBoxDto, usersPhone);
+      }
+    else if (voteBoxDto.getVoteType() == VoteType.CHOICE) {
+      voteBoxService.saveChoice(voteBoxDto, usersPhone, choices);
     }
-    else if (voteBoxDto.getVoteType() == VoteType.CHOICE){
 
-    }
-    else if (voteBoxDto.getVoteType() == VoteType.SCORE) {
+    if (voteBoxDto.getVoteType() == VoteType.SCORE) {
 
       if (scores != null && !scores.isEmpty()) {
         for (Integer score : scores) {
           voteBoxDto.addScore(score);
         }
+        voteBoxService.saveScore(voteBoxDto, usersPhone);
       }
     } else if (voteBoxDto.getVoteType() == VoteType.PREFERENCE) {
 
@@ -111,12 +114,12 @@ public class CountController {
         for (Integer rank : ranks) {
           voteBoxDto.addRank(rank);
         }
+        voteBoxService.savePrefer(voteBoxDto, usersPhone);
       }
     }
 
-    voteBoxService.save(voteBoxDto, usersPhone);
-
-    String redirectUrl = "redirect:/users/count/detail/" + voteBoxDto.getElectionId() + "?usersPhone=" + usersPhone;
+    String redirectUrl =
+      "redirect:/users/count/detail/" + voteBoxDto.getElectionId() + "?usersPhone=" + usersPhone;
     return redirectUrl;
   }
 }

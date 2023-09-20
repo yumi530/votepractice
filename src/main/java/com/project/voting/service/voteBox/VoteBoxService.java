@@ -6,7 +6,13 @@ import java.util.List;
 
 public interface VoteBoxService {
 
-  List<VoteBox> save(VoteBoxDto voteBoxDto, String usersPhone);
+  List<VoteBox> saveProsCons(VoteBoxDto voteBoxDto, String usersPhone);
+
+  VoteBox saveChoice(VoteBoxDto voteBoxDto, String usersPhone, String candidateId);
+
+  List<VoteBox> saveScore(VoteBoxDto voteBoxDto, String usersPhone);
+
+  List<VoteBox> savePrefer(VoteBoxDto voteBoxDto, String usersPhone);
 
   List<VoteBox> detailVoteBox(Long voteId);
 }
