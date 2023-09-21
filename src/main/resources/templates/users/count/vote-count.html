@@ -51,7 +51,7 @@
           <div th:if="${#strings.equals(detailVote.voteType, 'SCORE')}">
             <div th:each="candidate : ${detailCand}">
               <label th:for="scores" th:text="${candidate.candidateName}"></label>
-              <input type="number" th:id="'candidate-' + ${candidate.candidateId}"
+              <input type="number" min="0" max="100" th:id="'candidate-' + ${candidate.candidateId}"
                      th:field="*{scores}"/>
             </div>
           </div>
@@ -59,7 +59,7 @@
           <div th:if="${#strings.equals(detailVote.voteType, 'PREFERENCE')}">
             <div th:each="candidate : ${detailCand}">
               <label th:for="ranks" th:text="${candidate.candidateName}"></label>
-              <input type="number" th:id="'candidate-' + ${candidate.candidateId}"
+              <input type="number" min="0" th:max="${candidateLength}" th:id="'candidate-' + ${candidate.candidateId}"
                      th:field="*{ranks}"/>
             </div>
           </div>

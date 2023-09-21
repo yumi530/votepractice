@@ -45,8 +45,10 @@ public class CountController {
   public String detail(Model model, @PathVariable Long electionId,
     @RequestParam String usersPhone) {
     Election detail = electionService.detail(electionId);
+
     model.addAttribute("detail", detail);
     model.addAttribute("usersPhone", usersPhone);
+
 
     LocalDateTime currentDate = LocalDateTime.now();
     LocalDateTime endDate = detail.getElectionEndDt();
@@ -63,6 +65,7 @@ public class CountController {
     Vote detailVote = voteService.detail(voteId);
     List<Candidate> detailCand = candidateService.detail(voteId);
     List<VoteBox> detailVoteBox = voteBoxService.detailVoteBox(voteId);
+    Candidate candidateLength = candidateService.candidateLength(voteId);
 
     VoteBoxDto voteBoxDto = new VoteBoxDto();
     voteBoxDto.setDetailVoteBox(detailVoteBox);
@@ -72,6 +75,7 @@ public class CountController {
     model.addAttribute("detailElection", detailElection);
     model.addAttribute("usersPhone", usersPhone);
     model.addAttribute("voteBoxDto", voteBoxDto);
+    model.addAttribute("candidateLength", candidateLength);
     return "users/count/vote-count";
   }
 
