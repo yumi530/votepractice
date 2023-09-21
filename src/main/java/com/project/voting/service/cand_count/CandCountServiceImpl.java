@@ -35,27 +35,29 @@ public class CandCountServiceImpl implements CandCountService {
       throw new RuntimeException("선거 종료일 전에는 개표할 수 없습니다.");
     }
     if (voteType == VoteType.PROS_CONS) {
-      VoteBox voteBox = voteBoxRepository.findCandidateIdByVoteId(voteId);
-      Long countIds = voteBoxRepository.countAllByVoteId(voteId);
-      Long countPros = voteBoxRepository.countByIsAgreedTrueAndCandidateId(
-        voteBox.getCandidateId());
-      Long countCons = voteBoxRepository.countByIsAgreedFalseAndCandidateId(
-        voteBox.getCandidateId());
+      List<VoteBox> candidateIds = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
 
-      double prosRatio = pros(countIds, countPros);
-      double consRatio = cons(countIds, countCons);
+      for (VoteBox candId : candidateIds) {
+        Long countIds = voteBoxRepository.countAllByVoteId(voteId);
+        Long countPros = voteBoxRepository.countByIsAgreedTrueAndCandidateId(
+          candId.getCandidateId());
+        Long countCons = voteBoxRepository.countByIsAgreedFalseAndCandidateId(
+          candId.getCandidateId());
 
-      CandCount candCount = new CandCount();
-      candCount.setElectionId(electionId);
-      candCount.setVoteId(voteId);
-      candCount.setCandidateId(voteBox.getCandidateId());
+        double prosRatio = pros(countIds, countPros);
+        double consRatio = cons(countIds, countCons);
 
-      candCount.setResult(prosCons(countIds, countPros));
-      candCount.setProsRatio(prosRatio);
-      candCount.setConsRatio(consRatio);
+        CandCount candCount = new CandCount();
+        candCount.setElectionId(electionId);
+        candCount.setVoteId(voteId);
+        candCount.setCandidateId(candId.getCandidateId());
 
-      return candCountRepository.save(candCount);
+        candCount.setResult(prosCons(countIds, countPros));
+        candCount.setProsRatio(prosRatio);
+        candCount.setConsRatio(consRatio);
 
+        return candCountRepository.save(candCount);
+      }
     } else if (voteType == VoteType.CHOICE) {
 
       List<VoteBox> candidateIds = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);

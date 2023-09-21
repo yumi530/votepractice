@@ -23,4 +23,9 @@ public class CandidateServiceImpl implements CandidateService{
     return candidateRepository.findByCandidateId(candidateId);
   }
 
+  @Override
+  public Candidate candidateLength(Long voteId) {
+    return candidateRepository.countCandidateIdByVoteId(voteId);
+  }
+
 }

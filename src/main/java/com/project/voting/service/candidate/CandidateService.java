@@ -8,4 +8,6 @@ public interface CandidateService {
   List<Candidate> detail(Long candidateId);
 
   Candidate details(Long candidateId);
+
+  Candidate candidateLength(Long electionId);
 }
