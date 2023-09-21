@@ -13,12 +13,6 @@ import org.springframework.stereotype.Service;
 public class VoteServiceImpl implements VoteService {
 
   private final VoteRepository voteRepository;
-  private final VoteBoxRepository voteBoxRepository;
-
-  @Override
-  public void deleteVote(Long voteId) {
-    voteRepository.deleteById(voteId);
-  }
 
   @Override
   public Vote save(VoteDto voteDto) {
@@ -37,8 +31,5 @@ public class VoteServiceImpl implements VoteService {
     Vote vote = voteRepository.findByVoteId(voteId);
     return vote;
   }
-
-
-
 }
 

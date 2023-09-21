@@ -7,10 +7,6 @@ import java.util.List;
 
 public interface VoteService {
 
-
-    void deleteVote(Long voteId);
-
-
   Vote save(VoteDto voteDto);
 
   List<Vote> detail(List<Long> voteIds);

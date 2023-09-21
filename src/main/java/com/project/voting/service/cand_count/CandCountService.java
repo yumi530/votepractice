@@ -5,6 +5,6 @@ import com.project.voting.domain.vote.VoteType;
 
 public interface CandCountService {
 
-  CandCount countVotesResult(Long voteId, Long electionId, Long candidateId, String usersPhone, VoteType voteType);
+  CandCount countVotesResult(Long voteId, Long electionId, VoteType voteType, Long candidateId);
 
 }

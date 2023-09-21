@@ -174,6 +174,7 @@ public class VoteBoxServiceImpl implements VoteBoxService {
     return voteBoxRepository.findAllByVoteId(voteId);
   }
 
+
   private VoteBox toVoteBox(VoteBoxDto voteBoxDto, Candidate candidate, Integer rank, Integer score,
     String usersPhone, String choice) {
 

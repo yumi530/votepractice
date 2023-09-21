@@ -1,9 +1,10 @@
 package com.project.voting.domain.voteBox;
 
-import com.project.voting.domain.vote.Vote;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface VoteBoxRepository extends JpaRepository<VoteBox, Long> {
 
@@ -11,9 +12,7 @@ public interface VoteBoxRepository extends JpaRepository<VoteBox, Long> {
 
   VoteBox findByCandidateId(Long candidateId);
 
-
   Optional<VoteBox> findByCandidateIdAndUsersPhone(Long candidateId, String usersPhone);
-
 
   Long countAllByVoteId(Long voteId);
 
@@ -21,9 +20,16 @@ public interface VoteBoxRepository extends JpaRepository<VoteBox, Long> {
 
   Long countByIsAgreedFalseAndCandidateId(Long candidateId);
 
-  Integer sumChoicesByCandidateId(Long candidateId);
+  @Query(value = "SELECT SUM(CAST(vb.choices AS DECIMAL(10, 2))) FROM vote_box vb WHERE vb.candidate_id = :candidateId", nativeQuery = true)
+  Integer sumChoicesByCandidateId(@Param("candidateId") Long candidateId);
 
-  Integer sumScoresByCandidateId(Long candidateId);
+  @Query("SELECT SUM(vb.scores) FROM VoteBox vb WHERE vb.candidateId = :candidateId")
+  Integer sumScoresByCandidateId(@Param("candidateId") Long candidateId);
 
-  Integer sumRanksByCandidateId(Long candidateId);
+  @Query("SELECT SUM(vb.ranks) FROM VoteBox vb WHERE vb.candidateId = :candidateId")
+  Integer sumRanksByCandidateId(@Param("candidateId") Long candidateId);
+
+  VoteBox findCandidateIdByVoteId(Long voteId);
+
+  List<VoteBox> findAllCandidateIdsByVoteId(Long voteId);
 }

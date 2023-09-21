@@ -6,4 +6,6 @@ import java.util.List;
 public interface CandidateService {
 
   List<Candidate> detail(Long candidateId);
+
+  Candidate details(Long candidateId);
 }

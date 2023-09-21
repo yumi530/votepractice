@@ -15,4 +15,6 @@ public interface VoteBoxService {
   List<VoteBox> savePrefer(VoteBoxDto voteBoxDto, String usersPhone);
 
   List<VoteBox> detailVoteBox(Long voteId);
+
+
 }

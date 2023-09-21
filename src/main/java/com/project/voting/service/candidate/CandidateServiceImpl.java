@@ -18,4 +18,9 @@ public class CandidateServiceImpl implements CandidateService{
     return candidate;
   }
 
+  @Override
+  public Candidate details(Long candidateId) {
+    return candidateRepository.findByCandidateId(candidateId);
+  }
+
 }
