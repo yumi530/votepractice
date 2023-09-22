@@ -1,5 +1,6 @@
 package com.project.voting.domain.voteBox;
 
+import com.project.voting.domain.vote.VoteType;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,4 +33,5 @@ public interface VoteBoxRepository extends JpaRepository<VoteBox, Long> {
   VoteBox findCandidateIdByVoteId(Long voteId);
 
   List<VoteBox> findAllCandidateIdsByVoteId(Long voteId);
+
 }

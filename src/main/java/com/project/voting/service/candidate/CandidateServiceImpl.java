@@ -19,8 +19,8 @@ public class CandidateServiceImpl implements CandidateService{
   }
 
   @Override
-  public Candidate details(Long candidateId) {
-    return candidateRepository.findByCandidateId(candidateId);
+  public List<Candidate> details(Long voteId) {
+    return candidateRepository.findAllCandidateIdsByVoteId(voteId);
   }
 
   @Override

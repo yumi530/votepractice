@@ -7,7 +7,7 @@ public interface CandidateService {
 
   List<Candidate> detail(Long candidateId);
 
-  Candidate details(Long candidateId);
+  List<Candidate> details(Long voteId);
 
   Candidate candidateLength(Long electionId);
 }

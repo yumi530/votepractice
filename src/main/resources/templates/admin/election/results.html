@@ -13,28 +13,49 @@
   <div class="container p-3 mb-2 d-flex justify-content-center">
     <table class="table">
 
-      <td><input type="hidden" th:value="${voteResult.voteId}" id="voteId" name="voteId"></td>
-      <td><input type="hidden" th:value="${voteResult.election}" id="electionId" name="electionId"></td>
+      <td><input type="hidden" th:value="${candCount.voteId}" id="voteId" name="voteId"></td>
+      <td><input type="hidden" th:value="${candCount.electionId}" id="electionId" name="electionId"></td>
+      <td><input type="hidden" th:value="${candCount.candidateId}" id="candidateId" name="candidateId"></td>
 
       <tr>
         <td th:text="투표명"></td>
-        <td th:text="${voteResult.voteTitle}"></td>
+        <td th:text="${votes.voteTitle}"></td>
       </tr>
-      <tr>
+      <div th:each="candidate : ${candidates}">
+        <tr>
         <td th:text="후보자명"></td>
-        <td th:text="${voteResult.candidateName}"></td>
-      </tr>
-      <tr>
-        <td th:text="후보자정보"></td>
-        <td th:text="${voteResult.candidateInfo}"></td>
-      </tr>
+          <td th:text=" ${candidate.candidateName}"></td>
+        </tr>
+      </div>
+      <div th:if="${#strings.equals(votes.voteType, 'PROS_CONS')}">
       <tr>
         <td th:text="투표결과"></td>
         <td>
-          <span th:if="${voteResult.result}">찬성</span>
-          <span th:unless="${voteResult.result}">반대</span>
+          <span th:if="${candCount.result}">찬성</span>
+          <span th:unless="${candCount.result}">반대</span>
         </td>
       </tr>
+      </div>
+      <div th:if="${#strings.equals(votes.voteType, 'CHOICE')}">
+        <tr>
+          <td th:text="투표결과"></td>
+
+          </td>
+          </td>
+        </tr>
+      </div>
+      <div th:if="${#strings.equals(votes.voteType, 'SCORE')}">
+        <tr>
+          <td th:text="투표결과"></td>
+          </td>
+        </tr>
+      </div>
+      <div th:if="${#strings.equals(votes.voteType, 'PREFERENCE')}">
+        <tr>
+          <td th:text="투표결과"></td>
+          </td>
+        </tr>
+      </div>
     </table>
   </div>
   <canvas id="myChart" width="80" height="30"></canvas>
@@ -44,11 +65,12 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <div th:if="${#strings.equals(votes.voteType, 'PROS_CONS')}">
   <script>
     /*<![CDATA[*/
     var ctx = document.getElementById('myChart').getContext('2d');
-    var positiveData = [[${voteResult.prosRatio}]];
-    var negativeData = [[${voteResult.consRatio}]];
+    var positiveData = [[${candCount.prosRatio}]];
+    var negativeData = [[${candCount.consRatio}]];
 
 
     var myChart = new Chart(ctx, {
@@ -80,5 +102,48 @@
 
     /*]]>*/
   </script>
+  </div>
+  <div th:if="${#strings.equals(votes.voteType, 'CHOICE')}">
+    <script>
+      /*<![CDATA[*/
+      var ctx = document.getElementById('myChart').getContext('2d');
+      var candidateData = [[${candidates}]];
+
+      var labels = [];
+      var data = [];
+      var backgroundColor = [];
+      var borderColor = [];
+
+      candidateData.forEach(function(candidate) {
+        labels.push(candidate.label);
+        data.push(candidate.data);
+        backgroundColor.push(candidate.backgroundColor);
+        borderColor.push(candidate.borderColor);
+      });
+
+      var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: '개표 결과',
+            data: data,
+            backgroundColor: backgroundColor,
+            borderColor: borderColor,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+      /*]]>*/
+    </script>
+
+  </div>
   </section>
 </html>
