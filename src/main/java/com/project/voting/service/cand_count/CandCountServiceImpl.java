@@ -14,6 +14,7 @@ import com.project.voting.domain.voteBox.VoteBoxRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,34 +70,31 @@ public class CandCountServiceImpl implements CandCountService {
     } else if (voteType == VoteType.CHOICE) {
 
       List<VoteBox> candidateIds = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
-
-      List<Double> avgList = new ArrayList<>();
+      List<CandCount> candCounts = new ArrayList<>();
 
       for (VoteBox candId : candidateIds) {
         Integer sumChoices = voteBoxRepository.sumChoicesByCandidateId(candId.getCandidateId());
         double choicesAvg = sumChoices / (double) candidateIds.size();
-        avgList.add(choicesAvg);
-      }
-
-      Collections.sort(avgList, Collections.reverseOrder());
-
-      Map<Double, Integer> choiceMap = new HashMap<>();
-      for (int i = 0; i < avgList.size(); i++) {
-        double choicesAvg = avgList.get(i);
-        choiceMap.put(choicesAvg, i + 1);
-      }
-      for (VoteBox candId : candidateIds) {
-        double choicesAvg = avgList.get(candidateIds.indexOf(candId));
-        int rank = choiceMap.get(choicesAvg);
 
         CandCount candCount = new CandCount();
         candCount.setElectionId(electionId);
         candCount.setVoteId(voteId);
         candCount.setCandidateId(candId.getCandidateId());
         candCount.setChoicesAvg(choicesAvg);
-        candCount.setTotalRank(rank / choiceMap.size());
 
+        candCounts.add(candCount);
+      }
+
+      Collections.sort(candCounts, Comparator.comparingDouble(CandCount::getChoicesAvg).reversed());
+
+      for (int i = 0; i < candCounts.size(); i++) {
+        CandCount candCount = candCounts.get(i);
+        candCount.setTotalRank(i + 1);
         candCountRepository.save(candCount);
+      }
+
+
+
 //      Map<Double, Integer> rankMap = new HashMap<>();
 //      List<VoteBox> candidateIds = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
 //
@@ -127,7 +125,7 @@ public class CandCountServiceImpl implements CandCountService {
 //        candCountRepository.save(candCount);
 //        rank++;
 
-      }
+
 
     } else if (voteType == VoteType.SCORE) {
 
@@ -218,4 +216,5 @@ public class CandCountServiceImpl implements CandCountService {
   private double cons(Long countIds, Long countCons) {
     return ((double) countCons / countIds) * 100.0;
   }
+
 }

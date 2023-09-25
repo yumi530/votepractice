@@ -7,7 +7,7 @@ public interface CandCountRepository extends JpaRepository<CandCount, Long> {
 
   List<CandCount> findByResult(boolean b);
 
-  List<Integer> findTotalRankByCandidateId(Long candidateId);
+  List<CandCount> findTotalRankByCandidateId(Long candidateId);
 
-  CandCount findCandidateIdByVoteId(Long voteId);
+  List<CandCount> findAllCandidateIdsByVoteId(Long voteId);
 }

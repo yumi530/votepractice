@@ -49,8 +49,8 @@ public class AdminCountController {
   }
 
   @RequestMapping("/result")
-  public String sample(@RequestParam Long voteId, @RequestParam Long electionId, @RequestParam VoteType voteType) {
-    Count count = countService.votesResultConfirm(voteId, electionId, voteType);
+  public String sample(@RequestParam Long electionId, @RequestParam Long voteId,  @RequestParam VoteType voteType) {
+    Count count = countService.votesResultConfirm(electionId, voteId,voteType);
     return "/admin/election/sample";
   }
 }
