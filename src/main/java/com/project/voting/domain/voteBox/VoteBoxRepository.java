@@ -34,4 +34,7 @@ public interface VoteBoxRepository extends JpaRepository<VoteBox, Long> {
 
   List<VoteBox> findAllCandidateIdsByVoteId(Long voteId);
 
+  Integer findUsersPhonesByCandidateId(Long candidateId);
+
+  Integer countUsersPhonesByCandidateId(Long candidateId);
 }

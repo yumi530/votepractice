@@ -17,4 +17,5 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
   Candidate countCandidateIdByVoteId(Long voteId);
 
   List<Candidate> findAllCandidateIdsByVoteId(Long voteId);
+
 }

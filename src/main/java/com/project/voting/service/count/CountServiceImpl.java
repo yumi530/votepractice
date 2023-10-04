@@ -26,7 +26,7 @@ public class CountServiceImpl implements CountService {
     List<CandCount> candCounts = candCountRepository.findByResult(true);
 
     List<CandCount> candidates = candCountRepository.findAllCandidateIdsByVoteId(voteId);
-    for(CandCount candidate : candidates) {
+    for (CandCount candidate : candidates) {
 
       if (voteType == VoteType.PROS_CONS) {
 
@@ -39,14 +39,11 @@ public class CountServiceImpl implements CountService {
         for (CandCount candCount : candCounts) {
           count.setFinalResult(candCount.isResult());
         }
-
-
-          countRepository.save(count);
-
-
+        countRepository.save(count);
 
       } else if (voteType == VoteType.CHOICE) {
-        List<CandCount> totalRanks = candCountRepository.findTotalRankByCandidateId(candidate.getCandidateId());
+        List<CandCount> totalRanks = candCountRepository.findTotalRankByCandidateId(
+          candidate.getCandidateId());
 
         for (CandCount candCount : candCounts) {
           Count count = new Count();
