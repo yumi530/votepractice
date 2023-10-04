@@ -4,6 +4,7 @@ package com.project.voting.controller.admin;
 import com.project.voting.domain.cand_count.CandCount;
 import com.project.voting.domain.candidate.Candidate;
 import com.project.voting.domain.count.Count;
+import com.project.voting.domain.election.Election;
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
@@ -11,6 +12,7 @@ import com.project.voting.dto.election.ElectionDto;
 import com.project.voting.service.cand_count.CandCountService;
 import com.project.voting.service.candidate.CandidateService;
 import com.project.voting.service.count.CountService;
+import com.project.voting.service.election.ElectionService;
 import com.project.voting.service.vote.VoteService;
 import com.project.voting.service.voteBox.VoteBoxService;
 import java.time.LocalDateTime;
@@ -31,6 +33,7 @@ public class AdminCountController {
   private final VoteService voteService;
   private final CandidateService candidateService;
   private final CountService countService;
+  private final ElectionService electionService;
 
   @RequestMapping("/election/results")
   public String countVoteForAdmin(@RequestParam Long voteId, @RequestParam Long electionId,
@@ -38,17 +41,19 @@ public class AdminCountController {
   VoteType voteType) {
     CandCount candCount = candCountService.countVotesResult(voteId, electionId, voteType);
     Vote vote = voteService.detail(voteId);
+    Election election = electionService.detail(electionId);
     List<Candidate> candidates = candidateService.details(voteId);
-//    countService.votesResultConfirm(voteId, electionId, voteType);
+
     model.addAttribute("candCount", candCount);
     model.addAttribute("votes", vote);
+    model.addAttribute("elections",election);
     model.addAttribute("candidates", candidates);
 
     redirectAttributes.addFlashAttribute("message", "개표 완료");
     return "/admin/election/results";
   }
 
-  @RequestMapping("/result")
+  @RequestMapping("/election/complete")
   public String sample(@RequestParam Long electionId, @RequestParam Long voteId,  @RequestParam VoteType voteType) {
     Count count = countService.votesResultConfirm(electionId, voteId,voteType);
     return "/admin/election/sample";

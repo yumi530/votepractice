@@ -7,8 +7,6 @@ import com.project.voting.domain.count.CountRepository;
 
 import com.project.voting.domain.vote.VoteType;
 import java.util.List;
-import java.util.Optional;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,48 +18,50 @@ public class CountServiceImpl implements CountService {
   private final CandCountRepository candCountRepository;
 
   @Override
-
   public Count votesResultConfirm(Long electionId, Long voteId, VoteType voteType) {
 
     List<CandCount> candCounts = candCountRepository.findByResult(true);
 
-    List<CandCount> candidates = candCountRepository.findAllCandidateIdsByVoteId(voteId);
-    for (CandCount candidate : candidates) {
+    List<CandCount> candidateIds = candCountRepository.findAllCandidateIdsByVoteId(voteId);
 
-      if (voteType == VoteType.PROS_CONS) {
-
+    if (voteType == VoteType.PROS_CONS) {
+      for (CandCount candidate : candidateIds) {
         Count count = new Count();
         count.setElectionId(electionId);
         count.setVoteId(voteId);
         count.setCandidateId(candidate.getCandidateId());
-        count.setElectionId(candidate.getCandidateId());
 
         for (CandCount candCount : candCounts) {
-          count.setFinalResult(candCount.isResult());
+          count.setElectedYn(candCount.isResult());
         }
         countRepository.save(count);
 
-      } else if (voteType == VoteType.CHOICE) {
-        List<CandCount> totalRanks = candCountRepository.findTotalRankByCandidateId(
-          candidate.getCandidateId());
+      }
+    } else if (voteType == VoteType.CHOICE) {
 
-        for (CandCount candCount : candCounts) {
-          Count count = new Count();
-          count.setElectionId(electionId);
-          count.setVoteId(voteId);
-          count.setCandidateId(candCount.getCandidateId());
-          count.setElectionId(candCount.getCandidateId());
-          count.setFinalResult(candCount.isResult());
-
-          for (CandCount totalRank : totalRanks) {
-            if (totalRank.getCandidateId().equals(candidate.getCandidateId())) {
-              count.setTotalRank(totalRank.getTotalRank());
-              break;
-            }
-          }
-          countRepository.save(count);
+      for (CandCount candidate : candidateIds) {
+        Count count = new Count();
+        count.setVoteId(voteId);
+        count.setCandidateId(candidate.getCandidateId());
+        count.setElectionId(electionId);
+        count.setTotalRank(candidate.getTotalRank());
+        if (candidate.getTotalRank() == 1) {
+          count.setElectedYn(true);
+        } else {
+          count.setElectedYn(false);
         }
+        countRepository.save(count);
+      }
+    }
+    else if (voteType == VoteType.SCORE || voteType == VoteType.PREFERENCE) {
 
+      for (CandCount candidate : candidateIds) {
+        Count count = new Count();
+        count.setVoteId(voteId);
+        count.setCandidateId(candidate.getCandidateId());
+        count.setElectionId(electionId);
+        count.setTotalRank(candidate.getTotalRank());
+        countRepository.save(count);
       }
     }
     return new Count();

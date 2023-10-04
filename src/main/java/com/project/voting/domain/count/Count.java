@@ -17,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@IdClass(CountKey.class)
+@IdClass(CandIdKey.class)
 public class Count {
 
 
@@ -27,21 +27,19 @@ public class Count {
   private Long voteId;
   @Id
   private Long candidateId;
-  @Id
-  private Long electedId;
 
-  private boolean finalResult;
+  private boolean electedYn;
 
   private int totalRank;
 
 
   @Builder
-  public Count(Long electionId, Long voteId, Long candidateId, boolean finalResult,
+  public Count(Long electionId, Long voteId, Long candidateId, boolean electedYn,
     int totalRank) {
     this.electionId = electionId;
     this.voteId = voteId;
     this.candidateId = candidateId;
-    this.finalResult = finalResult;
+    this.electedYn = electedYn;
     this.totalRank = totalRank;
 
   }

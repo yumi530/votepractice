@@ -11,11 +11,12 @@
     </div>
   </div>
   <div class="container p-3 mb-2 d-flex justify-content-center">
+    <form th:action="@{/admin/election/complete}">
     <table class="table">
 
-      <td><input type="hidden" th:value="${candCount.voteId}" id="voteId" name="voteId"></td>
-      <td><input type="hidden" th:value="${candCount.electionId}" id="electionId" name="electionId"></td>
-      <td><input type="hidden" th:value="${candCount.candidateId}" id="candidateId" name="candidateId"></td>
+      <td><input type="hidden" th:value="${votes.voteId}" id="voteId" name="voteId"></td>
+      <td><input type="hidden" th:value="${elections.electionId}" id="electionId" name="electionId"></td>
+      <td><input type="hidden" th:value="${votes.voteType}" id="voteType" name="voteType"></td>
 
       <tr>
         <td th:text="투표명"></td>
@@ -57,6 +58,8 @@
         </tr>
       </div>
     </table>
+      <button class="btn btn-secondary" type="submit">개표 완료</button>
+    </form>
   </div>
   <canvas id="myChart" width="80" height="30"></canvas>
 
