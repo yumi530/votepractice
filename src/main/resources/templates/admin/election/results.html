@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{common/layout.html}">
 <head>
-  <title>관리자 개표 결과 확인</title>
+  <title>관리자 개표 진행</title>
 </head>
 
 <section layout:fragment="content">
   <div class="container p-3 mb-2 rounded-1">
     <div class="d-flex justify-content-center">
-      <h3 class="fw-bold">관리자 개표 결과 확인</h3>
+      <h3 class="fw-bold">관리자 개표 진행</h3>
     </div>
   </div>
   <div class="container p-3 mb-2 d-flex justify-content-center">
@@ -22,131 +22,19 @@
         <td th:text="투표명"></td>
         <td th:text="${votes.voteTitle}"></td>
       </tr>
+      <tr>
+        <td th:text="투표종류"></td>
+        <td th:text="${votes.voteType}"></td>
+      </tr>
       <div th:each="candidate : ${candidates}">
         <tr>
         <td th:text="후보자명"></td>
           <td th:text=" ${candidate.candidateName}"></td>
         </tr>
       </div>
-      <div th:if="${#strings.equals(votes.voteType, 'PROS_CONS')}">
-      <tr>
-        <td th:text="투표결과"></td>
-        <td>
-          <span th:if="${candCount.result}">찬성</span>
-          <span th:unless="${candCount.result}">반대</span>
-        </td>
-      </tr>
-      </div>
-      <div th:if="${#strings.equals(votes.voteType, 'CHOICE')}">
-        <tr>
-          <td th:text="투표결과"></td>
-
-          </td>
-          </td>
-        </tr>
-      </div>
-      <div th:if="${#strings.equals(votes.voteType, 'SCORE')}">
-        <tr>
-          <td th:text="투표결과"></td>
-          </td>
-        </tr>
-      </div>
-      <div th:if="${#strings.equals(votes.voteType, 'PREFERENCE')}">
-        <tr>
-          <td th:text="투표결과"></td>
-          </td>
-        </tr>
-      </div>
     </table>
       <button class="btn btn-secondary" type="submit">개표 완료</button>
     </form>
-  </div>
-  <canvas id="myChart" width="80" height="30"></canvas>
-
-  <div class="d-flex justify-content-center">
-    <a th:href="@{/admin/election/electionList}">목록으로 돌아가기</a>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <div th:if="${#strings.equals(votes.voteType, 'PROS_CONS')}">
-  <script>
-    /*<![CDATA[*/
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var positiveData = [[${candCount.prosRatio}]];
-    var negativeData = [[${candCount.consRatio}]];
-
-
-    var myChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['찬성', '반대'],
-        datasets: [{
-          label: '개표 결과',
-          data: [positiveData, negativeData],
-          backgroundColor: [
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-          ],
-          borderColor: [
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-          ],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-
-    /*]]>*/
-  </script>
-  </div>
-  <div th:if="${#strings.equals(votes.voteType, 'CHOICE')}">
-    <script>
-      /*<![CDATA[*/
-      var ctx = document.getElementById('myChart').getContext('2d');
-      var candidateData = [[${candidates}]];
-
-      var labels = [];
-      var data = [];
-      var backgroundColor = [];
-      var borderColor = [];
-
-      candidateData.forEach(function(candidate) {
-        labels.push(candidate.label);
-        data.push(candidate.data);
-        backgroundColor.push(candidate.backgroundColor);
-        borderColor.push(candidate.borderColor);
-      });
-
-      var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: '개표 결과',
-            data: data,
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
-      /*]]>*/
-    </script>
-
   </div>
   </section>
 </html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html layout:decorate="~{common/layout.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>관리자 개표 결과 확인</title>
+</head>
+
+<section layout:fragment="content">
+  <div class="container p-3 mb-2 rounded-1">
+    <div class="d-flex justify-content-center">
+      <h3 class="fw-bold">관리자 개표 결과 확인</h3>
+      <table class="table">
+        <tr>
+          <td th:text="투표명"></td>
+          <td th:text="${votes.voteTitle}"></td>
+        </tr>
+        <tr>
+          <td th:text="투표종류"></td>
+          <td th:text="${votes.voteType}"></td>
+        </tr>
+        <div th:if="${#strings.equals(votes.voteType, 'PROS_CONS')}">
+          <div th:each="candidate : ${candidates}">
+            <tr>
+              <td th:text="후보자명"></td>
+              <td th:text=" ${candidate.candidateName}"></td>
+            </tr>
+          </div>
+          <tr>
+            <td th:text="투표결과"></td>
+            <td>
+              <span th:if="${count.electedYn}">찬성</span>
+              <span th:unless="${count.electedYn}">반대</span>
+            </td>
+          </tr>
+        </div>
+        <div th:if="${#strings.equals(votes.voteType, 'CHOICE')}">
+          <span th:each="count : ${counts}">
+            <tr>
+              <td th:text="후보자명"></td>
+              <span th:each="candidate : ${candidates}">
+              <td th:if="${count.candidateId} == ${candidate.candidateId}"
+                  th:text="${candidate.candidateName}"></td>
+            </span>
+              <td th:text="투표결과"></td>
+              <td th:text="${count.electedYn}"></td>
+            </tr>
+          </span>
+        </div>
+        <div th:if="${#strings.equals(votes.voteType, 'SCORE')}">
+          <span th:each="count : ${counts}">
+            <tr>
+              <td th:text="후보자명"></td>
+              <span th:each="candidate : ${candidates}">
+              <td th:if="${count.candidateId} == ${candidate.candidateId}"
+                  th:text="${candidate.candidateName}"></td>
+            </span>
+              <td th:text="점수순위"></td>
+              <td th:text="${count.totalRank}"></td>
+            </tr>
+          </span>
+        </div>
+        <div th:if="${#strings.equals(votes.voteType, 'PREFERENCE')}">
+          <span th:each="count : ${counts}">
+            <tr>
+              <td th:text="후보자명"></td>
+              <span th:each="candidate : ${candidates}">
+              <td th:if="${count.candidateId} == ${candidate.candidateId}"
+                  th:text="${candidate.candidateName}"></td>
+            </span>
+              <td th:text="선호도순위"></td>
+              <td th:text="${count.totalRank}"></td>
+            </tr>
+          </span>
+        </div>
+      </table>
+    </div>
+    <div class="container p-3 mb-2 d-flex justify-content-center">
+    </div>
+
+  </div>
+</section>
+</html>

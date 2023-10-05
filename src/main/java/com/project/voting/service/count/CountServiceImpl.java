@@ -66,4 +66,9 @@ public class CountServiceImpl implements CountService {
     }
     return new Count();
   }
+
+  @Override
+  public List<Count> details(Long voteId) {
+    return countRepository.findAllCandidateIdsByVoteId(voteId);
+  }
 }

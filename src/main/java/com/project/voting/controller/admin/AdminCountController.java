@@ -1,24 +1,18 @@
 package com.project.voting.controller.admin;
 
 
-import com.project.voting.domain.cand_count.CandCount;
 import com.project.voting.domain.candidate.Candidate;
 import com.project.voting.domain.count.Count;
 import com.project.voting.domain.election.Election;
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteType;
-import com.project.voting.domain.voteBox.VoteBox;
-import com.project.voting.dto.election.ElectionDto;
 import com.project.voting.service.cand_count.CandCountService;
 import com.project.voting.service.candidate.CandidateService;
 import com.project.voting.service.count.CountService;
 import com.project.voting.service.election.ElectionService;
 import com.project.voting.service.vote.VoteService;
-import com.project.voting.service.voteBox.VoteBoxService;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -39,12 +33,13 @@ public class AdminCountController {
   public String countVoteForAdmin(@RequestParam Long voteId, @RequestParam Long electionId,
     Model model, RedirectAttributes redirectAttributes, @RequestParam(name = "voteType")
   VoteType voteType) {
-    CandCount candCount = candCountService.countVotesResult(voteId, electionId, voteType);
+
+    candCountService.countVotesResult(voteId, electionId, voteType);
+
     Vote vote = voteService.detail(voteId);
     Election election = electionService.detail(electionId);
     List<Candidate> candidates = candidateService.details(voteId);
 
-    model.addAttribute("candCount", candCount);
     model.addAttribute("votes", vote);
     model.addAttribute("elections",election);
     model.addAttribute("candidates", candidates);
@@ -54,8 +49,21 @@ public class AdminCountController {
   }
 
   @RequestMapping("/election/complete")
-  public String sample(@RequestParam Long electionId, @RequestParam Long voteId,  @RequestParam VoteType voteType) {
-    Count count = countService.votesResultConfirm(electionId, voteId,voteType);
-    return "/admin/election/sample";
+  public String sample(@RequestParam Long electionId, @RequestParam Long voteId,  @RequestParam VoteType voteType, Model model) {
+
+    Count count = countService.votesResultConfirm(electionId, voteId, voteType);
+
+    Vote vote = voteService.detail(voteId);
+    Election election = electionService.detail(electionId);
+    List<Candidate> candidates = candidateService.details(voteId);
+    List<Count> counts = countService.details(voteId);
+
+    model.addAttribute("votes", vote);
+    model.addAttribute("elections",election);
+    model.addAttribute("candidates", candidates);
+    model.addAttribute("count", count);
+    model.addAttribute("counts", counts);
+
+    return "/admin/election/complete";
   }
 }
