@@ -7,12 +7,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
-  @RequestMapping("/admin/login")
+  @RequestMapping("/login")
   public String adminLogin(){
+
     return "admin/login";
   }
 
+  @RequestMapping("/index")
+  public String adminIndex() {
 
+    return "admin/index";
+  }
 }
