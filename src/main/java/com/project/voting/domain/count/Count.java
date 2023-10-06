@@ -1,13 +1,9 @@
 package com.project.voting.domain.count;
 
 import com.project.voting.domain.candidate.CandIdKey;
-import com.project.voting.domain.vote.Vote;
 
-import com.project.voting.domain.vote.VoteType;
 import javax.persistence.*;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +15,6 @@ import lombok.Setter;
 @Setter
 @IdClass(CandIdKey.class)
 public class Count {
-
 
   @Id
   private Long electionId;

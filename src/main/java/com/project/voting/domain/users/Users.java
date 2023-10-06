@@ -3,7 +3,6 @@ package com.project.voting.domain.users;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import com.project.voting.domain.candidate.Candidate;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
@@ -29,16 +28,6 @@ public class Users {
     @JsonIgnore
     @OneToMany(mappedBy = "users")
     private List<Candidate> candidates;
-
-//    public void addCandidate(Candidate candidate) {
-//        if (candidateId == null) {
-//            candidateId = new ArrayList<>();
-//        }
-//        candidateId.add(candidate);
-//        candidate.setUsers(this);
-//    }
-
-
 
     @Builder
     public Users(String usersPhone, String usersName, Long electionId, boolean usersCompleted, List<Candidate> candidates) {

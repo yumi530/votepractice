@@ -27,6 +27,7 @@ public class CandCountServiceImpl implements CandCountService {
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
   public CandCount countVotesResult(Long voteId, Long electionId,
     VoteType voteType) {
+
     Election election = electionRepository.findById(electionId).get();
 
     LocalDateTime now = LocalDateTime.now();

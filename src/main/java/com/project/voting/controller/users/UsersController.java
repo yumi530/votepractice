@@ -5,7 +5,6 @@ import com.project.voting.dto.sms.MessageDto;
 import com.project.voting.service.sms.SmsService;
 import com.project.voting.service.users.UsersService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +22,6 @@ import java.security.NoSuchAlgorithmException;
 public class UsersController {
 
     private final SmsService smsService;
-    private final UsersService usersService;
 
     public class SessionConst {
         public static final String LOGIN_USER = "loginUser";
@@ -58,7 +56,6 @@ public class UsersController {
         if (session != null) {
             session.invalidate();
         }
-//        usersService.completed(usersPhone);
         return "redirect:/";
     }
 }

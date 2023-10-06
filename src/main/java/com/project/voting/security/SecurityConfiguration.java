@@ -38,7 +38,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http
       .formLogin()
       .loginPage("/admin/login")
-//                .successHandler(successHandler())
       .failureHandler(getFailureHandler())
       .usernameParameter("username")
       .passwordParameter("password")
@@ -55,8 +54,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       .httpBasic().disable()
       .csrf().disable()
       .authorizeRequests()
-//                .antMatchers("/")
-//                .permitAll();
       .antMatchers("/admin/**")
       .hasAuthority("ADMIN");
   }

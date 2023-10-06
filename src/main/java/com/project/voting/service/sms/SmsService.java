@@ -6,7 +6,6 @@ import com.project.voting.config.RedisService;
 import com.project.voting.domain.users.Users;
 import com.project.voting.domain.users.UsersRepository;
 import com.project.voting.service.cache.CacheService;
-import com.project.voting.service.users.UsersService;
 import com.project.voting.dto.sms.MessageDto;
 import com.project.voting.dto.sms.SmsRequestDto;
 import com.project.voting.dto.sms.SmsResponseDto;
@@ -32,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-
 
 @PropertySource("classpath:application.yml")
 @Service

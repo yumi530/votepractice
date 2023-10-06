@@ -1,7 +1,5 @@
 package com.project.voting.dto.count;
 
-import com.project.voting.domain.count.Count;
-import com.project.voting.domain.vote.Vote;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

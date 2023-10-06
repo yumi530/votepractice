@@ -2,7 +2,6 @@ package com.project.voting.domain.users;
 
 import java.util.List;
 import java.util.Optional;
-import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +13,4 @@ public interface UsersRepository extends JpaRepository<Users, String> {
 
   Optional<Users> findByUsersPhone(String phoneNumber);
 
-//  Optional<Users> findByUsersPhone(String to);
 }

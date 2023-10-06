@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.voting.domain.admin.Admin;
 
 import com.project.voting.domain.users.Users;
-import java.util.ArrayList;
 import javax.persistence.*;
 
 import com.project.voting.domain.vote.Vote;
@@ -30,9 +29,6 @@ public class Election {
   private LocalDateTime electionStartDt;
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
   private LocalDateTime electionEndDt;
-
-//  @Column
-//  private String usersPhone;
 
   @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)

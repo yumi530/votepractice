@@ -2,12 +2,9 @@ package com.project.voting.controller.election;
 
 import com.project.voting.domain.admin.Admin;
 import com.project.voting.domain.election.Election;
-import com.project.voting.domain.vote.Vote;
-import com.project.voting.domain.vote.VoteType;
 import com.project.voting.dto.election.ElectionDto;
 import com.project.voting.service.election.ElectionServiceImpl;
 
-import com.project.voting.service.vote.VoteService;
 import java.io.IOException;
 
 import java.util.List;
@@ -24,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,8 +28,6 @@ import javax.validation.Valid;
 public class ElectionController {
 
     private final ElectionServiceImpl electionService;
-    private final VoteService voteService;
-    private final String fileStoragePath = "static/files/";
 
     @RequestMapping("/election/electionList")
     public String getVoteList(Model model, @PageableDefault(page = 0, size = 10, sort = "electionId", direction = Sort.Direction.DESC) Pageable pageable) {

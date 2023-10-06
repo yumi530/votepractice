@@ -1,13 +1,9 @@
 package com.project.voting.service.users;
 
-import com.project.voting.domain.count.Count;
 import com.project.voting.domain.users.Users;
 import com.project.voting.domain.users.UsersRepository;
-import com.project.voting.domain.vote.Vote;
 import com.project.voting.dto.users.UsersDto;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,16 +22,6 @@ public class UsersServiceImpl implements UsersService {
     }
     return UsersDto.of(usersList);
   }
-
-  @Override
-  public Users completed(String usersPhone) {
-    Users updatedUsers = new Users();
-    updatedUsers.setUsersCompleted(true);
-    return usersRepository.save(updatedUsers);
-  }
-
-
-
 
 }
 

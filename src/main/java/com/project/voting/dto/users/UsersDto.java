@@ -1,6 +1,5 @@
 package com.project.voting.dto.users;
 
-import com.project.voting.domain.election.Election;
 import com.project.voting.domain.users.Users;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
 
 @Data
 @Builder
