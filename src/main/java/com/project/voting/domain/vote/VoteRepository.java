@@ -9,8 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface VoteRepository extends JpaRepository<Vote, Long> {
 
   Vote findByVoteId(Long voteId);
-
-
 }
 
 

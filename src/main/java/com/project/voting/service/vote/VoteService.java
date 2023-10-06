@@ -13,5 +13,4 @@ public interface VoteService {
 
   Vote detail(Long voteId);
 
-
 }

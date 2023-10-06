@@ -14,77 +14,77 @@
     </div>
     <table class="table">
 
-        <td><input type="hidden" th:value="${voteResult.voteId}" id="voteId"
+        <td><input type="hidden" th:value="${votes.voteId}" id="voteId"
                    name="voteId"></td>
 
-        <td><input type="hidden" th:value="${voteResult.election}"
+        <td><input type="hidden" th:value="${elections.electionId}"
                    id="electionId" name="electionId"></td>
 
         <tr>
             <td th:text="투표명"></td>
-            <td th:text="${voteResult.voteTitle}"></td>
+            <td th:text="${votes.voteTitle}"></td>
         </tr>
         <tr>
-            <td th:text="후보자명"></td>
-            <td th:text="${voteResult.candidateName}"></td>
+            <td th:text="투표종류"></td>
+            <td th:text="${votes.voteType}"></td>
         </tr>
-        <tr>
-            <td th:text="후보자정보"></td>
-            <td th:text="${voteResult.candidateInfo}"></td>
-        </tr>
-        <tr>
-            <td th:text="투표결과"></td>
-            <td>
-                <span th:if="${voteResult.result}">찬성</span>
-                <span th:unless="${voteResult.result}">반대</span>
-            </td>
-        </tr>
+        <div th:if="${#strings.equals(votes.voteType, 'PROS_CONS')}">
+            <div th:each="candidate : ${candidates}">
+                <tr>
+                    <td th:text="후보자명"></td>
+                    <td th:text=" ${candidate.candidateName}"></td>
+                </tr>
+            </div>
+            <tr>
+                <td th:text="투표결과"></td>
+                <td>
+                    <span th:if="${count.electedYn}">찬성</span>
+                    <span th:unless="${count.electedYn}">반대</span>
+                </td>
+            </tr>
+        </div>
+        <div th:if="${#strings.equals(votes.voteType, 'CHOICE')}">
+          <span th:each="count : ${counts}">
+            <tr>
+              <td th:text="후보자명"></td>
+              <span th:each="candidate : ${candidates}">
+              <td th:if="${count.candidateId} == ${candidate.candidateId}"
+                  th:text="${candidate.candidateName}"></td>
+            </span>
+              <td th:text="투표결과"></td>
+              <td th:text="${count.electedYn}"></td>
+            </tr>
+          </span>
+        </div>
+        <div th:if="${#strings.equals(votes.voteType, 'SCORE')}">
+          <span th:each="count : ${counts}">
+            <tr>
+              <td th:text="후보자명"></td>
+              <span th:each="candidate : ${candidates}">
+              <td th:if="${count.candidateId} == ${candidate.candidateId}"
+                  th:text="${candidate.candidateName}"></td>
+            </span>
+              <td th:text="점수순위"></td>
+              <td th:text="${count.totalRank}"></td>
+            </tr>
+          </span>
+        </div>
+        <div th:if="${#strings.equals(votes.voteType, 'PREFERENCE')}">
+          <span th:each="count : ${counts}">
+            <tr>
+              <td th:text="후보자명"></td>
+              <span th:each="candidate : ${candidates}">
+              <td th:if="${count.candidateId} == ${candidate.candidateId}"
+                  th:text="${candidate.candidateName}"></td>
+            </span>
+              <td th:text="선호도순위"></td>
+              <td th:text="${count.totalRank}"></td>
+            </tr>
+          </span>
+        </div>
     </table>
-</form>
-    <canvas id="myChart" width="100" height="50"></canvas>
-    </div>
 
-    <br>
-    <div class="d-flex justify-content-center">
-        <a th:href="@{/users/count/list(phoneNumber=${session.loginUser})}">목록으로
-            돌아가기</a>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        /*<![CDATA[*/
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var positiveData = [[${voteResult.prosRatio}]];
-        var negativeData = [[${voteResult.consRatio}]];
 
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['찬성', '반대'],
-                datasets: [{
-                    label: '개표 결과',
-                    data: [positiveData, negativeData],
-                    backgroundColor: [
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                    ],
-                    borderColor: [
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-
-        /*]]>*/
-    </script>
 </section>
 </html>

@@ -2,6 +2,7 @@ package com.project.voting.controller.count;
 
 
 import com.project.voting.domain.candidate.Candidate;
+import com.project.voting.domain.count.Count;
 import com.project.voting.domain.election.Election;
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteType;
@@ -32,6 +33,7 @@ public class CountController {
   private final VoteService voteService;
   private final CandidateService candidateService;
   private final VoteBoxService voteBoxService;
+  private final CountService countService;
 
   @GetMapping("/count/list")
   public String list(@AuthenticationPrincipal @RequestParam(name = "phoneNumber") String usersPhone,
@@ -46,8 +48,10 @@ public class CountController {
     @RequestParam String usersPhone) {
     Election detail = electionService.detail(electionId);
 
+
     model.addAttribute("detail", detail);
     model.addAttribute("usersPhone", usersPhone);
+
 
 
     LocalDateTime currentDate = LocalDateTime.now();
@@ -77,6 +81,26 @@ public class CountController {
     model.addAttribute("voteBoxDto", voteBoxDto);
 //    model.addAttribute("candidateLength", candidateLength);
     return "users/count/vote-count";
+  }
+
+  @GetMapping("/count/voteResult/{voteId}")
+  public String countVoteComplete(@RequestParam Long electionId, @PathVariable Long voteId, @RequestParam VoteType voteType, Model model, @RequestParam(name = "usersPhone") String usersPhone) {
+
+    Count count = countService.votesResultConfirm(electionId, voteId, voteType);
+
+    Vote vote = voteService.detail(voteId);
+    Election election = electionService.detail(electionId);
+    List<Candidate> candidates = candidateService.details(voteId);
+    List<Count> counts = countService.details(voteId);
+
+    model.addAttribute("usersPhone", usersPhone);
+    model.addAttribute("votes", vote);
+    model.addAttribute("elections", election);
+    model.addAttribute("candidates", candidates);
+    model.addAttribute("count", count);
+    model.addAttribute("counts", counts);
+
+    return "users/count/vote-result";
   }
 
   @PostMapping("/save")

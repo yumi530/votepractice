@@ -2,7 +2,6 @@ package com.project.voting.service.vote;
 
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteRepository;
-import com.project.voting.domain.voteBox.VoteBoxRepository;
 import com.project.voting.dto.vote.VoteDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +30,6 @@ public class VoteServiceImpl implements VoteService {
     Vote vote = voteRepository.findByVoteId(voteId);
     return vote;
   }
+
 }
 

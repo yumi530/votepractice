@@ -12,7 +12,10 @@
 
       <form th:action="@{/users/logout}" method="post">
         <input type="hidden" th:value="${usersPhone}" name="usersPhone">
-
+        <input type="hidden" th:value="${detail.electionId}" name="electionId">
+<!--        <div th:each="vote : ${vote}">-->
+<!--        <input type="hidden" th:value="${vote.voteType}" name="voteType">-->
+<!--        </div>-->
 
         <table class="table">
           <tr>
@@ -52,7 +55,7 @@
               </button>
               <button class="btn btn-secondary" type="button"
                       th:unless="${isBefore}"
-                      th:onclick="'location.href=\'' + @{/users/count/voteCount/{voteId}(voteId=${vote.voteId}, usersPhone=${usersPhone})} + '\''">
+                      th:onclick="'location.href=\'' + @{/users/count/voteResult/{voteId}(voteId=${vote.voteId}, usersPhone=${usersPhone}, electionId=${electionId}, voteType=${vote.voteType})} + '\''">
                 개표 확인
               </button>
             </td>

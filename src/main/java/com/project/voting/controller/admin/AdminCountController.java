@@ -49,7 +49,7 @@ public class AdminCountController {
   }
 
   @RequestMapping("/election/complete")
-  public String sample(@RequestParam Long electionId, @RequestParam Long voteId,  @RequestParam VoteType voteType, Model model) {
+  public String countVoteComplete(@RequestParam Long electionId, @RequestParam Long voteId,  @RequestParam VoteType voteType, Model model) {
 
     Count count = countService.votesResultConfirm(electionId, voteId, voteType);
 
