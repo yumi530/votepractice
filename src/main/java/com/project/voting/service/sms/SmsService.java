@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.voting.config.RedisService;
 import com.project.voting.domain.users.Users;
 import com.project.voting.domain.users.UsersRepository;
+import com.project.voting.exception.users.UsersCustomException;
+import com.project.voting.exception.users.UsersErrorCode;
 import com.project.voting.service.cache.CacheService;
 import com.project.voting.dto.sms.MessageDto;
 import com.project.voting.dto.sms.SmsRequestDto;
@@ -63,6 +65,7 @@ public class SmsService {
     private String phone;
 
     public String getSignature(String time) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
+
         String space = " ";
         String newLine = "\n";
         String method = "POST";
@@ -93,10 +96,11 @@ public class SmsService {
 
 
     public String sendSms(String to) throws JsonProcessingException, RestClientException, URISyntaxException, InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
+
         Duration verificationTimeLimit = Duration.ofSeconds(VERIFICATION_TIME_LIMIT);
         Optional<Users> optionalUsers = usersRepository.findByUsersPhone(to);
         if (!optionalUsers.isPresent()) {
-            throw new RuntimeException("선거인 명부에 존재하지 않습니다.");
+            throw new UsersCustomException(UsersErrorCode.USERS_LIST_NOT_FOUND);
         }
         String time = Long.toString(System.currentTimeMillis());
 

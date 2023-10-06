@@ -14,6 +14,12 @@ import com.project.voting.domain.vote.VoteRepository;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.dto.election.ElectionDto;
 
+import com.project.voting.exception.admin.AdminCustomException;
+import com.project.voting.exception.admin.AdminErrorCode;
+import com.project.voting.exception.candidate.CandidateCustomException;
+import com.project.voting.exception.candidate.CandidateErrorCode;
+import com.project.voting.exception.election.ElectionCustomException;
+import com.project.voting.exception.election.ElectionErrorCode;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -59,7 +65,7 @@ public class ElectionServiceImpl implements ElectionService {
     throws IOException {
 
     Optional<Admin> optionalAdmin = adminRepository.findById(admin.getUsername());
-    Admin adminId = optionalAdmin.orElseThrow(() -> new RuntimeException("관리자 정보를 찾을 수 없습니다."));
+    Admin adminId = optionalAdmin.orElseThrow(() -> new AdminCustomException(AdminErrorCode.ADMIN_NOT_FOUND));
 
     LocalDateTime now = LocalDateTime.now();
 
@@ -67,11 +73,11 @@ public class ElectionServiceImpl implements ElectionService {
     LocalDateTime electionEndDt = electionDto.getElectionEndDt();
 
     if (electionStartDt.isBefore(now)) {
-      throw new RuntimeException("시작일시는 현재 시각 이후로 설정해야 합니다.");
+      throw new ElectionCustomException(ElectionErrorCode.START_TIME_NOT_VALID);
     }
 
     if (electionEndDt.isBefore(electionStartDt)) {
-      throw new RuntimeException("종료일시는 시작일시 이후로 설정해야 합니다.");
+      throw new ElectionCustomException(ElectionErrorCode.END_TIME_NOT_VALID);
     }
 
     Election election = Election.builder()
@@ -185,7 +191,7 @@ public class ElectionServiceImpl implements ElectionService {
           }
           candidateRepository.saveAll(candidates);
         } else {
-          throw new RuntimeException("후보자를 2명 이상 등록해주세요.");
+          throw new CandidateCustomException(CandidateErrorCode.NUMBERS_OF_CANDIDATE_NOT_VALID);
         }
       } else if ("PREFERENCE".equals(voteType)) {
 
@@ -225,7 +231,7 @@ public class ElectionServiceImpl implements ElectionService {
           candidateRepository.saveAll(candidates);
         }
       } else {
-        throw new RuntimeException("후보자를 3명 이상 등록해주세요.");
+        throw new CandidateCustomException(CandidateErrorCode.NUMBERS_OF_CANDIDATE_NOT_VALID);
       }
     }
 

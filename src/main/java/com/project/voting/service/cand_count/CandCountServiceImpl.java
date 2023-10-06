@@ -7,6 +7,8 @@ import com.project.voting.domain.election.ElectionRepository;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.domain.voteBox.VoteBoxRepository;
+import com.project.voting.exception.cand_count.CandCountCustomException;
+import com.project.voting.exception.cand_count.CandCountErrorCode;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +35,7 @@ public class CandCountServiceImpl implements CandCountService {
     LocalDateTime now = LocalDateTime.now();
 
     if (election.getElectionEndDt().isAfter(now)) {
-      throw new RuntimeException("선거 종료일 전에는 개표할 수 없습니다.");
+      throw new CandCountCustomException(CandCountErrorCode.CAND_COUNT_TIME_NOT_VALID);
     }
     if (voteType == VoteType.PROS_CONS) {
       List<VoteBox> candidateIds = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);

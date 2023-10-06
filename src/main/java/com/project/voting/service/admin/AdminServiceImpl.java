@@ -3,6 +3,8 @@ package com.project.voting.service.admin;
 import com.project.voting.domain.admin.Admin;
 import com.project.voting.domain.admin.AdminRepository;
 
+import com.project.voting.exception.admin.AdminCustomException;
+import com.project.voting.exception.admin.AdminErrorCode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +23,9 @@ public class AdminServiceImpl implements AdminService  {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         Optional<Admin> optionalAdmin = adminRepository.findById(username);
-        optionalAdmin.orElseThrow(() -> new UsernameNotFoundException("관리자 ID가 존재하지 않습니다."));
+        optionalAdmin.orElseThrow(() -> new AdminCustomException(AdminErrorCode.ADMIN_NOT_FOUND));
 
         Admin admin = optionalAdmin.get();
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
@@ -31,13 +34,5 @@ public class AdminServiceImpl implements AdminService  {
         }
         return admin;
     }
-
-    @Override
-    public Optional<Admin> detail(Admin admin) {
-        Optional<Admin> optionalAdmin = adminRepository.findById(admin.getAdminId());
-        optionalAdmin.orElseThrow(() -> new RuntimeException("관리자 정보가 존재하지 않습니다."));
-        return optionalAdmin;
-    }
-
 
 }
