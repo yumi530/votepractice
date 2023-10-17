@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface CountRepository extends JpaRepository<Count, Long> {
 
   List<Count> findAllCandidateIdsByVoteId(Long voteId);
+
 }

@@ -37,9 +37,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http
       .formLogin()
-      .loginPage("/admin/index")
-      .loginProcessingUrl("/admin/login")
-      .defaultSuccessUrl("/admin/index", true)
+      .loginPage("/admin/login")
+//      .defaultSuccessUrl("/admin/index", true)
       .failureHandler(getFailureHandler())
       .usernameParameter("username")
       .passwordParameter("password")

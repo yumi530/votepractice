@@ -13,9 +13,9 @@ public class AdminController {
 
     return "admin/login";
   }
-  @RequestMapping("/index")
-  public String adminIndex() {
-
-    return "admin/index";
-  }
+//  @RequestMapping("/index")
+//  public String adminIndex() {
+//
+//    return "admin/index";
+//  }
 }

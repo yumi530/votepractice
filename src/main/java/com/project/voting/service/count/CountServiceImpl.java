@@ -5,7 +5,9 @@ import com.project.voting.domain.cand_count.CandCountRepository;
 import com.project.voting.domain.count.Count;
 import com.project.voting.domain.count.CountRepository;
 
+import com.project.voting.domain.users.UsersRepository;
 import com.project.voting.domain.vote.VoteType;
+import com.project.voting.domain.voteBox.VoteBoxRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ public class CountServiceImpl implements CountService {
 
   private final CountRepository countRepository;
   private final CandCountRepository candCountRepository;
+  private final UsersRepository usersRepository;
+  private final VoteBoxRepository voteBoxRepository;
 
   @Override
   public Count votesResultConfirm(Long electionId, Long voteId, VoteType voteType) {
@@ -52,8 +56,7 @@ public class CountServiceImpl implements CountService {
         }
         countRepository.save(count);
       }
-    }
-    else if (voteType == VoteType.SCORE || voteType == VoteType.PREFERENCE) {
+    } else if (voteType == VoteType.SCORE || voteType == VoteType.PREFERENCE) {
 
       for (CandCount candidate : candidateIds) {
         Count count = new Count();
@@ -69,6 +72,31 @@ public class CountServiceImpl implements CountService {
 
   @Override
   public List<Count> details(Long voteId) {
+
     return countRepository.findAllCandidateIdsByVoteId(voteId);
   }
+
+  @Override
+  public Count turnOut(Long electionId, Long voteId) {
+
+    List<CandCount> candidateIds = candCountRepository.findAllCandidateIdsByVoteId(voteId);
+    Integer numOfElectors = usersRepository.countUsersPhonesByElectionId(
+      electionId);
+
+    Integer numOfParticipation = voteBoxRepository.countUsersPhonesByVoteId(voteId) / candidateIds.size();
+
+    double calTurnOut = ((numOfParticipation * 100) / numOfElectors);
+
+    for (CandCount candidate : candidateIds) {
+      Count count = new Count();
+      count.setElectionId(electionId);
+      count.setVoteId(voteId);
+      count.setCandidateId(candidate.getCandidateId());
+      count.setTurnOut(calTurnOut);
+
+      countRepository.save(count);
+    }
+    return new Count();
+  }
 }
+

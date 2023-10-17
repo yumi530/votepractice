@@ -79,14 +79,14 @@
         templateContent += `
           <input type="text" class="form-control" name="votes[${voteIndex}].voteTitle" placeholder="투표명" required>
           <div id="candidatesContainer_${voteIndex}">
-            <button type="button" onclick="addCandidate(${voteIndex})">후보자 추가</button>
+            <button class="btn btn-dark" type="button" onclick="addCandidate(${voteIndex})">후보자 추가</button>
           </div>
         `;
       } else if (voteType === 'SCORE') {
         templateContent += `
           <input type="text" class="form-control" name="votes[${voteIndex}].voteTitle" placeholder="투표명" required>
           <div id="candidatesContainer_${voteIndex}">
-            <button type="button" onclick="addCandidate(${voteIndex})">후보자 추가</button>
+            <button class="btn btn-dark" type="button" onclick="addCandidate(${voteIndex})">후보자 추가</button>
           </div>
         `;
       } else if (voteType === 'PREFERENCE' +
@@ -95,7 +95,7 @@
         templateContent += `
           <input type="text" class="form-control" name="votes[${voteIndex}].voteTitle" placeholder="투표명" required>
           <div id="candidatesContainer_${voteIndex}">
-            <button type="button" onclick="addCandidate(${voteIndex})">후보자 추가</button>
+            <button class="btn btn-dark" type="button" onclick="addCandidate(${voteIndex})">후보자 추가</button>
           </div>
         `;
       }

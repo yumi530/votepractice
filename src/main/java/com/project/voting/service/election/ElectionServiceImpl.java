@@ -310,7 +310,11 @@ public class ElectionServiceImpl implements ElectionService {
 
   @Override
   public Election detailElection(Long voteId) {
+
     Election election = electionRepository.findElectionIdByVotes_VoteId(voteId);
+
+    if (LocalDateTime.now().isBefore(election.getElectionStartDt())) throw new ElectionCustomException(ElectionErrorCode.ELECTION_NOT_AVAILABLE);
+
     return election;
   }
 

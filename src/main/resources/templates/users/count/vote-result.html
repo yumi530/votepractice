@@ -83,7 +83,225 @@
           </span>
         </div>
     </table>
+  <canvas id="myChart" width="80" height="30"></canvas>
 
+  <div class="d-flex justify-content-center">
+    <a th:href="@{/admin/election/detail(electionId=${elections.electionId})}">개표 확인 페이지로 이동하기</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <div th:if="${#strings.equals(votes.voteType, 'PROS_CONS')}">
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+
+      var candCounts = [[${candCounts}]];
+      var prosRatio = candCounts[0].prosRatio;
+      var consRatio = candCounts[0].consRatio;
+
+      console.log(prosRatio);
+      console.log(consRatio);
+
+      var ctx = document.getElementById('myChart').getContext('2d');
+      var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['찬성', '반대'],
+          datasets: [{
+            label: '개표 결과',
+            data: [prosRatio, consRatio],
+            backgroundColor: [
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+            ],
+            borderColor: [
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+      /*]]>*/
+    </script>
+  </div>
+  <div th:if="${#strings.equals(votes.voteType, 'CHOICE')}">
+    <script th:inline="javascript">
+
+      /*<![CDATA[*/
+
+      var xValues = [];
+      var candidates = [[${candidates}]];
+
+      for (var i = 0; i < candidates.length; i++) {
+        var candidateName = candidates[i].candidateName;
+        xValues.push(candidateName);
+      }
+
+      var yValues = [];
+      var candCounts = [[${candCounts}]];
+
+      for (var i = 0; i < candCounts.length; i++) {
+        var choicesAvg = candCounts[i].choicesAvg;
+        yValues.push(choicesAvg);
+      }
+
+      var ctx = document.getElementById('myChart').getContext('2d');
+
+      var myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: xValues,
+          datasets: [{
+            data: yValues,
+            backgroundColor: ['rgba(250,222,155,0.92)', '#f1b5c2', '#b0d5ef', '#9de5e5', '#9966ff', '#ff9f40', '#c9cbcf'],
+            borderColor: '#dbcbf1'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            title: {
+              display: true,
+              text: '선택 비율 '
+            }
+          }
+        }
+      });
+      /*]]>*/
+    </script>
+  </div>
+
+  <div th:if="${#strings.equals(votes.voteType, 'SCORE')}">
+    <script th:inline="javascript">
+
+      /*<![CDATA[*/
+
+      var xValues = [];
+      var candidates = [[${candidates}]];
+
+      for (var i = 0; i < candidates.length; i++) {
+        var candidateName = candidates[i].candidateName;
+        xValues.push(candidateName);
+      }
+
+      var yValues = [];
+      var candCounts = [[${candCounts}]];
+
+      for (var i = 0; i < candCounts.length; i++) {
+        var scoresAvg = candCounts[i].scoresAvg;
+        yValues.push(scoresAvg);
+      }
+
+      var ctx = document.getElementById('myChart').getContext('2d');
+
+
+      var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: xValues,
+          datasets: [{
+            data: yValues,
+            backgroundColor: ['#ffcd56', '#ff6384', '#36a2eb', '#4bc0c0', '#9966ff', '#ff9f40', '#c9cbcf'],
+            borderColor: '#4dc9f6'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            title: {
+              display: true,
+              text: '개표 결과 '
+            }
+          }
+        }
+      });
+      /*]]>*/
+    </script>
+  </div>
+
+  <div th:if="${#strings.equals(votes.voteType, 'PREFERENCE')}">
+    <script th:inline="javascript">
+
+      /*<![CDATA[*/
+
+      var xValues = [];
+      var candidates = [[${candidates}]];
+
+      for (var i = 0; i < candidates.length; i++) {
+        var candidateName = candidates[i].candidateName;
+        xValues.push(candidateName);
+      }
+
+      var yValues = [];
+      var candCounts = [[${candCounts}]];
+
+      for (var i = 0; i < candCounts.length; i++) {
+        var ranksAvg = candCounts[i].ranksAvg;
+        yValues.push(ranksAvg);
+      }
+
+      var ctx = document.getElementById('myChart').getContext('2d');
+
+
+      var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: xValues,
+          datasets: [{
+            data: yValues,
+            backgroundColor: ['#ffcd56', '#ff6384', '#36a2eb', '#4bc0c0', '#9966ff', '#ff9f40', '#c9cbcf'],
+            borderColor: '#4dc9f6'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            title: {
+              display: true,
+              text: '개표 결과 '
+            }
+          }
+        }
+      });
+      /*]]>*/
+    </script>
+  </div>
+
+  </div>
 
 
 </section>

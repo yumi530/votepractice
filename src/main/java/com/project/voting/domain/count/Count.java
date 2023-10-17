@@ -27,15 +27,18 @@ public class Count {
 
   private int totalRank;
 
+  private double turnOut;
+
 
   @Builder
   public Count(Long electionId, Long voteId, Long candidateId, boolean electedYn,
-    int totalRank) {
+    int totalRank, double turnOut) {
     this.electionId = electionId;
     this.voteId = voteId;
     this.candidateId = candidateId;
     this.electedYn = electedYn;
     this.totalRank = totalRank;
+    this.turnOut = turnOut;
 
   }
 

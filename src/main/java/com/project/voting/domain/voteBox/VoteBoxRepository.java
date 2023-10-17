@@ -16,9 +16,9 @@ public interface VoteBoxRepository extends JpaRepository<VoteBox, Long> {
 
   Long countAllByVoteId(Long voteId);
 
-  Long countByIsAgreedTrueAndCandidateId(Long candidateId);
+  Long countByHadChosenTrueAndCandidateId(Long candidateId);
 
-  Long countByIsAgreedFalseAndCandidateId(Long candidateId);
+  Long countByHadChosenFalseAndCandidateId(Long candidateId);
 
   @Query(value = "SELECT SUM(CAST(vb.choices AS DECIMAL(10, 2))) FROM vote_box vb WHERE vb.candidate_id = :candidateId", nativeQuery = true)
   Integer sumChoicesByCandidateId(@Param("candidateId") Long candidateId);
@@ -32,4 +32,8 @@ public interface VoteBoxRepository extends JpaRepository<VoteBox, Long> {
   List<VoteBox> findAllCandidateIdsByVoteId(Long voteId);
 
   Integer countUsersPhonesByCandidateId(Long candidateId);
+
+  Integer countUsersPhonesByVoteId(Long voteId);
+
+  List<VoteBox> findAllByCandidateId(Long aLong);
 }

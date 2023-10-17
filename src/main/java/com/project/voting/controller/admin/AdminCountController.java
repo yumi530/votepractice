@@ -1,6 +1,7 @@
 package com.project.voting.controller.admin;
 
 
+import com.project.voting.domain.cand_count.CandCount;
 import com.project.voting.domain.candidate.Candidate;
 import com.project.voting.domain.count.Count;
 import com.project.voting.domain.election.Election;
@@ -21,7 +22,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin")
-public class AdminCountController {
+public class
+
+AdminCountController {
 
   private final CandCountService candCountService;
   private final VoteService voteService;
@@ -39,10 +42,12 @@ public class AdminCountController {
     Vote vote = voteService.detail(voteId);
     Election election = electionService.detail(electionId);
     List<Candidate> candidates = candidateService.details(voteId);
+    Count turnOut = countService.turnOut(electionId ,voteId);
 
     model.addAttribute("votes", vote);
     model.addAttribute("elections",election);
     model.addAttribute("candidates", candidates);
+    model.addAttribute("turnOut", turnOut);
 
     redirectAttributes.addFlashAttribute("message", "개표 완료");
     return "/admin/election/results";
@@ -57,12 +62,16 @@ public class AdminCountController {
     Election election = electionService.detail(electionId);
     List<Candidate> candidates = candidateService.details(voteId);
     List<Count> counts = countService.details(voteId);
+//    CandCount candCount = candCountService.detail(voteId);
+    List<CandCount> candCounts = candCountService.details(voteId);
 
     model.addAttribute("votes", vote);
     model.addAttribute("elections",election);
     model.addAttribute("candidates", candidates);
     model.addAttribute("count", count);
     model.addAttribute("counts", counts);
+//    model.addAttribute("candCount1", candCount);
+    model.addAttribute("candCounts", candCounts);
 
     return "/admin/election/complete";
   }

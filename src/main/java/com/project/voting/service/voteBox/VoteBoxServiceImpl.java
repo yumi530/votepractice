@@ -53,7 +53,7 @@ public class VoteBoxServiceImpl implements VoteBoxService {
 
 
   @Override
-  public VoteBox saveChoice(VoteBoxDto voteBoxDto, String usersPhone, String choices) {
+  public List<VoteBox> saveChoice(VoteBoxDto voteBoxDto, String usersPhone, String choices) {
 
     Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
       voteBoxDto.getCandidateId(), usersPhone);
@@ -85,12 +85,18 @@ public class VoteBoxServiceImpl implements VoteBoxService {
           voteBoxes.add(voteBox);
         }
       }
+
       voteBoxRepository.saveAll(voteBoxes);
 
-      VoteBox candidateVoteBox = voteBoxRepository.findByCandidateId(Long.valueOf(choices));
-      candidateVoteBox.setChoices("1");
-      voteBoxRepository.save(candidateVoteBox);
-      return candidateVoteBox;
+      List<VoteBox> candidateVoteBoxes = voteBoxRepository.findAllByCandidateId(Long.valueOf(choices));
+      for (VoteBox candVoteBox : candidateVoteBoxes) {
+        if (candVoteBox.getUsersPhone().equals(usersPhone)) {
+          candVoteBox.setChoices("1");
+          voteBoxRepository.save(candVoteBox);
+        }
+      }
+      return candidateVoteBoxes;
+
     }
   }
 
@@ -180,7 +186,7 @@ public class VoteBoxServiceImpl implements VoteBoxService {
 
     VoteBox voteBox = new VoteBox();
     voteBox.setVoteId(voteBoxDto.getVoteId());
-    voteBox.setAgreed(voteBoxDto.isAgreed());
+    voteBox.setHadChosen(voteBoxDto.isHadChosen());
     voteBox.setUsersPhone(usersPhone);
     voteBox.setHadVoted(true);
     voteBox.setElectionId(candidate.getElectionId());

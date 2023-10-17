@@ -8,7 +8,7 @@ public interface VoteBoxService {
 
   List<VoteBox> saveProsCons(VoteBoxDto voteBoxDto, String usersPhone);
 
-  VoteBox saveChoice(VoteBoxDto voteBoxDto, String usersPhone, String candidateId);
+  List<VoteBox> saveChoice(VoteBoxDto voteBoxDto, String usersPhone, String candidateId);
 
   List<VoteBox> saveScore(VoteBoxDto voteBoxDto, String usersPhone);
 

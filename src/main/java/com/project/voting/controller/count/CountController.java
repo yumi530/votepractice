@@ -1,6 +1,7 @@
 package com.project.voting.controller.count;
 
 
+import com.project.voting.domain.cand_count.CandCount;
 import com.project.voting.domain.candidate.Candidate;
 import com.project.voting.domain.count.Count;
 import com.project.voting.domain.election.Election;
@@ -9,6 +10,7 @@ import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.dto.users.UsersDto;
 import com.project.voting.dto.voteBox.VoteBoxDto;
+import com.project.voting.service.cand_count.CandCountService;
 import com.project.voting.service.candidate.CandidateService;
 import com.project.voting.service.count.CountService;
 import com.project.voting.service.election.ElectionService;
@@ -34,6 +36,7 @@ public class CountController {
   private final CandidateService candidateService;
   private final VoteBoxService voteBoxService;
   private final CountService countService;
+  private final CandCountService candCountService;
 
   @GetMapping("/count/list")
   public String list(@AuthenticationPrincipal @RequestParam(name = "phoneNumber") String usersPhone,
@@ -67,6 +70,7 @@ public class CountController {
     @RequestParam(name = "usersPhone") String usersPhone) {
     Election detailElection = electionService.detailElection(voteId);
     Vote detailVote = voteService.detail(voteId);
+//    Count turnOut = countService.turnOut(voteId);
     List<Candidate> detailCand = candidateService.detail(voteId);
     List<VoteBox> detailVoteBox = voteBoxService.detailVoteBox(voteId);
 //    Candidate candidateLength = candidateService.candidateLength(voteId);
@@ -80,6 +84,8 @@ public class CountController {
     model.addAttribute("usersPhone", usersPhone);
     model.addAttribute("voteBoxDto", voteBoxDto);
 //    model.addAttribute("candidateLength", candidateLength);
+//    model.addAttribute("turnOut", turnOut);
+
     return "users/count/vote-count";
   }
 
@@ -88,10 +94,12 @@ public class CountController {
 
     Count count = countService.votesResultConfirm(electionId, voteId, voteType);
 
+
     Vote vote = voteService.detail(voteId);
     Election election = electionService.detail(electionId);
     List<Candidate> candidates = candidateService.details(voteId);
     List<Count> counts = countService.details(voteId);
+    List<CandCount> candCounts = candCountService.details(voteId);
 
     model.addAttribute("usersPhone", usersPhone);
     model.addAttribute("votes", vote);
@@ -99,6 +107,7 @@ public class CountController {
     model.addAttribute("candidates", candidates);
     model.addAttribute("count", count);
     model.addAttribute("counts", counts);
+    model.addAttribute("candCounts", candCounts);
 
     return "users/count/vote-result";
   }
@@ -112,7 +121,9 @@ public class CountController {
     if (voteBoxDto.getVoteType() == VoteType.PROS_CONS) {
       voteBoxService.saveProsCons(voteBoxDto, usersPhone);
     } else if (voteBoxDto.getVoteType() == VoteType.CHOICE) {
-      voteBoxService.saveChoice(voteBoxDto, usersPhone, choices);
+      voteBoxService.
+
+        saveChoice(voteBoxDto, usersPhone, choices);
     }
 
     if (voteBoxDto.getVoteType() == VoteType.SCORE) {

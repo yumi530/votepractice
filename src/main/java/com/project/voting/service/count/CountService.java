@@ -12,4 +12,6 @@ public interface CountService {
   Count votesResultConfirm(Long electionId, Long voteId, VoteType voteType);
 
   List<Count> details(Long voteId);
+
+  Count turnOut(Long electionId ,Long voteId);
 }
