@@ -24,20 +24,24 @@
 
           <div th:each="candidate : ${detailCand}">
             <input type="hidden" th:value="${candidate.candidateId}" name="candidateId"/>
-            <div>
               <p class="card-text" th:text="'후보자명: ' + ${candidate.candidateName}"></p>
               <p class="card-text" th:text="'후보자정보: ' + ${candidate.candidateInfo}"></p>
-            </div>
           </div>
-          <div>
+          <hr>
             <p class="card-text" th:text="'투표 종류: ' + ${detailVote.voteType}"></p>
-          </div>
 
           <div th:if="${#strings.equals(detailVote.voteType, 'PROS_CONS')}">
             <label for="hadChosen">찬성</label>
             <input type="radio" id="hadChosen" name="hadChosen" value="true" checked>
             <label for="unChosen">반대</label>
             <input type="radio" id="unChosen" name="hadChosen" value="false">
+            <hr>
+            <li>투표 방법 : 후보자에 대한 찬성 또는 반대를 선택해주세요.</li>
+            <br>
+              <ul>PROS_CONS : 찬반 투표</ul>
+              <ul>CHOICE : 선택 투표</ul>
+              <ul>SCORE : 점수 투표</ul>
+              <ul>PREFERENCE : 선호도 투표</ul>
           </div>
 
           <div th:if="${#strings.equals(detailVote.voteType, 'CHOICE')}">
@@ -46,6 +50,13 @@
               <input type="checkbox" th:id="'candidate-' + ${candidate.candidateId}"
                      th:field="*{choices}" th:value="${candidate.candidateId}" />
             </div>
+            <hr>
+            <li>투표 방법 : 각 후보자 중 한 명을 선택해주세요.</li>
+            <br>
+            <ul>PROS_CONS : 찬반 투표</ul>
+            <ul>CHOICE : 선택 투표</ul>
+            <ul>SCORE : 점수 투표</ul>
+            <ul>PREFERENCE : 선호도 투표</ul>
           </div>
 
           <div th:if="${#strings.equals(detailVote.voteType, 'SCORE')}">
@@ -54,18 +65,29 @@
               <input type="number" min="0" max="100" th:id="'candidate-' + ${candidate.candidateId}"
                      th:field="*{scores}"/>
             </div>
+            <li>투표 방법 : 각 후보자에게 0~100의 점수를 기입해주세요.</li>
+            <br>
+            <ul>PROS_CONS : 찬반 투표</ul>
+            <ul>CHOICE : 선택 투표</ul>
+            <ul>SCORE : 점수 투표</ul>
+            <ul>PREFERENCE : 선호도 투표</ul>
           </div>
 
           <div th:if="${#strings.equals(detailVote.voteType, 'PREFERENCE')}">
             <div th:each="candidate : ${detailCand}">
               <label th:for="ranks" th:text="${candidate.candidateName}"></label>
-              <input type="number" min="0" th:max="${candidateLength}" th:id="'candidate-' + ${candidate.candidateId}"
+              <input type="number" min="1" th:id="'candidate-' + ${candidate.candidateId}"
                      th:field="*{ranks}"/>
             </div>
+            <li>투표 방법 : 1부터 후보자 수 만큼 차례대로 선호도를 기입해주세요.</li>
+            <br>
+            <ul>PROS_CONS : 찬반 투표</ul>
+            <ul>CHOICE : 선택 투표</ul>
+            <ul>SCORE : 점수 투표</ul>
+            <ul>PREFERENCE : 선호도 투표</ul>
           </div>
           <button class="btn btn-secondary" type="submit">투표 하기</button>
         </form>
-
       </div>
     </div>
   </div>

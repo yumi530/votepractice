@@ -5,6 +5,8 @@ import com.project.voting.domain.candidate.CandidateRepository;
 import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.domain.voteBox.VoteBoxRepository;
 import com.project.voting.dto.voteBox.VoteBoxDto;
+import com.project.voting.exception.vote_box.VoteBoxCustomException;
+import com.project.voting.exception.vote_box.VoteBoxErrorCode;
 import java.util.ArrayList;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -24,18 +26,18 @@ public class VoteBoxServiceImpl implements VoteBoxService {
     Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
       voteBoxDto.getCandidateId(), usersPhone);
     if (optionalVoteBox.isPresent()) {
-      throw new RuntimeException("중복 투표 불가 !");
+      throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_DUPLICATED);
     } else {
       List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
         voteBoxDto.getVoteId());
 
       if (candidateList == null) {
-        throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
+        throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_NOT_FOUND);
       }
 
       List<VoteBox> voteBoxes = new ArrayList<>();
 
-      if (candidateList != null && !candidateList.isEmpty()) {
+      if (!candidateList.isEmpty()) {
         for (int i = 0; i < candidateList.size(); i++) {
           Candidate c = candidateList.get(i);
 
@@ -58,13 +60,13 @@ public class VoteBoxServiceImpl implements VoteBoxService {
     Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
       voteBoxDto.getCandidateId(), usersPhone);
     if (optionalVoteBox.isPresent()) {
-      throw new RuntimeException("중복 투표 불가 !");
+      throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_DUPLICATED);
     } else {
       List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
         voteBoxDto.getVoteId());
 
       if (candidateList == null) {
-        throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
+        throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_NOT_FOUND);
       }
 
       List<VoteBox> voteBoxes = new ArrayList<>();
@@ -72,7 +74,7 @@ public class VoteBoxServiceImpl implements VoteBoxService {
       List<Candidate> candidate = candidateRepository.findAllByCandidateId(
         voteBoxDto.getCandidateId());
 
-      if (candidate != null && candidateList != null) {
+      if (candidate != null) {
 
         for (int i = 0; i < candidateList.size(); i++) {
           Candidate c = candidateList.get(i);
@@ -85,10 +87,10 @@ public class VoteBoxServiceImpl implements VoteBoxService {
           voteBoxes.add(voteBox);
         }
       }
-
       voteBoxRepository.saveAll(voteBoxes);
 
-      List<VoteBox> candidateVoteBoxes = voteBoxRepository.findAllByCandidateId(Long.valueOf(choices));
+      List<VoteBox> candidateVoteBoxes = voteBoxRepository.findAllByCandidateId(
+        Long.valueOf(choices));
       for (VoteBox candVoteBox : candidateVoteBoxes) {
         if (candVoteBox.getUsersPhone().equals(usersPhone)) {
           candVoteBox.setChoices("1");
@@ -96,7 +98,6 @@ public class VoteBoxServiceImpl implements VoteBoxService {
         }
       }
       return candidateVoteBoxes;
-
     }
   }
 
@@ -106,24 +107,28 @@ public class VoteBoxServiceImpl implements VoteBoxService {
     Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
       voteBoxDto.getCandidateId(), usersPhone);
     if (optionalVoteBox.isPresent()) {
-      throw new RuntimeException("중복 투표 불가 !");
+      throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_DUPLICATED);
     } else {
 
       List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
         voteBoxDto.getVoteId());
 
       if (candidateList == null) {
-        throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
+        throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_NOT_FOUND);
       }
 
       List<VoteBox> voteBoxes = new ArrayList<>();
 
       List<Integer> scoresList = voteBoxDto.getScoreList();
 
-      if (candidateList != null && !candidateList.isEmpty()) {
+      if (!candidateList.isEmpty()) {
 
         for (int i = 0; i < candidateList.size(); i++) {
           Integer score = scoresList.get(i);
+
+          if (score < 0 || score > 100) {
+            throw new VoteBoxCustomException(VoteBoxErrorCode.SCORE_NOT_VALID);
+          }
           Candidate c = candidateList.get(i);
 
           Integer rank = 0;
@@ -143,43 +148,57 @@ public class VoteBoxServiceImpl implements VoteBoxService {
     Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
       voteBoxDto.getCandidateId(), usersPhone);
     if (optionalVoteBox.isPresent()) {
-      throw new RuntimeException("중복 투표 불가 !");
+      throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_DUPLICATED);
     } else {
 
       List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
         voteBoxDto.getVoteId());
 
       if (candidateList == null) {
-        throw new RuntimeException("투표 정보를 찾을 수 없습니다.");
+        throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_NOT_FOUND);
       }
 
       List<VoteBox> voteBoxes = new ArrayList<>();
 
       List<Integer> ranksList = voteBoxDto.getRankList();
 
-      if (candidateList != null && !candidateList.isEmpty()) {
+      if (!candidateList.isEmpty()) {
 
         for (int i = 0; i < candidateList.size(); i++) {
-          Integer rank = ranksList.get(i);
-          Candidate c = candidateList.get(i);
 
-          Integer score = 0;
-          String choice = "0";
+          int minValue = 1;
+          int maxValue = candidateList.size();
+          boolean isValid = true;
 
-          VoteBox voteBox = toVoteBoxRank(voteBoxDto, c, score, rank, choice);
-          voteBoxes.add(voteBox);
+          for (int j = minValue; j <= maxValue; j++) {
+            if (!ranksList.contains(j)) {
+              isValid = false;
+              break;
+            }
+          }
+          if (!isValid) {
+            throw new VoteBoxCustomException(VoteBoxErrorCode.PREFER_NOT_VALID);
+
+          } else {
+            Integer rank = ranksList.get(i);
+            Candidate c = candidateList.get(i);
+
+            Integer score = 0;
+            String choice = "0";
+
+            VoteBox voteBox = toVoteBoxRank(voteBoxDto, c, score, rank, choice);
+            voteBoxes.add(voteBox);
+          }
         }
       }
       return voteBoxRepository.saveAll(voteBoxes);
     }
   }
 
-
   @Override
   public List<VoteBox> detailVoteBox(Long voteId) {
     return voteBoxRepository.findAllByVoteId(voteId);
   }
-
 
   private VoteBox toVoteBox(VoteBoxDto voteBoxDto, Candidate candidate, Integer rank, Integer score,
     String usersPhone, String choice) {

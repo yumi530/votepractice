@@ -56,7 +56,7 @@ AdminCountController {
   @RequestMapping("/election/complete")
   public String countVoteComplete(@RequestParam Long electionId, @RequestParam Long voteId,  @RequestParam VoteType voteType, Model model) {
 
-    Count count = countService.votesResultConfirm(electionId, voteId, voteType);
+    countService.votesResultConfirm(electionId, voteId, voteType);
 
     Vote vote = voteService.detail(voteId);
     Election election = electionService.detail(electionId);
@@ -68,7 +68,7 @@ AdminCountController {
     model.addAttribute("votes", vote);
     model.addAttribute("elections",election);
     model.addAttribute("candidates", candidates);
-    model.addAttribute("count", count);
+//    model.addAttribute("count", count);
     model.addAttribute("counts", counts);
 //    model.addAttribute("candCount1", candCount);
     model.addAttribute("candCounts", candCounts);

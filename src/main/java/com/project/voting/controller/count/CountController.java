@@ -92,8 +92,7 @@ public class CountController {
   @GetMapping("/count/voteResult/{voteId}")
   public String countVoteComplete(@RequestParam Long electionId, @PathVariable Long voteId, @RequestParam VoteType voteType, Model model, @RequestParam(name = "usersPhone") String usersPhone) {
 
-    Count count = countService.votesResultConfirm(electionId, voteId, voteType);
-
+    countService.votesResultConfirm(electionId, voteId, voteType);
 
     Vote vote = voteService.detail(voteId);
     Election election = electionService.detail(electionId);
@@ -105,7 +104,7 @@ public class CountController {
     model.addAttribute("votes", vote);
     model.addAttribute("elections", election);
     model.addAttribute("candidates", candidates);
-    model.addAttribute("count", count);
+//    model.addAttribute("count", count);
     model.addAttribute("counts", counts);
     model.addAttribute("candCounts", candCounts);
 

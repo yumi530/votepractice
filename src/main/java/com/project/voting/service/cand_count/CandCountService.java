@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CandCountService {
 
-  CandCount countVotesResult(Long voteId, Long electionId, VoteType voteType);
+  void countVotesResult(Long voteId, Long electionId, VoteType voteType);
 
   List<CandCount> details(Long voteId);
 

@@ -27,7 +27,7 @@ public class CandCountServiceImpl implements CandCountService {
 
   @Override
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-  public CandCount countVotesResult(Long voteId, Long electionId,
+  public void countVotesResult(Long voteId, Long electionId,
     VoteType voteType) {
 
     Election election = electionRepository.findById(electionId).get();
@@ -37,51 +37,54 @@ public class CandCountServiceImpl implements CandCountService {
     if (election.getElectionEndDt().isAfter(now)) {
       throw new CandCountCustomException(CandCountErrorCode.CAND_COUNT_TIME_NOT_VALID);
     }
-    if (voteType == VoteType.PROS_CONS) {
-      List<VoteBox> candidateIds = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
 
-      for (VoteBox candId : candidateIds) {
-        Long countIds = voteBoxRepository.countAllByVoteId(voteId);
-        Long countPros = voteBoxRepository.countByHadChosenTrueAndCandidateId(
-          candId.getCandidateId());
-        Long countCons = voteBoxRepository.countByHadChosenFalseAndCandidateId(
-          candId.getCandidateId());
+    List<VoteBox> candidateIds = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
+    TreeSet<Double> avgList = new TreeSet<>(Collections.reverseOrder());
+    int rank = 1;
 
-        double prosRatio = pros(countIds, countPros);
-        double consRatio = cons(countIds, countCons);
+    switch (voteType) {
+      case PROS_CONS:
 
-        CandCount candCount = new CandCount();
-        candCount.setElectionId(electionId);
-        candCount.setVoteId(voteId);
-        candCount.setCandidateId(candId.getCandidateId());
+        for (VoteBox candId : candidateIds) {
+          Long countIds = voteBoxRepository.countAllByVoteId(voteId);
+          Long countPros = voteBoxRepository.countByHadChosenTrueAndCandidateId(
+            candId.getCandidateId());
+          Long countCons = voteBoxRepository.countByHadChosenFalseAndCandidateId(
+            candId.getCandidateId());
 
-        candCount.setResult(prosCons(countIds, countPros));
-        candCount.setProsRatio(prosRatio);
-        candCount.setConsRatio(consRatio);
+          double prosRatio = pros(countIds, countPros);
+          double consRatio = cons(countIds, countCons);
 
-        candCountRepository.save(candCount);
+          CandCount candCount = new CandCount();
+          candCount.setElectionId(electionId);
+          candCount.setVoteId(voteId);
+          candCount.setCandidateId(candId.getCandidateId());
 
-      }
-    } else if (voteType == VoteType.CHOICE) {
+          candCount.setResult(prosCons(countIds, countPros));
+          candCount.setProsRatio(prosRatio);
+          candCount.setConsRatio(consRatio);
 
-      List<VoteBox> candidateIds = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
-      TreeSet<Double> avgList = new TreeSet<>(Collections.reverseOrder());
+          candCountRepository.save(candCount);
+        }
+        break;
 
-      for (VoteBox candId : candidateIds) {
+      case CHOICE:
 
-        Integer sumChoices = voteBoxRepository.sumChoicesByCandidateId(candId.getCandidateId());
-        Integer usersPhones = voteBoxRepository.countUsersPhonesByCandidateId(
-          candId.getCandidateId());
+        for (VoteBox candId : candidateIds) {
 
-        double avg = (double) sumChoices / (double) usersPhones;
-        avgList.add(avg);
-      }
-        int rank = 1;
+          Integer sumChoices = voteBoxRepository.sumChoicesByCandidateId(candId.getCandidateId());
+          Integer usersPhones = voteBoxRepository.countUsersPhonesByCandidateId(
+            candId.getCandidateId());
+
+          double avg = (double) sumChoices / (double) usersPhones;
+          avgList.add(avg);
+        }
 
         for (Double avg : avgList) {
           for (VoteBox candId : candidateIds) {
             Integer sumChoices = voteBoxRepository.sumChoicesByCandidateId(candId.getCandidateId());
-            Integer usersPhones = voteBoxRepository.countUsersPhonesByCandidateId(candId.getCandidateId());
+            Integer usersPhones = voteBoxRepository.countUsersPhonesByCandidateId(
+              candId.getCandidateId());
 
             double candidateAvg = (double) sumChoices / (double) usersPhones;
 
@@ -98,26 +101,24 @@ public class CandCountServiceImpl implements CandCountService {
           }
           rank++;
         }
-    } else if (voteType == VoteType.SCORE) {
+        break;
 
-      List<VoteBox> candidateIds = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
-      TreeSet<Double> avgList = new TreeSet<>(Collections.reverseOrder());
+      case SCORE:
 
-      for (VoteBox candId : candidateIds) {
-        Integer sumScores = voteBoxRepository.sumScoresByCandidateId(candId.getCandidateId());
-        Integer usersPhones = voteBoxRepository.countUsersPhonesByCandidateId(
-          candId.getCandidateId());
+        for (VoteBox candId : candidateIds) {
+          Integer sumScores = voteBoxRepository.sumScoresByCandidateId(candId.getCandidateId());
+          Integer usersPhones = voteBoxRepository.countUsersPhonesByCandidateId(
+            candId.getCandidateId());
 
-        double avg = (double) sumScores / (double) usersPhones;
-        avgList.add(avg);
-      }
-
-        int rank = 1;
+          double avg = (double) sumScores / (double) usersPhones;
+          avgList.add(avg);
+        }
 
         for (Double avg : avgList) {
           for (VoteBox candId : candidateIds) {
             Integer sumSCores = voteBoxRepository.sumScoresByCandidateId(candId.getCandidateId());
-            Integer usersPhones = voteBoxRepository.countUsersPhonesByCandidateId(candId.getCandidateId());
+            Integer usersPhones = voteBoxRepository.countUsersPhonesByCandidateId(
+              candId.getCandidateId());
 
             double candidateAvg = (double) sumSCores / (double) usersPhones;
 
@@ -134,50 +135,48 @@ public class CandCountServiceImpl implements CandCountService {
           }
           rank++;
         }
-    } else if (voteType == VoteType.PREFERENCE) {
+        break;
 
-      List<VoteBox> candidateIds = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
-      TreeSet<Double> avgList = new TreeSet<>(Collections.reverseOrder());
+      case PREFERENCE:
 
-      for (VoteBox candId : candidateIds) {
-
-        Integer sumRanks = voteBoxRepository.sumRanksByCandidateId(candId.getCandidateId());
-        Integer usersPhones = voteBoxRepository.countUsersPhonesByCandidateId(
-          candId.getCandidateId());
-
-        double avg = (double) sumRanks / (double) usersPhones;
-        avgList.add(avg);
-      }
-
-        int rank = 1;
-
-      for (Double avg : avgList) {
         for (VoteBox candId : candidateIds) {
+
           Integer sumRanks = voteBoxRepository.sumRanksByCandidateId(candId.getCandidateId());
-          Integer usersPhones = voteBoxRepository.countUsersPhonesByCandidateId(candId.getCandidateId());
+          Integer usersPhones = voteBoxRepository.countUsersPhonesByCandidateId(
+            candId.getCandidateId());
 
-          double candidateAvg = (double) sumRanks / (double) usersPhones;
-
-          if (avg == candidateAvg) {
-            CandCount candCount = new CandCount();
-            candCount.setElectionId(electionId);
-            candCount.setVoteId(voteId);
-            candCount.setCandidateId(candId.getCandidateId());
-            candCount.setRanksAvg(avg);
-            candCount.setTotalRank(rank);
-
-            candCountRepository.save(candCount);
-          }
+          double avg = (double) sumRanks / (double) usersPhones;
+          avgList.add(avg);
         }
 
-        rank++;
-      }
+        for (Double avg : avgList) {
+          for (VoteBox candId : candidateIds) {
+            Integer sumRanks = voteBoxRepository.sumRanksByCandidateId(candId.getCandidateId());
+            Integer usersPhones = voteBoxRepository.countUsersPhonesByCandidateId(
+              candId.getCandidateId());
+
+            double candidateAvg = (double) sumRanks / (double) usersPhones;
+
+            if (avg == candidateAvg) {
+              CandCount candCount = new CandCount();
+              candCount.setElectionId(electionId);
+              candCount.setVoteId(voteId);
+              candCount.setCandidateId(candId.getCandidateId());
+              candCount.setRanksAvg(avg);
+              candCount.setTotalRank(rank);
+
+              candCountRepository.save(candCount);
+            }
+          }
+          rank++;
+        }
+        break;
+      default: throw new CandCountCustomException(CandCountErrorCode.CAND_COUNT_NOT_VALID);
     }
-    return new CandCount();
   }
 
 
-      @Override
+  @Override
   public List<CandCount> details(Long voteId) {
     return candCountRepository.findAllCandidateIdsByVoteId(voteId);
   }

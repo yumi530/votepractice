@@ -5,9 +5,14 @@ import com.project.voting.domain.cand_count.CandCountRepository;
 import com.project.voting.domain.count.Count;
 import com.project.voting.domain.count.CountRepository;
 
+import com.project.voting.domain.election.Election;
+import com.project.voting.domain.election.ElectionRepository;
 import com.project.voting.domain.users.UsersRepository;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBoxRepository;
+import com.project.voting.exception.cand_count.CandCountCustomException;
+import com.project.voting.exception.cand_count.CandCountErrorCode;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,9 +25,18 @@ public class CountServiceImpl implements CountService {
   private final CandCountRepository candCountRepository;
   private final UsersRepository usersRepository;
   private final VoteBoxRepository voteBoxRepository;
+  private final ElectionRepository electionRepository;
 
   @Override
-  public Count votesResultConfirm(Long electionId, Long voteId, VoteType voteType) {
+  public void votesResultConfirm(Long electionId, Long voteId, VoteType voteType) {
+
+    Election election = electionRepository.findById(electionId).get();
+
+    LocalDateTime now = LocalDateTime.now();
+
+    if (election.getElectionEndDt().isAfter(now)) {
+      throw new CandCountCustomException(CandCountErrorCode.CAND_COUNT_TIME_NOT_VALID);
+    }
 
     List<CandCount> candCounts = candCountRepository.findByResult(true);
 
@@ -67,15 +81,7 @@ public class CountServiceImpl implements CountService {
         countRepository.save(count);
       }
     }
-    return new Count();
   }
-
-  @Override
-  public List<Count> details(Long voteId) {
-
-    return countRepository.findAllCandidateIdsByVoteId(voteId);
-  }
-
   @Override
   public Count turnOut(Long electionId, Long voteId) {
 
@@ -98,5 +104,15 @@ public class CountServiceImpl implements CountService {
     }
     return new Count();
   }
+
+  @Override
+  public List<Count> details(Long voteId) {
+
+    return countRepository.findAllCandidateIdsByVoteId(voteId);
+  }
+
 }
+
+
+
 

@@ -20,6 +20,8 @@ import com.project.voting.exception.candidate.CandidateCustomException;
 import com.project.voting.exception.candidate.CandidateErrorCode;
 import com.project.voting.exception.election.ElectionCustomException;
 import com.project.voting.exception.election.ElectionErrorCode;
+import com.project.voting.exception.users.UsersCustomException;
+import com.project.voting.exception.users.UsersErrorCode;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -96,142 +98,144 @@ public class ElectionServiceImpl implements ElectionService {
       String voteType = voteTypes.get(i);
       VoteDto dto = voteList.get(i);
 
-      if ("PROS_CONS".equals(voteType)) {
+      Long voteId = generateVoteId(election.getElectionId());
 
-        Vote vote = Vote.builder()
-          .electionId(election.getElectionId())
-          .voteId(generateVoteId(election.getElectionId()))
-          .voteTitle(dto.getVoteTitle())
-          .voteType(VoteType.PROS_CONS)
-          .build();
-        voteRepository.save(vote);
+      switch (voteType) {
 
-        Candidate candidate = Candidate.builder()
-          .electionId(election.getElectionId())
-          .voteId(vote.getVoteId())
-          .candidateId(generateCandidateId(election.getElectionId(), vote.getVoteId()))
-          .candidateName(dto.getCandidateName())
-          .candidateInfo(dto.getCandidateInfo())
-          .build();
-        candidateRepository.save(candidate);
-
-      } else if ("CHOICE".equals(voteType)) {
-
-        Long voteId = generateVoteId(election.getElectionId());
-
-        List<String> candidateNames = dto.getCandidateNames();
-        List<String> candidateInfos = dto.getCandidateInfos();
-        List<Long> candidateIds = generateCandidateIds(election.getElectionId(), voteId,
-          candidateNames);
-
-        if (candidateNames.size() >= 2) {
+        case "PROS_CONS":
 
           Vote vote = Vote.builder()
             .electionId(election.getElectionId())
-            .voteId(voteId)
+            .voteId(generateVoteId(election.getElectionId()))
             .voteTitle(dto.getVoteTitle())
-            .voteType(VoteType.CHOICE)
+            .voteType(VoteType.PROS_CONS)
             .build();
           voteRepository.save(vote);
 
-          List<Candidate> candidates = new ArrayList<>();
-
-          for (int j = 0; j < candidateNames.size(); j++) {
-            String candidateName = candidateNames.get(j);
-            String candidateInfo = candidateInfos.get(j);
-            Long candidateId = candidateIds.get(j);
-
-            Candidate candidate = Candidate.builder()
-              .electionId(election.getElectionId())
-              .voteId(vote.getVoteId())
-              .candidateId(candidateId)
-              .candidateName(candidateName)
-              .candidateInfo(candidateInfo)
-              .build();
-            candidates.add(candidate);
-          }
-          candidateRepository.saveAll(candidates);
-        } else {
-          throw new RuntimeException("후보자를 2명 이상 등록해주세요.");
-        }
-      } else if ("SCORE".equals(voteType)) {
-
-        Long voteId = generateVoteId(election.getElectionId());
-
-        List<String> candidateNames = dto.getCandidateNames();
-        List<String> candidateInfos = dto.getCandidateInfos();
-        List<Long> candidateIds = generateCandidateIds(election.getElectionId(), voteId,
-          candidateNames);
-
-        if (candidateNames.size() >= 2) {
-
-          Vote vote = Vote.builder()
+          Candidate candidate = Candidate.builder()
             .electionId(election.getElectionId())
-            .voteId(voteId)
-            .voteTitle(dto.getVoteTitle())
-            .voteType(VoteType.SCORE)
+            .voteId(vote.getVoteId())
+            .candidateId(generateCandidateId(election.getElectionId(), vote.getVoteId()))
+            .candidateName(dto.getCandidateName())
+            .candidateInfo(dto.getCandidateInfo())
             .build();
-          voteRepository.save(vote);
+          candidateRepository.save(candidate);
+          break;
 
-          List<Candidate> candidates = new ArrayList<>();
+        case "CHOICE":
 
-          for (int j = 0; j < candidateNames.size(); j++) {
-            String candidateName = candidateNames.get(j);
-            String candidateInfo = candidateInfos.get(j);
-            Long candidateId = candidateIds.get(j);
+          List<String> candidateNames = dto.getCandidateNames();
+          List<String> candidateInfos = dto.getCandidateInfos();
+          List<Long> candidateIds = generateCandidateIds(election.getElectionId(), voteId,
+            candidateNames);
 
-            Candidate candidate = Candidate.builder()
+          if (candidateNames.size() >= 2) {
+
+            Vote choiceVote = Vote.builder()
               .electionId(election.getElectionId())
-              .voteId(vote.getVoteId())
-              .candidateId(candidateId)
-              .candidateName(candidateName)
-              .candidateInfo(candidateInfo)
+              .voteId(voteId)
+              .voteTitle(dto.getVoteTitle())
+              .voteType(VoteType.CHOICE)
               .build();
-            candidates.add(candidate);
+            voteRepository.save(choiceVote);
+
+            List<Candidate> candidates = new ArrayList<>();
+
+            for (int j = 0; j < candidateNames.size(); j++) {
+              String candidateName = candidateNames.get(j);
+              String candidateInfo = candidateInfos.get(j);
+              Long candidateId = candidateIds.get(j);
+
+              Candidate choiceCand = Candidate.builder()
+                .electionId(election.getElectionId())
+                .voteId(choiceVote.getVoteId())
+                .candidateId(candidateId)
+                .candidateName(candidateName)
+                .candidateInfo(candidateInfo)
+                .build();
+              candidates.add(choiceCand);
+            }
+            candidateRepository.saveAll(candidates);
+          } else {
+            throw new CandidateCustomException(CandidateErrorCode.NUMBERS_OF_CANDIDATE_NOT_VALID);
           }
-          candidateRepository.saveAll(candidates);
-        } else {
+          break;
+
+        case "SCORE":
+
+          List<String> scoreCandNames = dto.getCandidateNames();
+          List<String> scoreCandInfos = dto.getCandidateInfos();
+          List<Long> scoreCandIds = generateCandidateIds(election.getElectionId(), voteId,
+            scoreCandNames);
+
+          if (scoreCandNames.size() >= 2) {
+
+            Vote scoreVote = Vote.builder()
+              .electionId(election.getElectionId())
+              .voteId(voteId)
+              .voteTitle(dto.getVoteTitle())
+              .voteType(VoteType.SCORE)
+              .build();
+            voteRepository.save(scoreVote);
+
+            List<Candidate> candidates = new ArrayList<>();
+
+            for (int j = 0; j < scoreCandNames.size(); j++) {
+              String candidateName = scoreCandNames.get(j);
+              String candidateInfo = scoreCandInfos.get(j);
+              Long candidateId = scoreCandIds.get(j);
+
+              Candidate scoreCand = Candidate.builder()
+                .electionId(election.getElectionId())
+                .voteId(scoreVote.getVoteId())
+                .candidateId(candidateId)
+                .candidateName(candidateName)
+                .candidateInfo(candidateInfo)
+                .build();
+              candidates.add(scoreCand);
+            }
+            candidateRepository.saveAll(candidates);
+          } else {
+            throw new CandidateCustomException(CandidateErrorCode.NUMBERS_OF_CANDIDATE_NOT_VALID);
+          }
+          break;
+        case "PREFERENCE":
+
+          List<String> preferCandNames = dto.getCandidateNames();
+          List<String> preferCandInfos = dto.getCandidateInfos();
+          List<Long> preferCandIds = generateCandidateIds(election.getElectionId(), voteId,
+            preferCandNames);
+
+          if (preferCandNames.size() >= 3) {
+
+            Vote preferVote = Vote.builder()
+              .electionId(election.getElectionId())
+              .voteId(voteId)
+              .voteTitle(dto.getVoteTitle())
+              .voteType(VoteType.PREFERENCE)
+              .build();
+            voteRepository.save(preferVote);
+
+            List<Candidate> candidates = new ArrayList<>();
+
+            for (int j = 0; j < preferCandNames.size(); j++) {
+              String candidateName = preferCandNames.get(j);
+              String candidateInfo = preferCandInfos.get(j);
+              Long candidateId = preferCandIds.get(j);
+
+              Candidate candidate3 = Candidate.builder()
+                .electionId(election.getElectionId())
+                .voteId(preferVote.getVoteId())
+                .candidateId(candidateId)
+                .candidateName(candidateName)
+                .candidateInfo(candidateInfo)
+                .build();
+              candidates.add(candidate3);
+            }
+            candidateRepository.saveAll(candidates);
+          } else {
           throw new CandidateCustomException(CandidateErrorCode.NUMBERS_OF_CANDIDATE_NOT_VALID);
         }
-      } else if ("PREFERENCE".equals(voteType)) {
-
-        Long voteId = generateVoteId(election.getElectionId());
-
-        List<String> candidateNames = dto.getCandidateNames();
-        List<String> candidateInfos = dto.getCandidateInfos();
-        List<Long> candidateIds = generateCandidateIds(election.getElectionId(), voteId,
-          candidateNames);
-
-        if (candidateNames.size() >= 3) {
-
-          Vote vote = Vote.builder()
-            .electionId(election.getElectionId())
-            .voteId(voteId)
-            .voteTitle(dto.getVoteTitle())
-            .voteType(VoteType.PREFERENCE)
-            .build();
-          voteRepository.save(vote);
-
-          List<Candidate> candidates = new ArrayList<>();
-
-          for (int j = 0; j < candidateNames.size(); j++) {
-            String candidateName = candidateNames.get(j);
-            String candidateInfo = candidateInfos.get(j);
-            Long candidateId = candidateIds.get(j);
-
-            Candidate candidate = Candidate.builder()
-              .electionId(election.getElectionId())
-              .voteId(vote.getVoteId())
-              .candidateId(candidateId)
-              .candidateName(candidateName)
-              .candidateInfo(candidateInfo)
-              .build();
-            candidates.add(candidate);
-          }
-          candidateRepository.saveAll(candidates);
-        }
-      } else {
-        throw new CandidateCustomException(CandidateErrorCode.NUMBERS_OF_CANDIDATE_NOT_VALID);
       }
     }
 
@@ -240,7 +244,7 @@ public class ElectionServiceImpl implements ElectionService {
     File fileInput = null;
     if (file != null && !file.isEmpty()) {
       String filePath =
-        System.getProperty("user.dir") + "\\src\\main\\resources\\statics\\files";
+        System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
       fileName = file.getOriginalFilename();
       fileInput = new File(filePath, fileName);
       file.transferTo(fileInput);
@@ -290,7 +294,7 @@ public class ElectionServiceImpl implements ElectionService {
       if (fileDeleted) {
         System.out.println("삭제 완료");
       } else {
-        throw new RuntimeException("삭제 안됨..........");
+        throw new UsersCustomException(UsersErrorCode.USERS_FILE_NOT_DELETED);
       }
     }
     return election;
