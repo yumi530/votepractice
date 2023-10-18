@@ -2,6 +2,24 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{common/admin.html}">
 <head>
   <title>관리자 개표 진행</title>
+  <style>
+    .progress-bar {
+      width: 70%;
+      height: 70px;
+      background-color: #dedede;
+      font-weight: 600;
+      font-size: .8rem;
+    }
+
+    .progress-bar .progress {
+      width: 72%;
+      height: 50px;
+      padding: 30px;
+      text-align: center;
+      background-color: #4F98FF;
+      color: #111;
+    }
+  </style>
 </head>
 
 <section layout:fragment="content">
@@ -37,6 +55,17 @@
     </form>
   </div>
 
+  <div class="progress-bar">
+    <div class="progress">
+      <div class="container d-flex justify-content-center">
+        <h3>투표율:</h3> <h3 th:text="${turnOut.turnOut}"></h3><h3>%</h3>
+      </div>
+    </div>
+  </div>
+
+  <script th:inline="javascript">
+
+  </script>
   </section>
 
 </html>
