@@ -28,7 +28,10 @@ public class CustomErrorController implements ErrorController {
         model.addAttribute("timestamp", new Date());
         return "/error/404";
       }
-      if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+      else if (statusCode == HttpStatus.UNAUTHORIZED.value()) {
+        return "/error/401";
+      }
+      else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
         return "/error/500";
       }
     }

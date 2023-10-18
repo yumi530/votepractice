@@ -1,10 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{common/login.html}">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+  <title>error page</title>
 </head>
-<body>
 
-</body>
+<section layout:fragment="content">
+
+  <img src="..." class="rounded mx-auto d-block" alt="...">
+  <div class="container p-3 mb-2 rounded-1">
+    <div class="d-flex justify-content-center">
+      <h1 class="fw-bold">Error Page!</h1>
+    </div>
+    <div class="d-flex justify-content-center">
+      <a href="/">홈으로 바로가기</a>
+    </div>
+  </div>
+
+</section>
+
 </html>
