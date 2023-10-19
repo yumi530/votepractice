@@ -9,7 +9,7 @@ import javax.transaction.Transactional;
 public interface CountService {
 
   @Transactional
-  void votesResultConfirm(Long electionId, Long voteId, VoteType voteType);
+  Count votesResultConfirm(Long electionId, Long voteId, VoteType voteType);
 
   List<Count> details(Long voteId);
 

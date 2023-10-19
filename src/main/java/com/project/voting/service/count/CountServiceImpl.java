@@ -28,7 +28,7 @@ public class CountServiceImpl implements CountService {
   private final ElectionRepository electionRepository;
 
   @Override
-  public void votesResultConfirm(Long electionId, Long voteId, VoteType voteType) {
+  public Count votesResultConfirm(Long electionId, Long voteId, VoteType voteType) {
 
     Election election = electionRepository.findById(electionId).get();
 
@@ -81,6 +81,7 @@ public class CountServiceImpl implements CountService {
         countRepository.save(count);
       }
     }
+    return new Count();
   }
   @Override
   public Count turnOut(Long electionId, Long voteId) {
