@@ -11,7 +11,7 @@ public interface UsersRepository extends JpaRepository<Users, String> {
 
   List<Users> findAllByUsersPhone(String usersPhone);
 
-  Optional<Users> findByUsersPhone(String phoneNumber);
+  List<Users> findByUsersPhone(String phoneNumber);
 
   Integer countUsersPhonesByElectionId(Long electionId);
 }

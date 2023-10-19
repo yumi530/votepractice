@@ -98,65 +98,73 @@ public class SmsService {
     public String sendSms(String to) throws JsonProcessingException, RestClientException, URISyntaxException, InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
 
         Duration verificationTimeLimit = Duration.ofSeconds(VERIFICATION_TIME_LIMIT);
-        Optional<Users> optionalUsers = usersRepository.findByUsersPhone(to);
-        if (!optionalUsers.isPresent()) {
-            throw new UsersCustomException(UsersErrorCode.USERS_LIST_NOT_FOUND);
-        }
-        String time = Long.toString(System.currentTimeMillis());
+        List<Users> optionalUsers = usersRepository.findByUsersPhone(to);
+        for (Users users : optionalUsers) {
+            if (users == null) {
+                throw new UsersCustomException(UsersErrorCode.USERS_LIST_NOT_FOUND);
+            }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("x-ncp-apigw-timestamp", time);
-        headers.set("x-ncp-iam-access-key", accessKey);
-        headers.set("x-ncp-apigw-signature-v2", getSignature(time));
+            String time = Long.toString(System.currentTimeMillis());
 
-        final MessageDto messageDto = new MessageDto(to, generateMessageWithCode(smsConfirmNum));
-        List<MessageDto> messages = new ArrayList<>();
-        messages.add(messageDto);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("x-ncp-apigw-timestamp", time);
+            headers.set("x-ncp-iam-access-key", accessKey);
+            headers.set("x-ncp-apigw-signature-v2", getSignature(time));
 
-        SmsRequestDto request = SmsRequestDto.builder()
-          .type("SMS")
-          .contentType("COMM")
-          .countryCode("82")
-          .from(phone)
-          .content("인증번호 [" + smsConfirmNum + "]를 입력해주세요")
-          .messages(messages)
-          .build();
-        final String body = new ObjectMapper().writeValueAsString(request);
+            final MessageDto messageDto = new MessageDto(to,
+              generateMessageWithCode(smsConfirmNum));
+            List<MessageDto> messages = new ArrayList<>();
+            messages.add(messageDto);
 
-        webClient.post().uri("https://sens.apigw.ntruss.com/sms/v2/services/" + serviceId + "/messages")
-          .contentType(MediaType.APPLICATION_JSON)
-          .header("x-ncp-apigw-timestamp", time)
-          .header("x-ncp-iam-access-key", accessKey)
-          .header("x-ncp-apigw-signature-v2", getSignature(time))
-          .accept(MediaType.APPLICATION_JSON)
-          .body(BodyInserters.fromValue(body))
-          .retrieve()
-          .bodyToMono(SmsResponseDto.class).block();
+            SmsRequestDto request = SmsRequestDto.builder()
+              .type("SMS")
+              .contentType("COMM")
+              .countryCode("82")
+              .from(phone)
+              .content("인증번호 [" + smsConfirmNum + "]를 입력해주세요")
+              .messages(messages)
+              .build();
+            final String body = new ObjectMapper().writeValueAsString(request);
+
+            webClient.post()
+              .uri("https://sens.apigw.ntruss.com/sms/v2/services/" + serviceId + "/messages")
+              .contentType(MediaType.APPLICATION_JSON)
+              .header("x-ncp-apigw-timestamp", time)
+              .header("x-ncp-iam-access-key", accessKey)
+              .header("x-ncp-apigw-signature-v2", getSignature(time))
+              .accept(MediaType.APPLICATION_JSON)
+              .body(BodyInserters.fromValue(body))
+              .retrieve()
+              .bodyToMono(SmsResponseDto.class).block();
 
 //        redisService.setValues(VERIFICATION_PREFIX + messageDto.getTo(), smsConfirmNum, verificationTimeLimit);
-        cacheService.setValues(VERIFICATION_PREFIX + messageDto.getTo(), smsConfirmNum, verificationTimeLimit);
-
-        return "전송 성공";
-    }
-
-    public String verifyCode(String phoneNumber, String code) {
-        String key = VERIFICATION_PREFIX + phoneNumber;
-
-        if (!cacheService.hasKey(key)) {
-            throw new RuntimeException("ErrorCode. EXPIRED_VERIFICATION_CODE");
+            cacheService.setValues(VERIFICATION_PREFIX + messageDto.getTo(), smsConfirmNum,
+              verificationTimeLimit);
         }
 
-        if (!cacheService.getValue(key).equals(code)) {
-            throw new RuntimeException("ErrorCode.MISMATCH_VERIFICATION_CODE");
+            return "전송 성공";
         }
-        if(cacheService.getValue(key).equals(code));
 
-        usersRepository.findByUsersPhone(phoneNumber).orElse(null);
 
-        cacheService.deleteValues(key);
+    public String verifyCode(String phoneNumber, String code){
+            String key = VERIFICATION_PREFIX + phoneNumber;
 
-        return "인증 성공";
+            if (!cacheService.hasKey(key)) {
+                throw new RuntimeException("ErrorCode. EXPIRED_VERIFICATION_CODE");
+            }
+
+            if (!cacheService.getValue(key).equals(code)) {
+                throw new RuntimeException("ErrorCode.MISMATCH_VERIFICATION_CODE");
+            }
+            if (cacheService.getValue(key).equals(code))
+                ;
+
+            usersRepository.findByUsersPhone(phoneNumber);
+
+            cacheService.deleteValues(key);
+
+            return "인증 성공";
 
     }
 
