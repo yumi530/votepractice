@@ -62,12 +62,12 @@ public class CountServiceImpl implements CountService {
         count.setVoteId(voteId);
         count.setCandidateId(candidate.getCandidateId());
         count.setElectionId(electionId);
-        count.setTotalRank(candidate.getTotalRank());
-        if (candidate.getTotalRank() == 1) {
-          count.setElectedYn(true);
-        } else {
-          count.setElectedYn(false);
-        }
+//        count.setTotalRank(candidate.getTotalRank());
+//        if (candidate.getTotalRank() == 1) {
+//          count.setElectedYn(true);
+//        } else {
+//          count.setElectedYn(false);
+//        }
         countRepository.save(count);
       }
     } else if (voteType == VoteType.SCORE || voteType == VoteType.PREFERENCE) {
@@ -77,34 +77,34 @@ public class CountServiceImpl implements CountService {
         count.setVoteId(voteId);
         count.setCandidateId(candidate.getCandidateId());
         count.setElectionId(electionId);
-        count.setTotalRank(candidate.getTotalRank());
+//        count.setTotalRank(candidate.getTotalRank());
         countRepository.save(count);
       }
     }
     return new Count();
   }
-  @Override
-  public Count turnOut(Long electionId, Long voteId) {
-
-    List<CandCount> candidateIds = candCountRepository.findAllCandidateIdsByVoteId(voteId);
-    Integer numOfElectors = usersRepository.countUsersPhonesByElectionId(
-      electionId);
-
-    Integer numOfParticipation = voteBoxRepository.countUsersPhonesByVoteId(voteId) / candidateIds.size();
-
-    double calTurnOut = ((numOfParticipation * 100) / numOfElectors);
-
-    for (CandCount candidate : candidateIds) {
-      Count count = new Count();
-      count.setElectionId(electionId);
-      count.setVoteId(voteId);
-      count.setCandidateId(candidate.getCandidateId());
-      count.setTurnOut(calTurnOut);
-
-      countRepository.save(count);
-    }
-    return new Count();
-  }
+//  @Override
+//  public Count turnOut(Long electionId, Long voteId) {
+//
+//    List<CandCount> candidateIds = candCountRepository.findAllCandidateIdsByVoteId(voteId);
+//    Integer numOfElectors = usersRepository.countUsersPhonesByElectionId(
+//      electionId);
+//
+//    Integer numOfParticipation = voteBoxRepository.countUsersPhonesByVoteId(voteId) / candidateIds.size();
+//
+//    double calTurnOut = ((numOfParticipation * 100) / numOfElectors);
+//
+//    for (CandCount candidate : candidateIds) {
+//      Count count = new Count();
+//      count.setElectionId(electionId);
+//      count.setVoteId(voteId);
+//      count.setCandidateId(candidate.getCandidateId());
+//      count.setTurnOut(calTurnOut);
+//
+//      countRepository.save(count);
+//    }
+//    return new Count();
+//  }
 
   @Override
   public List<Count> details(Long voteId) {

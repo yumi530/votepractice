@@ -13,5 +13,5 @@ public interface CountService {
 
   List<Count> details(Long voteId);
 
-  Count turnOut(Long electionId ,Long voteId);
+//  Count turnOut(Long electionId ,Long voteId);
 }

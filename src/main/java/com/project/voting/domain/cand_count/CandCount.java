@@ -37,10 +37,10 @@ public class CandCount {
 
   private double choicesAvg;
 
-  private int totalRank;
+//  private int totalRank;
 
   @Builder
-  public CandCount(Long electionId, Long voteId, Long candidateId, double prosRatio, double consRatio, boolean result, double scoresAvg, double ranksAvg, double choicesAvg, int totalRank) {
+  public CandCount(Long electionId, Long voteId, Long candidateId, double prosRatio, double consRatio, boolean result, double scoresAvg, double ranksAvg, double choicesAvg) {
     this.electionId = electionId;
     this.voteId = voteId;
     this.candidateId = candidateId;
@@ -50,7 +50,7 @@ public class CandCount {
     this.scoresAvg = scoresAvg;
     this.ranksAvg = ranksAvg;
     this.choicesAvg = choicesAvg;
-    this.totalRank = totalRank;
+//    this.totalRank = totalRank;
   }
 
 }
