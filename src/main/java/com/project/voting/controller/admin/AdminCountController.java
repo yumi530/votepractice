@@ -62,7 +62,6 @@ AdminCountController {
     Election election = electionService.detail(electionId);
     List<Candidate> candidates = candidateService.details(voteId);
     List<Count> counts = countService.details(voteId);
-//    CandCount candCount = candCountService.detail(voteId);
     List<CandCount> candCounts = candCountService.details(voteId);
 
     model.addAttribute("votes", vote);

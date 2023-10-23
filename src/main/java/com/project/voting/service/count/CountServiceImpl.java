@@ -32,7 +32,6 @@ public class CountServiceImpl implements CountService {
   public Count votesResultConfirm(Long electionId, Long voteId, VoteType voteType) {
 
     Election election = electionRepository.findById(electionId).get();
-
     LocalDateTime now = LocalDateTime.now();
 
     if (election.getElectionEndDt().isAfter(now)) {
@@ -40,42 +39,34 @@ public class CountServiceImpl implements CountService {
     }
 
     List<CandCount> candCounts = candCountRepository.findByResult(true);
-
     List<CandCount> candidateIds = candCountRepository.findAllCandidateIdsByVoteId(voteId);
 
-    if (voteType == VoteType.PROS_CONS) {
-      for (CandCount candidate : candidateIds) {
-        Count count = createCount(electionId, voteId, candidate.getCandidateId());
+    for (CandCount candidate : candidateIds) {
+      Count count = createCount(electionId, voteId, candidate.getCandidateId());
 
-        for (CandCount candCount : candCounts) {
-          count.setElectedYn(candCount.isResult());
-        }
-        countRepository.save(count);
-      }
-    } else if (voteType == VoteType.CHOICE) {
-      List<CandCount> sortedCandidates = countSorter.sortCandidatesByChoiceAvg(candidateIds);
-
-      for (CandCount candidate : sortedCandidates) {
-        Count count = createCount(electionId, voteId, candidate.getCandidateId());
-        if (sortedCandidates.indexOf(candidate) == 0) {
-          count.setElectedYn(true);
-        } else {
-          count.setElectedYn(false);
-        }
-        countRepository.save(count);
+      switch (voteType) {
+        case PROS_CONS:
+          for (CandCount candCount : candCounts) {
+            count.setElectedYn(candCount.isResult());
+          }
+          break;
+        case CHOICE:
+          List<CandCount> sortedCandidates = countSorter.sortCandidatesByChoiceAvg(candidateIds);
+          count.setElectedYn(sortedCandidates.indexOf(candidate) == 0);
+          break;
+        case SCORE:
+        case PREFERENCE:
+          sortedCandidates = countSorter.sortCandidatesByAvg(candidateIds, voteType);
+          count.setTotalRank(sortedCandidates.indexOf(candidate) + 1);
+          break;
       }
 
-    } else if (voteType == VoteType.SCORE || voteType == VoteType.PREFERENCE) {
-      List<CandCount> sortedCandidates = countSorter.sortCandidatesByAvg(candidateIds, voteType);
-
-      for (CandCount candidate : sortedCandidates) {
-        Count count = createCount(electionId, voteId, candidate.getCandidateId());
-        count.setTotalRank(sortedCandidates.indexOf(candidate) + 1);
-        countRepository.save(count);
-      }
+      countRepository.save(count);
     }
-      return new Count();
+
+    return new Count();
   }
+
 
   private Count createCount(Long electionId, Long voteId, Long candidateId) {
     Count count = new Count();
