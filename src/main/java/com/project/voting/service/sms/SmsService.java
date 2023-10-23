@@ -2,7 +2,6 @@ package com.project.voting.service.sms;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.voting.config.RedisService;
 import com.project.voting.domain.users.Users;
 import com.project.voting.domain.users.UsersRepository;
 import com.project.voting.exception.users.UsersCustomException;
@@ -31,7 +30,6 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 @PropertySource("classpath:application.yml")
