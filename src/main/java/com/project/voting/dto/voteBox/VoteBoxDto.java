@@ -18,27 +18,9 @@ public class VoteBoxDto {
   private Long voteId;
   private VoteType voteType;
   private String usersPhone;
-  private boolean hadChosen;
   private Long candidateId;
   private List<Long> candidateIds;
-  private Long chosenCandidateId; // 선택 투표
-  private List<Integer> scores; // 점수 투표
-  private List<Integer> ranks; // 선호도 투표
   private List<VoteBox> detailVoteBox;
 
-//    private Integer choices;
-//    private boolean hadVoted;
-//    private Integer scores;
-//    private Integer ranks;
-//    private List<Integer> scoreList = new ArrayList<>();
-//    private List<Integer> rankList = new ArrayList<>();
-
-//  public void addScore(Integer scores) {
-//    this.scoreList.add(scores);
-//  }
-
-//  public void addRank(Integer ranks) {
-//    this.rankList.add(ranks);
-//  }
 
 }

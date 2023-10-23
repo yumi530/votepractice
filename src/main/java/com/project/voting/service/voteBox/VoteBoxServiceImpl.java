@@ -5,11 +5,11 @@ import com.project.voting.domain.candidate.CandidateRepository;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.domain.voteBox.VoteBoxRepository;
+import com.project.voting.dto.voteBox.DefaultVoteBoxDto;
+import com.project.voting.dto.voteBox.ProsConsVoteBoxDto;
 import com.project.voting.dto.voteBox.VoteBoxDto;
 import com.project.voting.exception.vote_box.VoteBoxCustomException;
 import com.project.voting.exception.vote_box.VoteBoxErrorCode;
-
-import java.util.ArrayList;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
@@ -46,9 +46,9 @@ public class VoteBoxServiceImpl implements VoteBoxService {
   @Override
   public void saveVote(VoteBoxDto voteBoxDto) {
     if (voteBoxDto.getVoteType() == VoteType.PROS_CONS) {
-      voteBoxSaver.saveProsCons(voteBoxDto);
+      voteBoxSaver.saveProsCons((ProsConsVoteBoxDto) voteBoxDto);
     } else {
-      voteBoxSaver.saveDefault(voteBoxDto);
+      voteBoxSaver.saveDefault((DefaultVoteBoxDto) voteBoxDto);
     }
   }
 }

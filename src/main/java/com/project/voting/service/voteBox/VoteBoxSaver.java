@@ -2,6 +2,8 @@ package com.project.voting.service.voteBox;
 
 import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.domain.voteBox.VoteBoxRepository;
+import com.project.voting.dto.voteBox.DefaultVoteBoxDto;
+import com.project.voting.dto.voteBox.ProsConsVoteBoxDto;
 import com.project.voting.dto.voteBox.VoteBoxDto;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class VoteBoxSaver {
   private final VoteBoxRepository voteBoxRepository;
 
-  public VoteBox saveProsCons(VoteBoxDto voteBoxDto) {
+  public VoteBox saveProsCons(ProsConsVoteBoxDto voteBoxDto) {
     VoteBox voteBox = createVoteBox(voteBoxDto);
     voteBox.setHadChosen(voteBoxDto.isHadChosen());
     voteBox.setCandidateId(voteBoxDto.getCandidateIds().get(0));
@@ -24,7 +26,7 @@ public class VoteBoxSaver {
     return voteBoxRepository.save(voteBox);
   }
 
-  public List<VoteBox> saveDefault(VoteBoxDto voteBoxDto) {
+  public List<VoteBox> saveDefault(DefaultVoteBoxDto voteBoxDto) {
     List<VoteBox> voteBoxes = new ArrayList<>();
     List<Long> candidateIds = voteBoxDto.getCandidateIds();
     List<Integer> scores = voteBoxDto.getScores();
