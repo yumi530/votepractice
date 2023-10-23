@@ -41,7 +41,8 @@ public class CandCountServiceImpl implements CandCountService {
     }
 
     List<VoteBox> voteBoxes = voteBoxRepository.findAllByVoteId(voteId);
-    TreeSet<Double> avgList = new TreeSet<>(Collections.reverseOrder());
+//    TreeSet<Double> avgList = new TreeSet<>(Collections.reverseOrder());
+    List<Double> avgList = new ArrayList<>();
 
     if (voteType.equals(VoteType.PROS_CONS)) {
       Long countPros = voteBoxRepository.countByHadChosenTrueAndVoteId(voteId);

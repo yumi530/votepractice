@@ -8,7 +8,6 @@ import com.project.voting.domain.election.Election;
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
-import com.project.voting.domain.voteBox.VoteBoxRepository;
 import com.project.voting.dto.users.UsersDto;
 import com.project.voting.dto.voteBox.VoteBoxDto;
 import com.project.voting.service.cand_count.CandCountService;
@@ -17,17 +16,18 @@ import com.project.voting.service.count.CountService;
 import com.project.voting.service.election.ElectionService;
 import com.project.voting.service.users.UsersService;
 import com.project.voting.service.vote.VoteService;
-import com.project.voting.service.voteBox.CommonVoteService;
-//import com.project.voting.service.voteBox.DefaultVoteService;
-
-import com.project.voting.service.voteBox.DefaultVoteService;
-import com.project.voting.service.voteBox.ProsConsVoteService;
+import com.project.voting.service.new_votebox.CommonVoteBoxService;
+import com.project.voting.service.new_votebox.DefaultVoteService;
+import com.project.voting.service.new_votebox.ProsConsVoteService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,14 +41,18 @@ public class CountController {
   private final UsersService usersService;
   private final VoteService voteService;
   private final CandidateService candidateService;
-//  private final VoteBoxService voteBoxService;
-  private final CommonVoteService commonVoteService;
 
-  private final DefaultVoteService defaultVoteService;
-  private final ProsConsVoteService prosConsVoteService;
+  @Value("commonVoteBoxService")
+  private final CommonVoteBoxService commonVoteBoxService;
+
+  @Value("prosConsVoteService")
+  private final CommonVoteBoxService prosConsVoteService;
+
+  @Value("defaultVoteService")
+  private final CommonVoteBoxService defaultVoteService;
+
   private final CountService countService;
   private final CandCountService candCountService;
-
 
   @GetMapping("/count/list")
   public String list(@AuthenticationPrincipal @RequestParam(name = "phoneNumber") String usersPhone,
@@ -63,10 +67,8 @@ public class CountController {
     @RequestParam String usersPhone) {
     Election detail = electionService.detail(electionId);
 
-
     model.addAttribute("detail", detail);
     model.addAttribute("usersPhone", usersPhone);
-
 
     LocalDateTime currentDate = LocalDateTime.now();
     LocalDateTime endDate = detail.getElectionEndDt();
@@ -82,8 +84,7 @@ public class CountController {
     Election detailElection = electionService.detailElection(voteId);
     Vote detailVote = voteService.detail(voteId);
     List<Candidate> detailCand = candidateService.detail(voteId);
-    List<VoteBox> getVoteBoxInfo = commonVoteService.getVoteBoxInfo(voteId);
-
+    List<VoteBox> getVoteBoxInfo = commonVoteBoxService.getVoteBoxInfo(voteId);
 
     VoteBoxDto voteBoxDto = new VoteBoxDto();
     voteBoxDto.setDetailVoteBox(getVoteBoxInfo);
@@ -94,12 +95,13 @@ public class CountController {
     model.addAttribute("usersPhone", usersPhone);
     model.addAttribute("voteBoxDto", voteBoxDto);
 
-
     return "users/count/vote-count";
   }
 
   @GetMapping("/count/voteResult/{voteId}")
-  public String countVoteComplete(@RequestParam Long electionId, @PathVariable Long voteId, @RequestParam VoteType voteType, Model model, @RequestParam(name = "usersPhone") String usersPhone) {
+  public String countVoteComplete(@RequestParam Long electionId, @PathVariable Long voteId,
+    @RequestParam VoteType voteType, Model model,
+    @RequestParam(name = "usersPhone") String usersPhone) {
     countService.votesResultConfirm(electionId, voteId, voteType);
 
     Vote vote = voteService.detail(voteId);
@@ -121,14 +123,16 @@ public class CountController {
   @PostMapping("/save")
   public String saveVote(VoteBoxDto voteBoxDto) {
 
-    if (voteBoxDto.getVoteType().equals(VoteType.PROS_CONS)) {
-      prosConsVoteService.doSaveProsCons(voteBoxDto);
-    }
-    else {
-      defaultVoteService.doSaveDefault(voteBoxDto);
+    commonVoteBoxService.isValid(voteBoxDto);
+
+    if (voteBoxDto.getVoteType() == VoteType.PROS_CONS) {
+      prosConsVoteService.saveVote(voteBoxDto);
+    } else {
+      defaultVoteService.saveVote(voteBoxDto);
     }
 
-    return "redirect:/users/count/detail/" + voteBoxDto.getElectionId() + "?usersPhone=" + voteBoxDto.getUsersPhone();
+    return "redirect:/users/count/detail/" + voteBoxDto.getElectionId() + "?usersPhone="
+      + voteBoxDto.getUsersPhone();
   }
 }
 
