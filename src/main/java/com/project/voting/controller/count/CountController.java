@@ -16,9 +16,9 @@ import com.project.voting.service.count.CountService;
 import com.project.voting.service.election.ElectionService;
 import com.project.voting.service.users.UsersService;
 import com.project.voting.service.vote.VoteService;
-import com.project.voting.service.new_votebox.CommonVoteBoxService;
-import com.project.voting.service.new_votebox.DefaultVoteService;
-import com.project.voting.service.new_votebox.ProsConsVoteService;
+
+
+import com.project.voting.service.voteBox.VoteBoxService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,14 +42,7 @@ public class CountController {
   private final VoteService voteService;
   private final CandidateService candidateService;
 
-  @Value("commonVoteBoxService")
-  private final CommonVoteBoxService commonVoteBoxService;
-
-  @Value("prosConsVoteService")
-  private final CommonVoteBoxService prosConsVoteService;
-
-  @Value("defaultVoteService")
-  private final CommonVoteBoxService defaultVoteService;
+private final VoteBoxService voteBoxService;
 
   private final CountService countService;
   private final CandCountService candCountService;
@@ -84,7 +77,7 @@ public class CountController {
     Election detailElection = electionService.detailElection(voteId);
     Vote detailVote = voteService.detail(voteId);
     List<Candidate> detailCand = candidateService.detail(voteId);
-    List<VoteBox> getVoteBoxInfo = commonVoteBoxService.getVoteBoxInfo(voteId);
+    List<VoteBox> getVoteBoxInfo = voteBoxService.getVoteBoxInfo(voteId);
 
     VoteBoxDto voteBoxDto = new VoteBoxDto();
     voteBoxDto.setDetailVoteBox(getVoteBoxInfo);
@@ -123,13 +116,8 @@ public class CountController {
   @PostMapping("/save")
   public String saveVote(VoteBoxDto voteBoxDto) {
 
-    commonVoteBoxService.isValid(voteBoxDto);
-
-    if (voteBoxDto.getVoteType() == VoteType.PROS_CONS) {
-      prosConsVoteService.saveVote(voteBoxDto);
-    } else {
-      defaultVoteService.saveVote(voteBoxDto);
-    }
+    voteBoxService.isValid(voteBoxDto);
+    voteBoxService.saveVote(voteBoxDto);
 
     return "redirect:/users/count/detail/" + voteBoxDto.getElectionId() + "?usersPhone="
       + voteBoxDto.getUsersPhone();
