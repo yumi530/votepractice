@@ -42,12 +42,12 @@ AdminCountController {
     Vote vote = voteService.detail(voteId);
     Election election = electionService.detail(electionId);
     List<Candidate> candidates = candidateService.details(voteId);
-    Count turnOut = countService.turnOut(electionId ,voteId);
+//    Count turnOut = countService.turnOut(electionId ,voteId);
 
     model.addAttribute("votes", vote);
     model.addAttribute("elections",election);
     model.addAttribute("candidates", candidates);
-    model.addAttribute("turnOut", turnOut);
+//    model.addAttribute("turnOut", turnOut);
 
     redirectAttributes.addFlashAttribute("message", "개표 완료");
     return "/admin/election/results";

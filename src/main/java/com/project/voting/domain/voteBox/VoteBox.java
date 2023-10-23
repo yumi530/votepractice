@@ -34,15 +34,11 @@ public class VoteBox {
 
   private Integer ranks;
 
-  private String choices;
-
-  private boolean hadVoted;
-
-  private boolean electionCompleted;
+  private Integer choices;
 
 
   @Builder
-  public VoteBox(Long electionId, Long voteId, Long candidateId, String usersPhone, boolean hadChosen, Integer scores, Integer ranks, String choices,boolean hadVoted, boolean electionCompleted) {
+  public VoteBox(Long electionId, Long voteId, Long candidateId, String usersPhone, boolean hadChosen, Integer scores, Integer ranks, Integer choices) {
     this.electionId = electionId;
     this.voteId = voteId;
     this.candidateId = candidateId;
@@ -51,8 +47,6 @@ public class VoteBox {
     this.scores = scores;
     this.ranks = ranks;
     this.choices = choices;
-    this.hadVoted = hadVoted;
-    this.electionCompleted = electionCompleted;
   }
 
 

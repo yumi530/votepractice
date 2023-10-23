@@ -1,16 +1,19 @@
 package com.project.voting.service.voteBox;
 
-import com.project.voting.domain.candidate.Candidate;
-import com.project.voting.domain.candidate.CandidateRepository;
+import com.project.voting.domain.vote.Vote;
+import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.domain.voteBox.VoteBoxRepository;
 import com.project.voting.dto.voteBox.VoteBoxDto;
 import com.project.voting.exception.vote_box.VoteBoxCustomException;
 import com.project.voting.exception.vote_box.VoteBoxErrorCode;
+
 import java.util.ArrayList;
 import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -18,181 +21,55 @@ import java.util.List;
 public class VoteBoxServiceImpl implements VoteBoxService {
 
   private final VoteBoxRepository voteBoxRepository;
-  private final CandidateRepository candidateRepository;
 
-  @Override
-  public List<VoteBox> saveProsCons(VoteBoxDto voteBoxDto, String usersPhone) {
-
-    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
-      voteBoxDto.getCandidateId(), usersPhone);
-    if (optionalVoteBox.isPresent()) {
-      throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_DUPLICATED);
+  public void saveVote(VoteBoxDto voteBoxDto) {
+    if (voteBoxDto.getVoteType() == VoteType.PROS_CONS) {
+      saveProsCons(voteBoxDto);
     } else {
-      List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
-        voteBoxDto.getVoteId());
-
-      if (candidateList == null) {
-        throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_NOT_FOUND);
-      }
-
-      List<VoteBox> voteBoxes = new ArrayList<>();
-
-      if (!candidateList.isEmpty()) {
-        for (int i = 0; i < candidateList.size(); i++) {
-          Candidate c = candidateList.get(i);
-
-          Integer rank = 0;
-          Integer score = 0;
-          String choice = "0";
-
-          VoteBox voteBox = toVoteBox(voteBoxDto, c, rank, score, usersPhone, choice);
-          voteBoxes.add(voteBox);
-        }
-      }
-      return voteBoxRepository.saveAll(voteBoxes);
+      save(voteBoxDto);
     }
   }
 
+  private VoteBox saveProsCons(VoteBoxDto voteBoxDto) {
 
-  @Override
-  public List<VoteBox> saveChoice(VoteBoxDto voteBoxDto, String usersPhone, String choices) {
+    checkDoubleVote(voteBoxDto);
 
-    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
-      voteBoxDto.getCandidateId(), usersPhone);
-    if (optionalVoteBox.isPresent()) {
-      throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_DUPLICATED);
-    } else {
-      List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
-        voteBoxDto.getVoteId());
+    VoteBox voteBox = new VoteBox();
+    voteBox.setElectionId(voteBoxDto.getElectionId());
+    voteBox.setVoteId(voteBoxDto.getVoteId());
+    voteBox.setUsersPhone(voteBoxDto.getUsersPhone());
+    voteBox.setHadChosen(voteBoxDto.isHadChosen());
+    voteBox.setCandidateId(voteBoxDto.getCandidateIds().get(0));
+    voteBox.setRanks(0);
+    voteBox.setScores(0);
+    voteBox.setChoices(0);
 
-      if (candidateList == null) {
-        throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_NOT_FOUND);
-      }
-
-      List<VoteBox> voteBoxes = new ArrayList<>();
-
-      List<Candidate> candidate = candidateRepository.findAllByCandidateId(
-        voteBoxDto.getCandidateId());
-
-      if (candidate != null) {
-
-        for (int i = 0; i < candidateList.size(); i++) {
-          Candidate c = candidateList.get(i);
-
-          Integer rank = 0;
-          Integer score = 0;
-          String choice = "0";
-
-          VoteBox voteBox = toVoteBoxChoice(voteBoxDto, c, rank, score, usersPhone, choice);
-          voteBoxes.add(voteBox);
-        }
-      }
-      voteBoxRepository.saveAll(voteBoxes);
-
-      List<VoteBox> candidateVoteBoxes = voteBoxRepository.findAllByCandidateId(
-        Long.valueOf(choices));
-      for (VoteBox candVoteBox : candidateVoteBoxes) {
-        if (candVoteBox.getUsersPhone().equals(usersPhone)) {
-          candVoteBox.setChoices("1");
-          voteBoxRepository.save(candVoteBox);
-        }
-      }
-      return candidateVoteBoxes;
-    }
+    return voteBoxRepository.save(voteBox);
   }
 
-  @Override
-  public List<VoteBox> saveScore(VoteBoxDto voteBoxDto, String usersPhone) {
 
-    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
-      voteBoxDto.getCandidateId(), usersPhone);
-    if (optionalVoteBox.isPresent()) {
-      throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_DUPLICATED);
-    } else {
+  private List<VoteBox> save(VoteBoxDto voteBoxDto) {
 
-      List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
-        voteBoxDto.getVoteId());
+    checkDoubleVote(voteBoxDto);
 
-      if (candidateList == null) {
-        throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_NOT_FOUND);
-      }
+    List<VoteBox> voteBoxes = new ArrayList<>();
+    List<Long> candidateIds = voteBoxDto.getCandidateIds();
+    List<Integer> scores = voteBoxDto.getScores();
+    List<Integer> ranks = voteBoxDto.getRanks();
 
-      List<VoteBox> voteBoxes = new ArrayList<>();
-
-      List<Integer> scoresList = voteBoxDto.getScoreList();
-
-      if (!candidateList.isEmpty()) {
-
-        for (int i = 0; i < candidateList.size(); i++) {
-          Integer score = scoresList.get(i);
-
-          if (score < 0 || score > 100) {
-            throw new VoteBoxCustomException(VoteBoxErrorCode.SCORE_NOT_VALID);
-          }
-          Candidate c = candidateList.get(i);
-
-          Integer rank = 0;
-          String choice = "0";
-
-          VoteBox voteBox = toVoteBoxScores(voteBoxDto, c, score, rank, choice);
-          voteBoxes.add(voteBox);
-        }
-      }
-      return voteBoxRepository.saveAll(voteBoxes);
+    for (int i = 0; i < candidateIds.size(); i++) {
+      VoteBox voteBox = new VoteBox();
+      voteBox.setVoteId(voteBoxDto.getVoteId());
+      voteBox.setUsersPhone(voteBoxDto.getUsersPhone());
+      voteBox.setChoices((candidateIds.get(i).equals(voteBoxDto.getChosenCandidateId())) ? 1 : 0);
+      voteBox.setElectionId(voteBoxDto.getElectionId());
+      voteBox.setCandidateId(candidateIds.get(i));
+      voteBox.setScores(scores != null && !scores.isEmpty() ? scores.get(i) : 0);
+      voteBox.setRanks(ranks != null && !ranks.isEmpty() ? ranks.get(i) : 0);
+      voteBoxes.add(voteBox);
     }
-  }
 
-  @Override
-  public List<VoteBox> savePrefer(VoteBoxDto voteBoxDto, String usersPhone) {
-
-    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
-      voteBoxDto.getCandidateId(), usersPhone);
-    if (optionalVoteBox.isPresent()) {
-      throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_DUPLICATED);
-    } else {
-
-      List<Candidate> candidateList = candidateRepository.findAllCandidateIdByVoteId(
-        voteBoxDto.getVoteId());
-
-      if (candidateList == null) {
-        throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_NOT_FOUND);
-      }
-
-      List<VoteBox> voteBoxes = new ArrayList<>();
-
-      List<Integer> ranksList = voteBoxDto.getRankList();
-
-      if (!candidateList.isEmpty()) {
-
-        for (int i = 0; i < candidateList.size(); i++) {
-
-          int minValue = 1;
-          int maxValue = candidateList.size();
-          boolean isValid = true;
-
-          for (int j = minValue; j <= maxValue; j++) {
-            if (!ranksList.contains(j)) {
-              isValid = false;
-              break;
-            }
-          }
-          if (!isValid) {
-            throw new VoteBoxCustomException(VoteBoxErrorCode.PREFER_NOT_VALID);
-
-          } else {
-            Integer rank = ranksList.get(i);
-            Candidate c = candidateList.get(i);
-
-            Integer score = 0;
-            String choice = "0";
-
-            VoteBox voteBox = toVoteBoxRank(voteBoxDto, c, score, rank, choice);
-            voteBoxes.add(voteBox);
-          }
-        }
-      }
-      return voteBoxRepository.saveAll(voteBoxes);
-    }
+    return voteBoxRepository.saveAll(voteBoxes);
   }
 
   @Override
@@ -200,69 +77,11 @@ public class VoteBoxServiceImpl implements VoteBoxService {
     return voteBoxRepository.findAllByVoteId(voteId);
   }
 
-  private VoteBox toVoteBox(VoteBoxDto voteBoxDto, Candidate candidate, Integer rank, Integer score,
-    String usersPhone, String choice) {
-
-    VoteBox voteBox = new VoteBox();
-    voteBox.setVoteId(voteBoxDto.getVoteId());
-    voteBox.setHadChosen(voteBoxDto.isHadChosen());
-    voteBox.setUsersPhone(usersPhone);
-    voteBox.setHadVoted(true);
-    voteBox.setElectionId(candidate.getElectionId());
-    voteBox.setCandidateId(candidate.getCandidateId());
-    voteBox.setRanks(rank);
-    voteBox.setScores(score);
-    voteBox.setChoices(choice);
-
-    return voteBox;
+  private void checkDoubleVote(VoteBoxDto voteBoxDto) {
+    Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
+      voteBoxDto.getCandidateId(), voteBoxDto.getUsersPhone());
+    if (optionalVoteBox.isPresent()) {
+      throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_DUPLICATED);
+    }
   }
-
-  private VoteBox toVoteBoxChoice(VoteBoxDto voteBoxDto, Candidate candidate,
-    Integer rank, Integer score, String usersPhone, String choice) {
-
-    VoteBox voteBox = new VoteBox();
-    voteBox.setVoteId(voteBoxDto.getVoteId());
-    voteBox.setUsersPhone(usersPhone);
-    voteBox.setHadVoted(true);
-    voteBox.setChoices(choice);
-    voteBox.setElectionId(candidate.getElectionId());
-    voteBox.setCandidateId(candidate.getCandidateId());
-    voteBox.setRanks(rank);
-    voteBox.setScores(score);
-    return voteBox;
-  }
-
-
-  private VoteBox toVoteBoxRank(VoteBoxDto voteBoxDto, Candidate candidate, Integer score,
-    Integer rank, String choice) {
-
-    VoteBox voteBox = new VoteBox();
-    voteBox.setVoteId(voteBoxDto.getVoteId());
-    voteBox.setUsersPhone(voteBoxDto.getUsersPhone());
-    voteBox.setHadVoted(true);
-    voteBox.setElectionId(candidate.getElectionId());
-    voteBox.setCandidateId(candidate.getCandidateId());
-    voteBox.setRanks(rank);
-    voteBox.setScores(score);
-    voteBox.setChoices(choice);
-
-    return voteBox;
-  }
-
-  private VoteBox toVoteBoxScores(VoteBoxDto voteBoxDto, Candidate candidate, Integer score,
-    Integer rank, String choice) {
-
-    VoteBox voteBox = new VoteBox();
-    voteBox.setVoteId(voteBoxDto.getVoteId());
-    voteBox.setScores(score);
-    voteBox.setRanks(rank);
-    voteBox.setUsersPhone(voteBoxDto.getUsersPhone());
-    voteBox.setHadVoted(voteBoxDto.isHadVoted());
-    voteBox.setElectionId(candidate.getElectionId());
-    voteBox.setCandidateId(candidate.getCandidateId());
-    voteBox.setChoices(choice);
-
-    return voteBox;
-  }
-
 }

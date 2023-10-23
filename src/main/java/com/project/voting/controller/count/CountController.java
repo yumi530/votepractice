@@ -8,6 +8,7 @@ import com.project.voting.domain.election.Election;
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
+import com.project.voting.domain.voteBox.VoteBoxRepository;
 import com.project.voting.dto.users.UsersDto;
 import com.project.voting.dto.voteBox.VoteBoxDto;
 import com.project.voting.service.cand_count.CandCountService;
@@ -22,6 +23,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,6 +40,7 @@ public class CountController {
   private final VoteBoxService voteBoxService;
   private final CountService countService;
   private final CandCountService candCountService;
+  private final VoteBoxRepository voteBoxRepository;
 
   @GetMapping("/count/list")
   public String list(@AuthenticationPrincipal @RequestParam(name = "phoneNumber") String usersPhone,
@@ -54,7 +58,6 @@ public class CountController {
 
     model.addAttribute("detail", detail);
     model.addAttribute("usersPhone", usersPhone);
-
 
 
     LocalDateTime currentDate = LocalDateTime.now();
@@ -91,7 +94,6 @@ public class CountController {
 
   @GetMapping("/count/voteResult/{voteId}")
   public String countVoteComplete(@RequestParam Long electionId, @PathVariable Long voteId, @RequestParam VoteType voteType, Model model, @RequestParam(name = "usersPhone") String usersPhone) {
-
     countService.votesResultConfirm(electionId, voteId, voteType);
 
     Vote vote = voteService.detail(voteId);
@@ -112,40 +114,9 @@ public class CountController {
   }
 
   @PostMapping("/save")
-  public String saveVote(@RequestParam(required = false) List<Integer> scores,
-    @RequestParam(required = false) List<Integer> ranks,
-    @RequestParam(required = false) String choices, VoteBoxDto voteBoxDto,
-    @RequestParam(name = "usersPhone") String usersPhone) {
-
-    if (voteBoxDto.getVoteType() == VoteType.PROS_CONS) {
-      voteBoxService.saveProsCons(voteBoxDto, usersPhone);
-    } else if (voteBoxDto.getVoteType() == VoteType.CHOICE) {
-      voteBoxService.
-
-        saveChoice(voteBoxDto, usersPhone, choices);
-    }
-
-    if (voteBoxDto.getVoteType() == VoteType.SCORE) {
-
-      if (scores != null && !scores.isEmpty()) {
-        for (Integer score : scores) {
-          voteBoxDto.addScore(score);
-        }
-        voteBoxService.saveScore(voteBoxDto, usersPhone);
-      }
-    } else if (voteBoxDto.getVoteType() == VoteType.PREFERENCE) {
-
-      if (ranks != null && !ranks.isEmpty()) {
-        for (Integer rank : ranks) {
-          voteBoxDto.addRank(rank);
-        }
-        voteBoxService.savePrefer(voteBoxDto, usersPhone);
-      }
-    }
-
-    String redirectUrl =
-      "redirect:/users/count/detail/" + voteBoxDto.getElectionId() + "?usersPhone=" + usersPhone;
-    return redirectUrl;
+  public String saveVote(VoteBoxDto voteBoxDto) {
+    voteBoxService.saveVote(voteBoxDto);
+    return "redirect:/users/count/detail/" + voteBoxDto.getElectionId() + "?usersPhone=" + voteBoxDto.getUsersPhone();
   }
 }
 
