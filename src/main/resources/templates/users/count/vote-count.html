@@ -23,12 +23,12 @@
           <p class="card-text" th:text="'투표명: ' + ${detailVote.voteTitle}"></p>
 
           <div th:each="candidate : ${detailCand}">
-            <input type="hidden" th:value="${candidate.candidateId}" name="candidateId"/>
-              <p class="card-text" th:text="'후보자명: ' + ${candidate.candidateName}"></p>
-              <p class="card-text" th:text="'후보자정보: ' + ${candidate.candidateInfo}"></p>
+            <input type="hidden" th:value="${candidate.candidateId}" name="candidateIds"/>
+            <p class="card-text" th:text="'후보자명: ' + ${candidate.candidateName}"></p>
+            <p class="card-text" th:text="'후보자정보: ' + ${candidate.candidateInfo}"></p>
           </div>
           <hr>
-            <p class="card-text" th:text="'투표 종류: ' + ${detailVote.voteType}"></p>
+          <p class="card-text" th:text="'투표 종류: ' + ${detailVote.voteType}"></p>
 
           <div th:if="${#strings.equals(detailVote.voteType, 'PROS_CONS')}">
             <label for="hadChosen">찬성</label>
@@ -38,17 +38,20 @@
             <hr>
             <li>투표 방법 : 후보자에 대한 찬성 또는 반대를 선택해주세요.</li>
             <br>
-              <ul>PROS_CONS : 찬반 투표</ul>
-              <ul>CHOICE : 선택 투표</ul>
-              <ul>SCORE : 점수 투표</ul>
-              <ul>PREFERENCE : 선호도 투표</ul>
+            <ul>PROS_CONS : 찬반 투표</ul>
+            <ul>CHOICE : 선택 투표</ul>
+            <ul>SCORE : 점수 투표</ul>
+            <ul>PREFERENCE : 선호도 투표</ul>
           </div>
 
           <div th:if="${#strings.equals(detailVote.voteType, 'CHOICE')}">
-            <div th:each="candidate : ${detailCand}">
-              <label th:for="choices" th:text="${candidate.candidateName}"></label>
-              <input type="checkbox" th:id="'candidate-' + ${candidate.candidateId}"
-                     th:field="*{choices}" th:value="${candidate.candidateId}" />
+            <div th:each="candidate : ${detailCand}" class="form-check form-check-inline">
+              <div>
+                <input class="form-check-input" type="radio" th:name="chosenCandidateId"
+                       th:id="${candidate.candidateId}" th:value="${candidate.candidateId}">
+                <label class="form-check-label" th:for="${candidate.candidateId}"
+                       th:text="${candidate.candidateName}"></label>
+              </div>
             </div>
             <hr>
             <li>투표 방법 : 각 후보자 중 한 명을 선택해주세요.</li>
@@ -91,24 +94,5 @@
       </div>
     </div>
   </div>
-  <script>
-    document.addEventListener("choiceContent", function () {
-
-      var form = document.querySelector("form");
-
-      form.onsubmit = function () {
-        var selectedCandidates = [];
-        var checkboxes = document.querySelectorAll("input[type=checkbox]:checked");
-
-        checkboxes.forEach(function (checkbox) {
-          var candidateId = checkbox.value;
-          var values = candidateId === 'check' ? '1' : '0';
-          selectedCandidates.push(values);
-        });
-        document.querySelector("input[name='choices']").value = selectedCandidates.join(",");
-      };
-    });
-  </script>
-
 </section>
 </html>

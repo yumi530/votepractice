@@ -46,16 +46,7 @@ public class CandCountServiceImpl implements CandCountService{
     if (voteType.equals(VoteType.PROS_CONS)) {
      candCountProcess.processProsConsCandCount(electionId, voteId, voteBoxes);
     }
-
-    else if (voteType.equals(VoteType.CHOICE)) {
-      candCountProcess.processCandCount(voteType, electionId, voteId, voteBoxes, avgList);
-    }
-
-    else if (voteType.equals(VoteType.SCORE)) {
-      candCountProcess.processCandCount(voteType, electionId, voteId, voteBoxes, avgList);
-    }
-
-    else if (voteType.equals(VoteType.PREFERENCE)) {
+    else {
       candCountProcess.processCandCount(voteType, electionId, voteId, voteBoxes, avgList);
     }
   }
