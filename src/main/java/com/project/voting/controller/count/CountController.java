@@ -17,7 +17,11 @@ import com.project.voting.service.count.CountService;
 import com.project.voting.service.election.ElectionService;
 import com.project.voting.service.users.UsersService;
 import com.project.voting.service.vote.VoteService;
-import com.project.voting.service.voteBox.VoteBoxService;
+import com.project.voting.service.voteBox.CommonVoteService;
+//import com.project.voting.service.voteBox.DefaultVoteService;
+
+import com.project.voting.service.voteBox.DefaultVoteService;
+import com.project.voting.service.voteBox.ProsConsVoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -37,10 +41,14 @@ public class CountController {
   private final UsersService usersService;
   private final VoteService voteService;
   private final CandidateService candidateService;
-  private final VoteBoxService voteBoxService;
+//  private final VoteBoxService voteBoxService;
+  private final CommonVoteService commonVoteService;
+
+  private final DefaultVoteService defaultVoteService;
+  private final ProsConsVoteService prosConsVoteService;
   private final CountService countService;
   private final CandCountService candCountService;
-  private final VoteBoxRepository voteBoxRepository;
+
 
   @GetMapping("/count/list")
   public String list(@AuthenticationPrincipal @RequestParam(name = "phoneNumber") String usersPhone,
@@ -73,21 +81,19 @@ public class CountController {
     @RequestParam(name = "usersPhone") String usersPhone) {
     Election detailElection = electionService.detailElection(voteId);
     Vote detailVote = voteService.detail(voteId);
-//    Count turnOut = countService.turnOut(voteId);
     List<Candidate> detailCand = candidateService.detail(voteId);
-    List<VoteBox> detailVoteBox = voteBoxService.detailVoteBox(voteId);
-//    Candidate candidateLength = candidateService.candidateLength(voteId);
+    List<VoteBox> getVoteBoxInfo = commonVoteService.getVoteBoxInfo(voteId);
+
 
     VoteBoxDto voteBoxDto = new VoteBoxDto();
-    voteBoxDto.setDetailVoteBox(detailVoteBox);
+    voteBoxDto.setDetailVoteBox(getVoteBoxInfo);
 
     model.addAttribute("detailCand", detailCand);
     model.addAttribute("detailVote", detailVote);
     model.addAttribute("detailElection", detailElection);
     model.addAttribute("usersPhone", usersPhone);
     model.addAttribute("voteBoxDto", voteBoxDto);
-//    model.addAttribute("candidateLength", candidateLength);
-//    model.addAttribute("turnOut", turnOut);
+
 
     return "users/count/vote-count";
   }
@@ -106,7 +112,6 @@ public class CountController {
     model.addAttribute("votes", vote);
     model.addAttribute("elections", election);
     model.addAttribute("candidates", candidates);
-//    model.addAttribute("count", count);
     model.addAttribute("counts", counts);
     model.addAttribute("candCounts", candCounts);
 
@@ -115,7 +120,14 @@ public class CountController {
 
   @PostMapping("/save")
   public String saveVote(VoteBoxDto voteBoxDto) {
-    voteBoxService.saveVote(voteBoxDto);
+
+    if (voteBoxDto.getVoteType().equals(VoteType.PROS_CONS)) {
+      prosConsVoteService.doSaveProsCons(voteBoxDto);
+    }
+    else {
+      defaultVoteService.doSaveDefault(voteBoxDto);
+    }
+
     return "redirect:/users/count/detail/" + voteBoxDto.getElectionId() + "?usersPhone=" + voteBoxDto.getUsersPhone();
   }
 }

@@ -45,8 +45,6 @@ public class SmsService {
 
     private final WebClient webClient;
 
-    private final RedisService redisService;
-
     private final CacheService cacheService;
 
 

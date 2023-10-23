@@ -83,28 +83,6 @@ public class CountServiceImpl implements CountService {
     }
     return new Count();
   }
-//  @Override
-//  public Count turnOut(Long electionId, Long voteId) {
-//
-//    List<CandCount> candidateIds = candCountRepository.findAllCandidateIdsByVoteId(voteId);
-//    Integer numOfElectors = usersRepository.countUsersPhonesByElectionId(
-//      electionId);
-//
-//    Integer numOfParticipation = voteBoxRepository.countUsersPhonesByVoteId(voteId) / candidateIds.size();
-//
-//    double calTurnOut = ((numOfParticipation * 100) / numOfElectors);
-//
-//    for (CandCount candidate : candidateIds) {
-//      Count count = new Count();
-//      count.setElectionId(electionId);
-//      count.setVoteId(voteId);
-//      count.setCandidateId(candidate.getCandidateId());
-//      count.setTurnOut(calTurnOut);
-//
-//      countRepository.save(count);
-//    }
-//    return new Count();
-//  }
 
   @Override
   public List<Count> details(Long voteId) {
