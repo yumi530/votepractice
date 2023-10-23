@@ -5,6 +5,8 @@ import com.project.voting.domain.cand_count.CandCountRepository;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.domain.voteBox.VoteBoxRepository;
+import com.project.voting.exception.cand_count.CandCountCustomException;
+import com.project.voting.exception.cand_count.CandCountErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -36,18 +38,23 @@ public class CandCountProcess {
   }
 
   public void processCandCount(VoteType voteType, Long electionId, Long voteId,
-    //나머지 투표 처리
     List<VoteBox> voteBoxes, List<Double> avgList) {
     for (VoteBox voteBox : voteBoxes) {
       int sumValue = 0;
       double avg = 0.0;
 
-      if (voteType.equals(VoteType.CHOICE)) {
-        sumValue = voteBoxRepository.sumChoicesByCandidateId(voteBox.getCandidateId());
-      } else if (voteType.equals(VoteType.SCORE)) {
-        sumValue = voteBoxRepository.sumScoresByCandidateId(voteBox.getCandidateId());
-      } else if (voteType.equals(VoteType.PREFERENCE)) {
-        sumValue = voteBoxRepository.sumRanksByCandidateId(voteBox.getCandidateId());
+      switch (voteType) {
+        case CHOICE:
+          sumValue = voteBoxRepository.sumChoicesByCandidateId(voteBox.getCandidateId());
+          break;
+        case SCORE:
+          sumValue = voteBoxRepository.sumScoresByCandidateId(voteBox.getCandidateId());
+          break;
+        case PREFERENCE:
+          sumValue = voteBoxRepository.sumRanksByCandidateId(voteBox.getCandidateId());
+          break;
+        default:
+          throw new CandCountCustomException(CandCountErrorCode.CAND_COUNT_NOT_VALID);
       }
 
       Integer usersPhones = voteBoxRepository.countUsersPhonesByCandidateId(voteBox.getCandidateId());
@@ -63,15 +70,22 @@ public class CandCountProcess {
       candCount.setVoteId(voteId);
       candCount.setCandidateId(voteBox.getCandidateId());
 
-      if (voteType.equals(VoteType.CHOICE)) {
-        candCount.setChoicesAvg(avg);
-      } else if (voteType.equals(VoteType.SCORE)) {
-        candCount.setScoresAvg(avg);
-      } else if (voteType.equals(VoteType.PREFERENCE)) {
-        candCount.setRanksAvg(avg);
+      switch (voteType) {
+        case CHOICE:
+          candCount.setChoicesAvg(avg);
+          break;
+        case SCORE:
+          candCount.setScoresAvg(avg);
+          break;
+        case PREFERENCE:
+          candCount.setRanksAvg(avg);
+          break;
+        default:
+          throw new CandCountCustomException(CandCountErrorCode.CAND_COUNT_NOT_VALID);
       }
 
       candCountRepository.save(candCount);
     }
   }
+
 }
