@@ -15,8 +15,7 @@ public interface ElectionService {
 
   Page<Election> getElectionList(Pageable pageable);
 
-  Election addElectionAndVote(ElectionDto electionDto, Admin admin, MultipartFile file, List<String> voteTypes)
-    throws IOException;
+  Election addElectionAndVote(ElectionDto electionDto, Admin admin, MultipartFile file) throws IOException;
 
   void deleteElection(Long electionId);
 

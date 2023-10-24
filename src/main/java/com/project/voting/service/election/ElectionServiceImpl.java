@@ -62,9 +62,7 @@ public class ElectionServiceImpl implements ElectionService {
 
   @Override
   @Transactional
-  public Election addElectionAndVote(ElectionDto electionDto,
-    @AuthenticationPrincipal Admin admin, MultipartFile file, List<String> voteTypes)
-    throws IOException {
+  public Election addElectionAndVote(ElectionDto electionDto, @AuthenticationPrincipal Admin admin, MultipartFile file) throws IOException {
 
     Optional<Admin> optionalAdmin = adminRepository.findById(admin.getUsername());
     Admin adminId = optionalAdmin.orElseThrow(() -> new AdminCustomException(AdminErrorCode.ADMIN_NOT_FOUND));
@@ -95,12 +93,11 @@ public class ElectionServiceImpl implements ElectionService {
     List<VoteDto> voteList = electionDto.getVotes();
 
     for (int i = 0; i < voteList.size(); i++) {
-      String voteType = voteTypes.get(i);
       VoteDto dto = voteList.get(i);
 
       Long voteId = generateVoteId(election.getElectionId());
 
-      switch (voteType) {
+      switch (dto.getVoteType()) {
 
         case "PROS_CONS":
 

@@ -51,8 +51,8 @@ public class ElectionController {
     }
 
     @PostMapping("/election")
-    public String addElectionSubmit(ElectionDto electionDto, @AuthenticationPrincipal Admin admin, RedirectAttributes redirectAttributes, @RequestPart MultipartFile file, @RequestParam(name = "voteTypes") List<String> voteTypes) throws IOException {
-        electionService.addElectionAndVote(electionDto, admin, file, voteTypes);
+    public String addElectionSubmit(ElectionDto electionDto, @AuthenticationPrincipal Admin admin, RedirectAttributes redirectAttributes, @RequestPart MultipartFile file) throws IOException {
+        electionService.addElectionAndVote(electionDto, admin, file);
         redirectAttributes.addFlashAttribute("message", "addElectionAndVote Success");
         return "redirect:/admin/election/electionList";
     }

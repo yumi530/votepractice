@@ -1,129 +1,127 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{common/admin.html}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{common/admin.html}">
 <head>
-  <title>선거 개설</title>
+    <title>선거 개설</title>
 </head>
 
 <section layout:fragment="content">
-  <h3 class="text-center fw-bold">선거 개설</h3>
+    <h3 class="text-center fw-bold">선거 개설</h3>
+    <div class="container p-3 mb-3 d-flex justify-content-center">
+        <form id="electionForm" action="/admin/election" method="post" enctype="multipart/form-data">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <td>대표선거명</td>
+                    <td><input type="text" class="form-control" name="electionTitle" required></td>
+                </tr>
+                <tr>
+                    <td>이용기관명</td>
+                    <td><input type="text" class="form-control" name="groupName" required></td>
+                </tr>
+                <tr>
+                    <td>투표기간</td>
+                    <td>
+                        <input type="datetime-local" class="form-control" name="electionStartDt" required>
+                        <input type="datetime-local" class="form-control" name="electionEndDt" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="file" class="form-label">명부등록</label></td>
+                    <td><input type="file" id="file" class="form-control" name="file" required></td>
+                </tr>
+                </tbody>
+            </table>
 
-  <div class="container p-3 mb-3 d-flex justify-content-center">
-    <form id="electionForm" action="/admin/election" method="post" enctype="multipart/form-data">
-      <table class="table">
-        <tbody>
-        <tr>
-          <td>대표선거명</td>
-          <td><input type="text" class="form-control" name="electionTitle" required></td>
-        </tr>
-        <tr>
-          <td>이용기관명</td>
-          <td><input type="text" class="form-control" name="groupName" required></td>
-        </tr>
-        <tr>
-          <td>투표기간</td>
-          <td>
-            <input type="datetime-local" class="form-control" name="electionStartDt" required>
-            <input type="datetime-local" class="form-control" name="electionEndDt" required>
-          </td>
-        </tr>
-        <tr>
-          <td><label for="file" class="form-label">명부등록</label></td>
-          <td><input type="file" id="file" class="form-control" name="file" required></td>
-        </tr>
-        </tbody>
-      </table>
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-secondary m-3 add-vote-btn" type="button" data-vote-type="PROS_CONS">찬반 투표 추가</button>
+                <button class="btn btn-secondary m-3 add-vote-btn" type="button" data-vote-type="CHOICE">선택 투표 추가</button>
+                <button class="btn btn-secondary m-3 add-vote-btn" type="button" data-vote-type="SCORE">점수 투표 추가</button>
+                <button class="btn btn-secondary m-3 add-vote-btn" type="button" data-vote-type="PREFERENCE">선호도 투표 추가</button>
+            </div>
 
-      <div class="d-flex justify-content-center">
-        <button class="btn btn-secondary" type="button" onclick="insertVoteTemplate('PROS_CONS')">찬반
-          투표 추가
-        </button>
-        <button class="btn btn-secondary" type="button" onclick="insertVoteTemplate('CHOICE')">선택 투표
-          추가
-        </button>
-        <button class="btn btn-secondary" type="button" onclick="insertVoteTemplate('SCORE')">점수 투표
-          추가
-        </button>
-        <button class="btn btn-secondary" type="button" onclick="insertVoteTemplate('PREFERENCE')">
-          선호도 투표 추가
-        </button>
-      </div>
+            <div id="voteTemplates" class="m-3"></div>
 
-      <div id="voteTemplates" class="m-3"></div>
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-success" type="submit">선거 개설 완료</button>
+            </div>
+        </form>
+    </div>
 
-      <div class="d-flex justify-content-center">
-        <button class="btn btn-success" type="submit">선거 개설 완료</button>
-      </div>
-    </form>
-  </div>
+    <script>
+        (function() {
+            let voteIndex = 0;
+            const voteTypes = [];
 
-  <script>
-    let voteIndex = 0;
-    let voteTypes = [];
+            // 투표 추가 버튼
+            const addVoteButtons = document.querySelectorAll('.add-vote-btn');
 
-    function insertVoteTemplate(voteType) {
-      const voteTemplate = document.createElement("div");
-      const voteTemplateClassName = "vote-template";
-      voteTemplate.classList.add(voteTemplateClassName);
-      voteTemplate.classList.add("m-3");
+            addVoteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const voteType = button.getAttribute('data-vote-type');
+                    insertVoteTemplate(voteType);
+                });
+            });
 
-      let templateContent = '';
+            function insertVoteTemplate(voteType) {
+                const voteTemplate = document.createElement("div");
+                const voteTemplateClassName = "vote-template";
+                voteTemplate.classList.add(voteTemplateClassName, "m-3");
 
-      if (voteType === 'PROS_CONS') {
-        templateContent += `
-          <input type="text" class="form-control" name="votes[${voteIndex}].voteTitle" placeholder="투표명" required>
-          <input type="text" class="form-control" name="votes[${voteIndex}].candidateName" placeholder="후보자명" required>
-          <input type="text" class="form-control" name="votes[${voteIndex}].candidateInfo" placeholder="후보자정보" required>
-        `;
-      } else if (voteType === 'CHOICE') {
-        templateContent += `
-          <input type="text" class="form-control" name="votes[${voteIndex}].voteTitle" placeholder="투표명" required>
-          <div id="candidatesContainer_${voteIndex}">
-            <button class="btn btn-dark" type="button" onclick="addCandidate(${voteIndex})">후보자 추가</button>
-          </div>
-        `;
-      } else if (voteType === 'SCORE') {
-        templateContent += `
-          <input type="text" class="form-control" name="votes[${voteIndex}].voteTitle" placeholder="투표명" required>
-          <div id="candidatesContainer_${voteIndex}">
-            <button class="btn btn-dark" type="button" onclick="addCandidate(${voteIndex})">후보자 추가</button>
-          </div>
-        `;
-      } else if (voteType === 'PREFERENCE') {
-        templateContent += `
-          <input type="text" class="form-control" name="votes[${voteIndex}].voteTitle" placeholder="투표명" required>
-          <div id="candidatesContainer_${voteIndex}">
-            <button class="btn btn-dark" type="button" onclick="addCandidate(${voteIndex})">후보자 추가</button>
-          </div>
-        `;
-      }
+                const inputTemplate = `
+                    <span>${voteType}<button type="button" class="btn btn-outline-danger m-3 delete-vote-btn" data-vote-index="${voteIndex}">투표 삭제</button></span>
+                    <input type="hidden" class="form-control" name="votes[${voteIndex}].voteType" value="${voteType}">
+                    <input type="text" class="form-control" name="votes[${voteIndex}].voteTitle" placeholder="투표명" required>
+                    <input type="text" class="form-control" name="votes[${voteIndex}].candidateNames[]" placeholder="후보자명" required>
+                    <input type="text" class="form-control" name="votes[${voteIndex}].candidateInfos[]" placeholder="후보자정보" required>
+                `;
 
-      voteTemplate.innerHTML = templateContent;
-      document.getElementById("voteTemplates").appendChild(voteTemplate);
+                let templateContent = inputTemplate;
 
-      voteTypes[voteIndex] = voteType;
-      voteIndex++;
-    }
+                if (voteType !== 'PROS_CONS') {
+                    const candidatesContainerId = `candidatesContainer_${voteIndex}`;
+                    templateContent += `
+                        <div id="${candidatesContainerId}">
+                            <button class="btn btn-dark m-3 add-candidate-btn" type="button" data-vote-index="${voteIndex}">후보자 추가</button>
+                        </div>
+                    `;
+                }
 
-    function addCandidate(voteIndex) {
-      const candidatesContainer = document.getElementById(`candidatesContainer_${voteIndex}`);
+                voteTemplate.innerHTML = templateContent;
+                document.getElementById("voteTemplates").appendChild(voteTemplate);
 
-      const candidateTemplate = document.createElement("div");
-      candidateTemplate.innerHTML = `
-        <input type="text" class="form-control" name="votes[${voteIndex}].candidateNames[]"  placeholder="후보자명" required>
-        <input type="text" class="form-control" name="votes[${voteIndex}].candidateInfos[]" placeholder="후보자정보" required>
-      `;
+                voteTypes[voteIndex] = voteType;
+                voteIndex++;
+            }
 
-      candidatesContainer.appendChild(candidateTemplate);
-    }
+            // 후보자 추가 버튼
+            document.getElementById("voteTemplates").addEventListener("click", function(e) {
+                if (e.target.tagName == "BUTTON" && e.target.classList.contains("add-candidate-btn")) {
+                    const voteIndex = e.target.getAttribute('data-vote-index');
 
-    document.getElementById("electionForm").addEventListener("submit", function () {
-      const hiddenInput = document.createElement("input");
-      hiddenInput.type = "hidden";
-      hiddenInput.name = "voteTypes";
-      hiddenInput.value = voteTypes.join(',');
-      this.appendChild(hiddenInput);
-    });
-  </script>
+                    const candidatesContainer = document.getElementById(`candidatesContainer_${voteIndex}`);
+
+                    const candidateTemplate = document.createElement("div");
+                    candidateTemplate.innerHTML = `
+                    <input type="text" class="form-control" name="votes[${voteIndex}].candidateNames[]" placeholder="후보자명" required>
+                    <input type="text" class="form-control" name="votes[${voteIndex}].candidateInfos[]" placeholder="후보자정보" required>
+                `;
+
+                    candidatesContainer.parentNode.insertBefore(candidateTemplate, candidatesContainer);
+                }
+            });
+
+            // 투표 삭제 버튼
+            document.getElementById("voteTemplates").addEventListener("click", function(e) {
+                if (e.target.tagName == "BUTTON" && e.target.classList.contains("delete-vote-btn")) {
+                    const voteTemplate = e.target.closest(".vote-template");
+
+                    if (voteTemplate) {
+                        voteTemplate.parentNode.removeChild(voteTemplate);
+                    }
+                }
+            });
+
+        })();
+    </script>
 </section>
 </html>
