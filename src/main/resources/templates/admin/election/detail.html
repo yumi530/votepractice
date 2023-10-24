@@ -43,13 +43,6 @@
         <td th:text="투표명"></td>
         <td th:text="${vote.voteTitle}"></td>
         <input type="hidden" th:value="${vote.voteType}" name="voteType">
-<!--        <input type="hidden" th:value="${vote.candidateName}" name="candidateName">-->
-
-        <!--                    <td>-->
-        <!--                        <button class="btn btn-secondary" type="submit">개표 및 결과-->
-        <!--                            확인-->
-        <!--                        </button>-->
-        <!--                    </td>-->
         <td>
           <a class="btn btn-dark" th:href="@{/admin/election/results(voteId=${vote.voteId}, electionId=${vote.electionId}, voteType=${vote.voteType})}">개표 진행</a>
         </td>

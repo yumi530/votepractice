@@ -2,19 +2,15 @@ package com.project.voting.service.count;
 
 import com.project.voting.domain.cand_count.CandCount;
 import com.project.voting.domain.cand_count.CandCountRepository;
-import com.project.voting.domain.candidate.Candidate;
 import com.project.voting.domain.count.Count;
 import com.project.voting.domain.count.CountRepository;
 
 import com.project.voting.domain.election.Election;
 import com.project.voting.domain.election.ElectionRepository;
 import com.project.voting.domain.vote.VoteType;
-import com.project.voting.domain.voteBox.VoteBox;
-import com.project.voting.dto.voteBox.VoteBoxDto;
 import com.project.voting.exception.cand_count.CandCountCustomException;
 import com.project.voting.exception.cand_count.CandCountErrorCode;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -63,7 +59,6 @@ public class CountServiceImpl implements CountService {
 
       countRepository.save(count);
     }
-
     return new Count();
   }
 

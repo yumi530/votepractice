@@ -22,25 +22,15 @@ public class CandCountProcess {
     // PROS_CONS 투표 처리
     Long countPros = voteBoxRepository.countByHadChosenTrueAndVoteId(voteId);
     Long countCons = voteBoxRepository.countByHadChosenFalseAndVoteId(voteId);
-    Long prosRatio = countPros / (countPros + countCons) * 100;
-    Long consRatio = countCons / (countPros + countCons) * 100;
+    Long prosRatio = calculateProsRatio(countPros, countCons);
+    Long consRatio = calculateConsRatio(countPros, countCons);
 
-    CandCount candCount = new CandCount();
-    candCount.setElectionId(electionId);
-    candCount.setVoteId(voteId);
-    candCount.setCandidateId(voteBoxes.get(0).getCandidateId());
-
-    candCount.setResult(countPros > countCons ? true : false);
-    candCount.setProsRatio(prosRatio);
-    candCount.setConsRatio(consRatio);
-
-    candCountRepository.save(candCount);
+    saveCandCount(electionId, voteId, voteBoxes.get(0).getCandidateId(), prosRatio, consRatio, countPros > countCons);
   }
 
-  public void processCandCount(VoteType voteType, Long electionId, Long voteId,
-    List<VoteBox> voteBoxes, List<Double> avgList) {
+  public void processCandCount(VoteType voteType, Long electionId, Long voteId, List<VoteBox> voteBoxes, List<Double> avgList) {
     for (VoteBox voteBox : voteBoxes) {
-      int sumValue = 0;
+      double sumValue;
       double avg = 0.0;
 
       switch (voteType) {
@@ -57,35 +47,58 @@ public class CandCountProcess {
           throw new CandCountCustomException(CandCountErrorCode.CAND_COUNT_NOT_VALID);
       }
 
-      Integer usersPhones = voteBoxRepository.countUsersPhonesByCandidateId(voteBox.getCandidateId());
+      Double usersNum = voteBoxRepository.countUsersPhonesByCandidateId(voteBox.getCandidateId());
 
-      if (usersPhones > 0) {
-        avg = (double) sumValue / (double) usersPhones;
+      if (usersNum > 0) {
+        avg = sumValue / usersNum;
       }
 
       avgList.add(avg);
 
-      CandCount candCount = new CandCount();
-      candCount.setElectionId(electionId);
-      candCount.setVoteId(voteId);
-      candCount.setCandidateId(voteBox.getCandidateId());
-
-      switch (voteType) {
-        case CHOICE:
-          candCount.setChoicesAvg(avg);
-          break;
-        case SCORE:
-          candCount.setScoresAvg(avg);
-          break;
-        case PREFERENCE:
-          candCount.setRanksAvg(avg);
-          break;
-        default:
-          throw new CandCountCustomException(CandCountErrorCode.CAND_COUNT_NOT_VALID);
-      }
-
-      candCountRepository.save(candCount);
+      saveCandCount(electionId, voteId, voteBox.getCandidateId(), voteType, avg);
     }
+  }
+  private void saveCandCount(Long electionId, Long voteId, Long candidateId, VoteType voteType, Double avg) {
+    CandCount candCount = new CandCount();
+    candCount.setElectionId(electionId);
+    candCount.setVoteId(voteId);
+    candCount.setCandidateId(candidateId);
+
+    switch (voteType) {
+      case CHOICE:
+        candCount.setChoicesAvg(avg);
+        break;
+      case SCORE:
+        candCount.setScoresAvg(avg);
+        break;
+      case PREFERENCE:
+        candCount.setRanksAvg(avg);
+        break;
+      default:
+        throw new CandCountCustomException(CandCountErrorCode.CAND_COUNT_NOT_VALID);
+    }
+
+    candCountRepository.save(candCount);
+  }
+
+  private void saveCandCount(Long electionId, Long voteId, Long candidateId, Long prosRatio, Long consRatio, boolean result) {
+    CandCount candCount = new CandCount();
+    candCount.setElectionId(electionId);
+    candCount.setVoteId(voteId);
+    candCount.setCandidateId(candidateId);
+    candCount.setProsRatio(prosRatio);
+    candCount.setConsRatio(consRatio);
+    candCount.setResult(result);
+
+    candCountRepository.save(candCount);
+  }
+
+  private Long calculateProsRatio(Long countPros, Long countCons) {
+    return (countPros * 100) / (countPros + countCons);
+  }
+
+  private Long calculateConsRatio(Long countPros, Long countCons) {
+    return (countCons * 100) / (countPros + countCons);
   }
 
 }

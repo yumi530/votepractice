@@ -13,9 +13,6 @@
       <form th:action="@{/users/logout}" method="post">
         <input type="hidden" th:value="${usersPhone}" name="usersPhone">
         <input type="hidden" th:value="${detail.electionId}" name="electionId">
-<!--        <div th:each="vote : ${vote}">-->
-<!--        <input type="hidden" th:value="${vote.voteType}" name="voteType">-->
-<!--        </div>-->
 
         <table class="table">
           <tr>

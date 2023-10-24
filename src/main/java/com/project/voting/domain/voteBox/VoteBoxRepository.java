@@ -29,7 +29,7 @@ public interface VoteBoxRepository extends JpaRepository<VoteBox, Long> {
 
   List<VoteBox> findAllCandidateIdsByVoteId(Long voteId);
 
-  Integer countUsersPhonesByCandidateId(Long candidateId);
+  Double countUsersPhonesByCandidateId(Long candidateId);
 
   Integer countUsersPhonesByVoteId(Long voteId);
 
@@ -38,4 +38,5 @@ public interface VoteBoxRepository extends JpaRepository<VoteBox, Long> {
   Long countByHadChosenTrueAndVoteId(Long voteId);
 
   Long countByHadChosenFalseAndVoteId(Long voteId);
+
 }

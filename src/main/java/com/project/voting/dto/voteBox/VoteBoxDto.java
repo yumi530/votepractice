@@ -21,6 +21,10 @@ public class VoteBoxDto {
   private Long candidateId;
   private List<Long> candidateIds;
   private List<VoteBox> detailVoteBox;
+  private Long chosenCandidateId; // 선택 투표
+  private List<Integer> scores; // 점수 투표
+  private List<Integer> ranks; // 선호도 투표
+  private boolean hadChosen;
 
 
 }
