@@ -74,7 +74,7 @@ public class CountController {
     Vote vote = voteService.detail(voteId);
     Election election = electionService.detail(electionId);
     List<Candidate> candidates = candidateService.details(voteId);
-    List<CandCount> candCounts = candCountFactory.getService(voteType).details(voteId);
+    List<CandCount> candCounts = candCountFactory.getService(voteType).getDetails(voteId);
 
     model.addAttribute("usersPhone", usersPhone);
     model.addAttribute("votes", vote);
