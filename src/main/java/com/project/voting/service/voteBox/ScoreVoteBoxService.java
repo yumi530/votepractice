@@ -8,7 +8,12 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ScoreVoteBoxService extends CreateVoteBoxService {
+public class ScoreVoteBoxService extends CommonVoteBoxService {
+
+  @Override
+  public boolean isValid(VoteBoxDto voteBoxDto) {
+    return super.isValid(voteBoxDto);
+  }
 
   @Override
   public void saveVote(VoteBoxDto voteBoxDto) {
@@ -16,12 +21,19 @@ public class ScoreVoteBoxService extends CreateVoteBoxService {
     List<Long> candidateIds = voteBoxDto.getCandidateIds();
     List<Integer> scores = voteBoxDto.getScores();
 
+
     for (int i = 0; i < candidateIds.size(); i++) {
+
       VoteBox voteBox = createVoteBox(voteBoxDto);
       voteBox.setCandidateId(candidateIds.get(i));
       voteBox.setScores(scores != null && !scores.isEmpty() ? scores.get(i) : 0);
       voteBox.setChoices(0);
       voteBox.setRanks(0);
+//        .candidateId(candidateIds.get(i))
+//        .scores(scores != null && !scores.isEmpty() ? scores.get(i) : 0)
+//        .ranks(0)
+//        .choices(0)
+//        .build();
       voteBoxes.add(voteBox);
     }
     voteBoxRepository.saveAll(voteBoxes);

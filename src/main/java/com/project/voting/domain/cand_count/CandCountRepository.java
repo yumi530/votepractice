@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CandCountRepository extends JpaRepository<CandCount, Long> {
 
-  List<CandCount> findByResult(boolean b);
+  CandCount findByResult(boolean b);
 
   List<CandCount> findTotalRankByCandidateId(Long candidateId);
 

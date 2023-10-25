@@ -8,7 +8,12 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PreferenceVoteBoxService extends CreateVoteBoxService {
+public class PreferenceVoteBoxService extends CommonVoteBoxService {
+
+  @Override
+  public boolean isValid(VoteBoxDto voteBoxDto) {
+    return super.isValid(voteBoxDto);
+  }
 
   @Override
   public void saveVote(VoteBoxDto voteBoxDto) {

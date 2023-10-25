@@ -1,5 +1,9 @@
 package com.project.voting.domain.vote;
 
+import java.util.Arrays;
+import lombok.Getter;
+
+@Getter
 public enum VoteType {
   PROS_CONS("찬반"),
   CHOICE("선택"),
@@ -15,5 +19,6 @@ public enum VoteType {
   public String getValue() {
     return value;
   }
+
 
 }

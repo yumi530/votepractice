@@ -9,7 +9,6 @@ import com.project.voting.service.candidate.CandidateService;
 import com.project.voting.service.election.ElectionService;
 import com.project.voting.service.vote.VoteService;
 import com.project.voting.service.voteBox.MainVoteBoxService;
-import com.project.voting.service.voteBox.CommonVoteBoxService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -27,7 +26,6 @@ public class VoteBoxController {
 
   private final ElectionService electionService;
   private final VoteService voteService;
-  private final CommonVoteBoxService commonVoteBoxService;
   private final CandidateService candidateService;
   private final MainVoteBoxService mainVoteBoxService;
 
@@ -37,7 +35,7 @@ public class VoteBoxController {
     Election detailElection = electionService.detailElection(voteId);
     Vote detailVote = voteService.detail(voteId);
     List<Candidate> detailCand = candidateService.detail(voteId);
-    List<VoteBox> getVoteBoxInfo = commonVoteBoxService.getVoteBoxInfo(voteId);
+    List<VoteBox> getVoteBoxInfo = mainVoteBoxService.getVoteBoxInfo(voteId);
 
     VoteBoxDto voteBoxDto = new VoteBoxDto();
     voteBoxDto.setDetailVoteBox(getVoteBoxInfo);
@@ -53,8 +51,6 @@ public class VoteBoxController {
 
   @PostMapping("/save")
   public String saveVote(VoteBoxDto voteBoxDto) {
-
-    commonVoteBoxService.isValid(voteBoxDto);
 
     mainVoteBoxService.saveVote(voteBoxDto);
 
