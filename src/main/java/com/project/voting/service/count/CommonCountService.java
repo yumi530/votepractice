@@ -13,14 +13,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
-public abstract class CommonCountService implements CountService {
+@Component
+public class CommonCountService {
   @Autowired
   ElectionRepository electionRepository;
 
-  protected Count createCount(Long electionId, Long voteId, Long candidateId) {
+  public Count createCount(Long electionId, Long voteId, Long candidateId) {
 
     Count count = new Count();
     count.setElectionId(electionId);

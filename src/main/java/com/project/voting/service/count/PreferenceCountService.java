@@ -11,29 +11,28 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class PreferenceCountService extends CommonCountService {
+public class PreferenceCountService implements CountService {
 
   private final CandCountRepository candCountRepository;
   private final CountRepository countRepository;
-
-  @Override
-  public boolean isValidCount(Long electionId, Long voteId, VoteType voteType) {
-    return super.isValidCount(electionId, voteId, voteType);
-  }
+  private final CommonCountService commonCountService;
 
   @Override
   public void votesResultConfirm(Long electionId, Long voteId, VoteType voteType) {
 
-    List<CandCount> candidateIds = candCountRepository.findAllCandidateIdsByVoteId(voteId);
+    boolean isValid = commonCountService.isValidCount(electionId, voteId, voteType);
+if (isValid) {
+  List<CandCount> candidateIds = candCountRepository.findAllCandidateIdsByVoteId(voteId);
 
-    for (CandCount candidate : candidateIds) {
-      Count count = createCount(electionId, voteId, candidate.getCandidateId());
+  for (CandCount candidate : candidateIds) {
+    Count count = commonCountService.createCount(electionId, voteId, candidate.getCandidateId());
 
-      List<CandCount> sortedCandidates = sortCandidatesByAvg(candidateIds);
-      count.setTotalRank(sortedCandidates.indexOf(candidate) + 1);
+    List<CandCount> sortedCandidates = sortCandidatesByAvg(candidateIds);
+    count.setTotalRank(sortedCandidates.indexOf(candidate) + 1);
 
-      countRepository.save(count);
-    }
+    countRepository.save(count);
+  }
+}
   }
 
   @Override
