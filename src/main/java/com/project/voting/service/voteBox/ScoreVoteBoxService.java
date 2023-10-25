@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 public class ScoreVoteBoxService extends CommonVoteBoxService {
 
   @Override
-  public boolean isValid(VoteBoxDto voteBoxDto) {
-    return super.isValid(voteBoxDto);
+  public boolean isValid(VoteBoxDto voteBoxDto, String usersPhone) {
+    return super.isValid(voteBoxDto, usersPhone);
   }
 
   @Override

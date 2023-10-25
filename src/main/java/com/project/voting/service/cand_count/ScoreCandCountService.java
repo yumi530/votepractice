@@ -2,52 +2,38 @@ package com.project.voting.service.cand_count;
 
 import com.project.voting.domain.cand_count.CandCount;
 import com.project.voting.domain.cand_count.CandCountRepository;
-import com.project.voting.domain.election.Election;
-import com.project.voting.domain.election.ElectionRepository;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.domain.voteBox.VoteBoxRepository;
-import com.project.voting.exception.cand_count.CandCountCustomException;
-import com.project.voting.exception.cand_count.CandCountErrorCode;
-import com.project.voting.exception.election.ElectionCustomException;
-import com.project.voting.exception.election.ElectionErrorCode;
-import java.time.LocalDateTime;
+import com.project.voting.service.count.CountService;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ScoreCandCountService implements CandCountService {
+public class ScoreCandCountService extends CommonCandCountService {
 
-  private final ElectionRepository electionRepository;
   private final VoteBoxRepository voteBoxRepository;
   private final CandCountRepository candCountRepository;
 
+  @Override
+  public boolean isValidCandCount(Long electionId, Long voteId, VoteType voteType) {
+    return super.isValidCandCount(electionId, voteId, voteType);
+  }
 
   @Override
   public CandCount countVotesResult(Long voteId, Long electionId, VoteType voteType) {
-
-    Optional<Election> optionalElection = this.electionRepository.findById(electionId);
-    Election election = optionalElection.orElseThrow(() -> new ElectionCustomException(
-      ElectionErrorCode.ELECTION_NOT_GENERATED));
-
-    LocalDateTime now = LocalDateTime.now();
-
-    if (election.getElectionEndDt().isAfter(now)) {
-      throw new CandCountCustomException(CandCountErrorCode.CAND_COUNT_TIME_NOT_VALID);
-    }
 
     List<VoteBox> voteBoxes = voteBoxRepository.findAllByVoteId(voteId);
     List<Double> avgList = new ArrayList<>();
 
     for (VoteBox voteBox : voteBoxes) {
       int sumValue = 0;
-//      sumValue += voteBox.getScores();
       double avg = 0.0;
-      sumValue = voteBoxRepository.sumScoresByCandidateId(voteBox.getCandidateId());
+
+      sumValue = voteBoxRepository.sumChoicesByCandidateId(voteBox.getCandidateId());
       Double usersNum = voteBoxRepository.countUsersPhonesByCandidateId(voteBox.getCandidateId());
 
       if (usersNum > 0) {
@@ -60,15 +46,41 @@ public class ScoreCandCountService implements CandCountService {
         .electionId(electionId)
         .voteId(voteId)
         .candidateId(voteBox.getCandidateId())
-        .scoresAvg(avg)
+        .choicesAvg(avg)
         .build();
-
       candCountRepository.save(candCount);
     }
     return new CandCount();
   }
+
+//    List<VoteBox> voteBoxes = voteBoxRepository.findAllByVoteId(voteId);
+//
+//    for (VoteBox voteBox : voteBoxes) {
+//      int sumValue = 0;
+//
+//      sumValue += extractField(voteBox);
+//
+//      sumValue / users
+//
+//      CandCount candCount = CandCount.builder()
+//        .electionId(electionId)
+//        .voteId(voteId)
+//        .candidateId(voteBox.getCandidateId())
+//        .scoresAvg(scoresAvg)
+//        .build();
+//
+//      candCountRepository.save(candCount);
+//    }
+//    return new CandCount();
+//  }
+
   @Override
   public VoteType getVoteType() {
     return VoteType.SCORE;
+  }
+
+  @Override
+  public int extractField(VoteBox voteBox) {
+    return voteBox.getScores();
   }
 }

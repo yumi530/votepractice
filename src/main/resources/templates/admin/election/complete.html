@@ -29,8 +29,9 @@
           <tr>
             <td th:text="투표결과"></td>
             <td>
-              <span th:if="${count.electedYn}">찬성</span>
-              <span th:unless="${count.electedYn}">반대</span>
+               <span th:each="candCount : ${candCounts}">
+              <span th:text="${candCount.result ? '찬성' : '반대'}"></span>
+               </span>
             </td>
           </tr>
         </div>

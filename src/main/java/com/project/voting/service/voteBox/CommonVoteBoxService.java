@@ -19,7 +19,7 @@ public abstract class CommonVoteBoxService implements VoteBoxService{
   @Autowired
   CandidateRepository candidateRepository;
 
-  public VoteBox createVoteBox(VoteBoxDto voteBoxDto) {
+  protected VoteBox createVoteBox(VoteBoxDto voteBoxDto) {
     VoteBox voteBox = VoteBox.builder()
       .electionId(voteBoxDto.getElectionId())
       .voteId(voteBoxDto.getVoteId())
@@ -28,9 +28,9 @@ public abstract class CommonVoteBoxService implements VoteBoxService{
     return voteBox;
   }
 
-  public boolean isValid(VoteBoxDto voteBoxDto) {
+  protected boolean isValid(VoteBoxDto voteBoxDto, String usersPhone) {
     Optional<VoteBox> optionalVoteBox = voteBoxRepository.findByCandidateIdAndUsersPhone(
-      voteBoxDto.getCandidateId(), voteBoxDto.getUsersPhone());
+      voteBoxDto.getCandidateId(), usersPhone);
     if (optionalVoteBox.isPresent()) {
       throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_DUPLICATED);
     }

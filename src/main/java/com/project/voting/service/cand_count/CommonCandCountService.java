@@ -1,6 +1,5 @@
-package com.project.voting.service.count;
+package com.project.voting.service.cand_count;
 
-import com.project.voting.domain.count.Count;
 import com.project.voting.domain.election.Election;
 import com.project.voting.domain.election.ElectionRepository;
 import com.project.voting.domain.vote.VoteType;
@@ -12,28 +11,22 @@ import com.project.voting.exception.election.ElectionErrorCode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public abstract class CommonCountService implements CountService {
+public abstract class CommonCandCountService implements CandCountService{
+
   @Autowired
-  ElectionRepository electionRepository;
+  private ElectionRepository electionRepository;
 
-  protected Count createCount(Long electionId, Long voteId, Long candidateId) {
-
-    Count count = new Count();
-    count.setElectionId(electionId);
-    count.setVoteId(voteId);
-    count.setCandidateId(candidateId);
-    return count;
-  }
-
-  protected boolean isValidCount(Long electionId, Long voteId, VoteType voteType) {
+  protected boolean isValidCandCount(Long electionId, Long voteId, VoteType voteType){
 
     Optional<Election> optionalElection = this.electionRepository.findById(electionId);
-    Election election = optionalElection.orElseThrow(() -> new ElectionCustomException(
-      ElectionErrorCode.ELECTION_NOT_GENERATED));
+    Election election = optionalElection.orElseThrow(
+      () -> new ElectionCustomException(ElectionErrorCode.ELECTION_NOT_GENERATED));
 
     LocalDateTime now = LocalDateTime.now();
 
@@ -43,5 +36,20 @@ public abstract class CommonCountService implements CountService {
     return true;
   }
 
+//  protected double countUsersNum (List<VoteBox> voteBoxes) {
+//    Set<String> uniqueUserPhones = voteBoxes.stream()
+//      .map(VoteBox::getUsersPhone)
+//      .collect(Collectors.toSet());
+//
+//    return uniqueUserPhones.size();
+//  }
+
+  protected long calculateUsersNum(Long candidateId, List<VoteBox> voteBoxes) {
+    return voteBoxes.stream()
+      .filter(vb -> vb.getCandidateId().equals(candidateId))
+      .map(VoteBox::getUsersPhone)
+      .distinct()
+      .count();
+  }
 
 }

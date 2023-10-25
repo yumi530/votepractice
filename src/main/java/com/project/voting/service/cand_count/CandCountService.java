@@ -2,6 +2,7 @@ package com.project.voting.service.cand_count;
 
 import com.project.voting.domain.cand_count.CandCount;
 import com.project.voting.domain.vote.VoteType;
+import com.project.voting.domain.voteBox.VoteBox;
 
 public interface CandCountService {
 
@@ -12,4 +13,6 @@ public interface CandCountService {
 //  CandCount detail(Long voteId);
 
   VoteType getVoteType();
+
+  int extractField(VoteBox voteBox);
 }
