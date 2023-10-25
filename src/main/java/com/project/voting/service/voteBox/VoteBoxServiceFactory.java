@@ -5,31 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
 public class VoteBoxServiceFactory {
 
-  private final Map<VoteType, VoteBoxService> voteBoxServiceMap = new HashMap<>();
+  public final Map<VoteType, VoteBoxService> voteBoxTypeMap = new HashMap<>();
 
-  /**
-   * 생성자주입
-   * @param voteBoxServices
-   */
   public VoteBoxServiceFactory(List<VoteBoxService> voteBoxServices) {
-    voteBoxServices.forEach(s -> voteBoxServiceMap.put(s.getVoteType(), s));
+    for (VoteBoxService voteBoxService : voteBoxServices) {
+      voteBoxTypeMap.put(voteBoxService.getVoteType(), voteBoxService);
+    }
   }
-
-  public VoteBoxService getVoteBoxService(VoteType voteType) {
-    return voteBoxServiceMap.get(voteType);
+  public VoteBoxService getService(VoteType voteType) {
+    return voteBoxTypeMap.get(voteType);
   }
-
-//  public VoteBoxService newInstance(VoteBoxDto voteBoxDto) {
-//    VoteBoxService voteBoxService = saveVoteBox();
-//    voteBoxService.saveVote(voteBoxDto);
-//    return voteBoxService;
-//  }
-//
-//  protected abstract VoteBoxService saveVoteBox();
-
 }
+

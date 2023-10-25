@@ -5,7 +5,9 @@ import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.dto.voteBox.VoteBoxDto;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ScoreVoteBoxService extends CreateVoteBoxService {
 
   @Override

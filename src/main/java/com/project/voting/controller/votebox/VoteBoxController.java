@@ -3,15 +3,13 @@ package com.project.voting.controller.votebox;
 import com.project.voting.domain.candidate.Candidate;
 import com.project.voting.domain.election.Election;
 import com.project.voting.domain.vote.Vote;
-import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.dto.voteBox.VoteBoxDto;
 import com.project.voting.service.candidate.CandidateService;
 import com.project.voting.service.election.ElectionService;
 import com.project.voting.service.vote.VoteService;
-import com.project.voting.service.voteBox.VoteBoxService;
+import com.project.voting.service.voteBox.MainVoteBoxService;
 import com.project.voting.service.voteBox.CommonVoteBoxService;
-import com.project.voting.service.voteBox.VoteBoxServiceFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -31,7 +29,7 @@ public class VoteBoxController {
   private final VoteService voteService;
   private final CommonVoteBoxService commonVoteBoxService;
   private final CandidateService candidateService;
-  private final VoteBoxServiceFactory voteBoxServiceFactory;
+  private final MainVoteBoxService mainVoteBoxService;
 
   @GetMapping("/count/voteCount/{voteId}")
   public String voteCount(Model model, @PathVariable(name = "voteId") Long voteId,
@@ -58,19 +56,10 @@ public class VoteBoxController {
 
     commonVoteBoxService.isValid(voteBoxDto);
 
-    VoteType voteType = determineVoteType(voteBoxDto);
-
-    VoteBoxService voteBoxService = voteBoxServiceFactory.getVoteBoxService(voteType);
-
-    voteBoxService.saveVote(voteBoxDto);
+    mainVoteBoxService.saveVote(voteBoxDto);
 
     return "redirect:/users/count/detail/" + voteBoxDto.getElectionId() + "?usersPhone="
       + voteBoxDto.getUsersPhone();
-  }
-
-  private VoteType determineVoteType(VoteBoxDto voteBoxDto) {
-    // VoteType를 결정하는 로직
-    return voteBoxDto.getVoteType();
   }
 
 }

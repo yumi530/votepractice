@@ -15,8 +15,6 @@ public abstract class CreateVoteBoxService implements VoteBoxService{
   CandidateRepository candidateRepository;
 
 
-//   공통 메서드 정의
-
   public VoteBox createVoteBox(VoteBoxDto voteBoxDto) {
     VoteBox voteBox = new VoteBox();
     voteBox.setElectionId(voteBoxDto.getElectionId());

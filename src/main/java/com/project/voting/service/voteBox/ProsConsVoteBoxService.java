@@ -3,7 +3,9 @@ package com.project.voting.service.voteBox;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.dto.voteBox.VoteBoxDto;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProsConsVoteBoxService extends CreateVoteBoxService {
 
   @Override
