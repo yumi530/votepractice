@@ -8,17 +8,15 @@ import com.project.voting.domain.election.Election;
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.dto.users.UsersDto;
-import com.project.voting.service.cand_count.CandCountService;
-import com.project.voting.service.cand_count.MainCandCountService;
+import com.project.voting.service.cand_count.CandCountFactory;
 import com.project.voting.service.candidate.CandidateService;
+import com.project.voting.service.count.CountFactory;
 import com.project.voting.service.count.CountService;
-import com.project.voting.service.count.MainCountService;
 import com.project.voting.service.election.ElectionService;
 import com.project.voting.service.users.UsersService;
 import com.project.voting.service.vote.VoteService;
 
 
-import com.sun.tools.javac.Main;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -37,8 +35,8 @@ public class CountController {
   private final UsersService usersService;
   private final VoteService voteService;
   private final CandidateService candidateService;
-  private final MainCountService mainCountService;
-  private final MainCandCountService mainCandCountService;
+  private final CandCountFactory candCountFactory;
+  private final CountFactory countFactory;
 
   @GetMapping("/count/list")
   public String list(@AuthenticationPrincipal @RequestParam(name = "phoneNumber") String usersPhone,
@@ -68,13 +66,15 @@ public class CountController {
   public String countVoteComplete(@RequestParam Long electionId, @PathVariable Long voteId,
     @RequestParam VoteType voteType, Model model,
     @RequestParam(name = "usersPhone") String usersPhone) {
-    mainCountService.votesResultConfirm(electionId, voteId, voteType);
+
+    CountService countService =  countFactory.getService(voteType);
+    countService.votesResultConfirm(electionId, voteId, voteType);
+    List<Count> counts = countService.details(voteId);
 
     Vote vote = voteService.detail(voteId);
     Election election = electionService.detail(electionId);
     List<Candidate> candidates = candidateService.details(voteId);
-    List<Count> counts = mainCountService.details(voteId);
-    List<CandCount> candCounts = mainCandCountService.details(voteId);
+    List<CandCount> candCounts = candCountFactory.getService(voteType).details(voteId);
 
     model.addAttribute("usersPhone", usersPhone);
     model.addAttribute("votes", vote);

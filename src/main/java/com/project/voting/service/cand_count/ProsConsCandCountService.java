@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ProsConsCandCountService extends CommonCandCountService{
+public class ProsConsCandCountService extends CandCountService {
 
   private final VoteBoxRepository voteBoxRepository;
   private final CandCountRepository candCountRepository;
@@ -22,7 +22,7 @@ public class ProsConsCandCountService extends CommonCandCountService{
   }
 
   @Override
-  public CandCount countVotesResult(Long voteId, Long electionId, VoteType voteType) {
+  public void countVotesResult(Long voteId, Long electionId, VoteType voteType) {
 
     List<VoteBox> voteBoxes = voteBoxRepository.findAllByVoteId(voteId);
 
@@ -50,7 +50,7 @@ public class ProsConsCandCountService extends CommonCandCountService{
       .build();
 
     candCountRepository.save(candCount);
-    return candCount;
+
   }
 
   private Double calculateProsRatio(Long countPros, Long countCons) {
@@ -66,8 +66,4 @@ public class ProsConsCandCountService extends CommonCandCountService{
     return VoteType.PROS_CONS;
   }
 
-  @Override
-  public int extractField(VoteBox voteBox) {
-    return 0;
-  }
 }

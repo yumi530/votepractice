@@ -5,7 +5,7 @@ import com.project.voting.domain.cand_count.CandCountRepository;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.domain.voteBox.VoteBoxRepository;
-import com.project.voting.service.count.CountService;
+
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -13,18 +13,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ScoreCandCountService extends CommonCandCountService {
+public class ScoreCandCountService extends CandCountService {
 
   private final VoteBoxRepository voteBoxRepository;
   private final CandCountRepository candCountRepository;
 
-  @Override
-  public boolean isValidCandCount(Long electionId, Long voteId, VoteType voteType) {
-    return super.isValidCandCount(electionId, voteId, voteType);
-  }
 
   @Override
-  public CandCount countVotesResult(Long voteId, Long electionId, VoteType voteType) {
+  public void countVotesResult(Long voteId, Long electionId, VoteType voteType) {
 
     List<VoteBox> voteBoxes = voteBoxRepository.findAllByVoteId(voteId);
     List<Double> avgList = new ArrayList<>();
@@ -43,14 +39,13 @@ public class ScoreCandCountService extends CommonCandCountService {
       avgList.add(avg);
 
       CandCount candCount = CandCount.builder()
-        .electionId(electionId)
-        .voteId(voteId)
-        .candidateId(voteBox.getCandidateId())
-        .choicesAvg(avg)
-        .build();
+              .electionId(electionId)
+              .voteId(voteId)
+              .candidateId(voteBox.getCandidateId())
+              .choicesAvg(avg)
+              .build();
       candCountRepository.save(candCount);
     }
-    return new CandCount();
   }
 
 //    List<VoteBox> voteBoxes = voteBoxRepository.findAllByVoteId(voteId);
@@ -78,9 +73,5 @@ public class ScoreCandCountService extends CommonCandCountService {
   public VoteType getVoteType() {
     return VoteType.SCORE;
   }
-
-  @Override
-  public int extractField(VoteBox voteBox) {
-    return voteBox.getScores();
-  }
 }
+

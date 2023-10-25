@@ -12,18 +12,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class PreferenceCandCountService extends CommonCandCountService {
+public class PreferenceCandCountService extends CandCountService {
 
   private final VoteBoxRepository voteBoxRepository;
   private final CandCountRepository candCountRepository;
 
-  @Override
-  public boolean isValidCandCount(Long electionId, Long voteId, VoteType voteType) {
-    return super.isValidCandCount(electionId, voteId, voteType);
-  }
 
   @Override
-  public CandCount countVotesResult(Long voteId, Long electionId, VoteType voteType) {
+  public void countVotesResult(Long voteId, Long electionId, VoteType voteType) {
 
     List<VoteBox> voteBoxes = voteBoxRepository.findAllByVoteId(voteId);
     List<Double> avgList = new ArrayList<>();
@@ -50,7 +46,7 @@ public class PreferenceCandCountService extends CommonCandCountService {
 
       candCountRepository.save(candCount);
     }
-    return new CandCount();
+
   }
 
   @Override
@@ -58,8 +54,4 @@ public class PreferenceCandCountService extends CommonCandCountService {
     return VoteType.PREFERENCE;
   }
 
-  @Override
-  public int extractField(VoteBox voteBox) {
-    return voteBox.getRanks();
-  }
 }

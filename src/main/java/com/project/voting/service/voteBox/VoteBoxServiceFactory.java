@@ -20,4 +20,3 @@ public class VoteBoxServiceFactory {
     return voteBoxTypeMap.get(voteType);
   }
 }
-

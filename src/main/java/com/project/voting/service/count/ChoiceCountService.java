@@ -8,36 +8,33 @@ import com.project.voting.domain.vote.VoteType;
 
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
 @Component
-@RequiredArgsConstructor
-public class ChoiceCountService implements CountService {
-    private final CandCountRepository candCountRepository;
-    private final CountRepository countRepository;
-    private final CommonCountService commonCountService;
+public class ChoiceCountService extends CountService {
+    @Autowired
+    CandCountRepository candCountRepository;
+    @Autowired
+    CountRepository countRepository;
 
     @Override
     public void votesResultConfirm(Long electionId, Long voteId, VoteType voteType) {
 
-        boolean isValid = commonCountService.isValidCount(electionId, voteId, voteType);
-        if (isValid) {
             List<CandCount> candidateIds = candCountRepository.findAllCandidateIdsByVoteId(voteId);
 
             for (CandCount candidate : candidateIds) {
-                Count count = commonCountService.createCount(electionId, voteId, candidate.getCandidateId());
-                List<CandCount> sortedCandidates = sortCandidatesByChoiceAvg(candidateIds);
+                Count count = createCount(electionId, voteId, candidate.getCandidateId());
+                List<CandCount> sortedCandidates = sortCandidatesByAvg(candidateIds);
                 count.setElectedYn(sortedCandidates.indexOf(candidate) == 0);
 
                 countRepository.save(count);
             }
         }
-    }
 
-
-    public List<CandCount> sortCandidatesByChoiceAvg(List<CandCount> candidates) {
+    public List<CandCount> sortCandidatesByAvg(List<CandCount> candidates) {
         int n = candidates.size();
         for (int i = 0; i < n - 1; i++) {
             int maxIndex = i;

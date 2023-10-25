@@ -9,22 +9,19 @@ import com.project.voting.dto.candcount.CandCountDto;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
-public class ChoiceCandCountService extends CommonCandCountService {
+public class ChoiceCandCountService extends CandCountService {
+  @Autowired
+  VoteBoxRepository voteBoxRepository;
+  @Autowired
+  CandCountRepository candCountRepository;
 
-  private final VoteBoxRepository voteBoxRepository;
-  private final CandCountRepository candCountRepository;
-
-  @Override
-  public boolean isValidCandCount(Long electionId, Long voteId, VoteType voteType) {
-    return super.isValidCandCount(electionId, voteId, voteType);
-  }
 
   @Override
-  public CandCount countVotesResult(Long voteId, Long electionId, VoteType voteType) {
+  public void countVotesResult(Long voteId, Long electionId, VoteType voteType) {
 
     List<VoteBox> voteBoxes = voteBoxRepository.findAllByVoteId(voteId);
     List<Double> avgList = new ArrayList<>();
@@ -43,17 +40,16 @@ public class ChoiceCandCountService extends CommonCandCountService {
       avgList.add(avg);
 
       CandCount candCount = CandCount.builder()
-        .electionId(electionId)
-        .voteId(voteId)
-        .candidateId(voteBox.getCandidateId())
-        .choicesAvg(avg)
-        .build();
-     candCountRepository.save(candCount);
+              .electionId(electionId)
+              .voteId(voteId)
+              .candidateId(voteBox.getCandidateId())
+              .choicesAvg(avg)
+              .build();
+      candCountRepository.save(candCount);
     }
 
 
-      return new CandCount();
-    }
+  }
 
     private int getVoteTypeValue (VoteBox voteBox, VoteType voteType){
       switch (voteType) {
@@ -72,11 +68,6 @@ public class ChoiceCandCountService extends CommonCandCountService {
   @Override
   public VoteType getVoteType() {
     return VoteType.CHOICE;
-  }
-
-  @Override
-  public int extractField(VoteBox voteBox) {
-    return voteBox.getChoices();
   }
 
   public CandCount createCandCount(CandCountDto candCountDto) {

@@ -7,14 +7,15 @@ import com.project.voting.domain.count.Count;
 import com.project.voting.domain.election.Election;
 import com.project.voting.domain.vote.Vote;
 import com.project.voting.domain.vote.VoteType;
+import com.project.voting.service.cand_count.CandCountFactory;
 import com.project.voting.service.cand_count.CandCountService;
-import com.project.voting.service.cand_count.MainCandCountService;
 import com.project.voting.service.candidate.CandidateService;
+import com.project.voting.service.count.CountFactory;
 import com.project.voting.service.count.CountService;
-import com.project.voting.service.count.MainCountService;
 import com.project.voting.service.election.ElectionService;
 import com.project.voting.service.vote.VoteService;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,26 +29,26 @@ public class AdminCountController {
 
   private final VoteService voteService;
   private final CandidateService candidateService;
-  private final MainCountService mainCountService;
   private final ElectionService electionService;
-  private final MainCandCountService mainCandCountService;
+  private final CandCountFactory candCountFactory;
+  private final CountFactory countFactory;
 
   @RequestMapping("/election/results")
   public String countVoteForAdmin(@RequestParam Long voteId, @RequestParam Long electionId,
     Model model, RedirectAttributes redirectAttributes, @RequestParam(name = "voteType")
   VoteType voteType) {
 
-    mainCandCountService.countVotesResult(voteId, electionId, voteType);
+    CandCountService candCountService =  candCountFactory.getService(voteType);
+    candCountService.isValidCandCount(electionId, voteId, voteType);
+    candCountService.countVotesResult(electionId, voteId, voteType);
 
     Vote vote = voteService.detail(voteId);
     Election election = electionService.detail(electionId);
     List<Candidate> candidates = candidateService.details(voteId);
-//    Count turnOut = countService.turnOut(electionId ,voteId);
 
     model.addAttribute("votes", vote);
     model.addAttribute("elections",election);
     model.addAttribute("candidates", candidates);
-//    model.addAttribute("turnOut", turnOut);
 
     redirectAttributes.addFlashAttribute("message", "개표 완료");
     return "/admin/election/results";
@@ -56,13 +57,16 @@ public class AdminCountController {
   @RequestMapping("/election/complete")
   public String countVoteComplete(@RequestParam Long electionId, @RequestParam Long voteId,  @RequestParam VoteType voteType, Model model) {
 
-    mainCountService.votesResultConfirm(electionId, voteId, voteType);
+    CountService countService =  countFactory.getService(voteType);
+    countService.isValidCount(electionId, voteId, voteType);
+    countService.votesResultConfirm(electionId, voteId, voteType);
+
 
     Vote vote = voteService.detail(voteId);
     Election election = electionService.detail(electionId);
     List<Candidate> candidates = candidateService.details(voteId);
-    List<Count> counts = mainCountService.details(voteId);
-    List<CandCount> candCounts = mainCandCountService.details(voteId);
+    List<Count> counts = countService.details(voteId);
+    List<CandCount> candCounts = candCountFactory.getService(voteType).getDetails(voteId);
 
     model.addAttribute("votes", vote);
     model.addAttribute("elections",election);

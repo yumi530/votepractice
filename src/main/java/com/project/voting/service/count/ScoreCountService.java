@@ -4,38 +4,34 @@ import com.project.voting.domain.cand_count.CandCount;
 import com.project.voting.domain.cand_count.CandCountRepository;
 import com.project.voting.domain.count.Count;
 import com.project.voting.domain.count.CountRepository;
+import com.project.voting.domain.election.ElectionRepository;
 import com.project.voting.domain.vote.VoteType;
 
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
-public class ScoreCountService implements CountService {
-
-    private final CandCountRepository candCountRepository;
-    private final CountRepository countRepository;
-    private final CommonCountService commonCountService;
+public class ScoreCountService extends CountService {
+    @Autowired
+    CandCountRepository candCountRepository;
+    @Autowired
+    CountRepository countRepository;
 
     @Override
     public void votesResultConfirm(Long electionId, Long voteId, VoteType voteType) {
 
-        boolean isValid = commonCountService.isValidCount(electionId, voteId, voteType);
+        List<CandCount> candidateIds = candCountRepository.findAllCandidateIdsByVoteId(voteId);
 
-        if (isValid) {
+        for (CandCount candidate : candidateIds) {
+            Count count = createCount(electionId, voteId, candidate.getCandidateId());
 
-            List<CandCount> candidateIds = candCountRepository.findAllCandidateIdsByVoteId(voteId);
+            List<CandCount> sortedCandidates = sortCandidatesByAvg(candidateIds);
+            count.setTotalRank(sortedCandidates.indexOf(candidate) + 1);
 
-            for (CandCount candidate : candidateIds) {
-                Count count = commonCountService.createCount(electionId, voteId, candidate.getCandidateId());
-
-                List<CandCount> sortedCandidates = sortCandidatesByAvg(candidateIds);
-                count.setTotalRank(sortedCandidates.indexOf(candidate) + 1);
-
-                countRepository.save(count);
-            }
+            countRepository.save(count);
         }
     }
 
