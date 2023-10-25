@@ -10,9 +10,9 @@ import com.project.voting.exception.vote_box.VoteBoxErrorCode;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-@Service
-public abstract class CommonVoteBoxService implements VoteBoxService{
+
+
+public abstract class CommonVoteBoxService {
 
   @Autowired
   VoteBoxRepository voteBoxRepository;

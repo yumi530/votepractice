@@ -6,7 +6,7 @@ import com.project.voting.dto.voteBox.VoteBoxDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProsConsVoteBoxService extends CommonVoteBoxService {
+public class ProsConsVoteBoxService extends CommonVoteBoxService implements VoteBoxService {
 
   @Override
   public boolean isValid(VoteBoxDto voteBoxDto, String usersPhone) {

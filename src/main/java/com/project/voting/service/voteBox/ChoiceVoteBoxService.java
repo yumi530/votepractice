@@ -9,7 +9,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ChoiceVoteBoxService extends CommonVoteBoxService {
+public class ChoiceVoteBoxService extends CommonVoteBoxService implements VoteBoxService {
 
   @Override
   public boolean isValid(VoteBoxDto voteBoxDto, String usersPhone) {
