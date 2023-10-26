@@ -6,10 +6,7 @@ import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.domain.voteBox.VoteBoxRepository;
 
-import com.project.voting.dto.candcount.CandCountDto;
-import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -56,7 +56,7 @@ public class VoteBoxController {
   public String saveVote(VoteBoxDto voteBoxDto) {
 
     VoteBoxService voteBoxService =  voteBoxServiceFactory.getService(voteBoxDto.getVoteType());
-    voteBoxService.isValid(voteBoxDto, voteBoxDto.getUsersPhone());
+    voteBoxService.isValidVoteBox(voteBoxDto);
     voteBoxService.saveVote(voteBoxDto);
 
     return "redirect:/users/count/detail/" + voteBoxDto.getElectionId() + "?usersPhone="

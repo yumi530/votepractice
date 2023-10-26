@@ -31,6 +31,9 @@ public abstract class CandCountService {
 
   public abstract VoteType getVoteType();
 
+  public List<CandCount> getDetails(Long voteId) {
+    return candCountRepository.findAllCandidateIdsByVoteId(voteId);
+  }
 
   public boolean isValidCandCount(Long electionId){
 
@@ -44,10 +47,6 @@ public abstract class CandCountService {
       throw new CandCountCustomException(CandCountErrorCode.CAND_COUNT_TIME_NOT_VALID);
     }
     return true;
-  }
-
-  public List<CandCount> getDetails(Long voteId) {
-    return candCountRepository.findAllCandidateIdsByVoteId(voteId);
   }
 
   public CandCount createCandCount(Long voteId, Long electionId) {

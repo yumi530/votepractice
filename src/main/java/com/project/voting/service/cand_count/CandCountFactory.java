@@ -1,7 +1,6 @@
 package com.project.voting.service.cand_count;
 
 import com.project.voting.domain.vote.VoteType;
-import com.project.voting.service.voteBox.VoteBoxService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

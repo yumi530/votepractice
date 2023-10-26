@@ -6,10 +6,8 @@ import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.domain.voteBox.VoteBoxRepository;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
 public class ProsConsCandCountService extends CandCountService {
@@ -37,17 +35,17 @@ public class ProsConsCandCountService extends CandCountService {
     Double prosRatio = calculateProsRatio(countPros, countCons);
     Double consRatio = calculateConsRatio(countPros, countCons);
 
-    CandCount candCount = CandCount.builder()
-      .electionId(electionId)
-      .voteId(voteId)
-      .candidateId(voteBoxes.get(0).getCandidateId())
-      .prosRatio(prosRatio)
-      .consRatio(consRatio)
-      .result(countPros > countCons)
-      .build();
-
+    CandCount candCount = createCandCount(voteId, electionId);
+    candCount.setCandidateId(voteBoxes.get(0).getCandidateId());
+    candCount.setProsRatio(prosRatio);
+    candCount.setConsRatio(consRatio);
+    candCount.setResult(countPros > countCons);
     candCountRepository.save(candCount);
+  }
 
+  @Override
+  public VoteType getVoteType() {
+    return VoteType.PROS_CONS;
   }
 
   private Double calculateProsRatio(Long countPros, Long countCons) {
@@ -57,10 +55,4 @@ public class ProsConsCandCountService extends CandCountService {
   private Double calculateConsRatio(Long countPros, Long countCons) {
     return (double) ((countCons * 100) / (countPros + countCons));
   }
-
-  @Override
-  public VoteType getVoteType() {
-    return VoteType.PROS_CONS;
-  }
-
 }

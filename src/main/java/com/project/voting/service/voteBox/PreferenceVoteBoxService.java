@@ -33,7 +33,6 @@ public class PreferenceVoteBoxService extends VoteBoxService {
     voteBoxRepository.saveAll(voteBoxes);
   }
 
-
   @Override
   public VoteType getVoteType() {
     return VoteType.PREFERENCE;
@@ -50,6 +49,4 @@ public class PreferenceVoteBoxService extends VoteBoxService {
     }
     return usedRanks.size() == candidateCount;
   }
-
-
 }

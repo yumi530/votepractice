@@ -58,7 +58,7 @@ public class AdminCountController {
   public String countVoteComplete(@RequestParam Long electionId, @RequestParam Long voteId,  @RequestParam VoteType voteType, Model model) {
 
     CountService countService =  countFactory.getService(voteType);
-    countService.isValidCount(electionId, voteId, voteType);
+    countService.isValidCount(electionId);
     countService.votesResultConfirm(electionId, voteId, voteType);
 
 

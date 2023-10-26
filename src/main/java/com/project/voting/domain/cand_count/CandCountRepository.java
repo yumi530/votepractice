@@ -12,4 +12,6 @@ public interface CandCountRepository extends JpaRepository<CandCount, Long> {
   List<CandCount> findAllCandidateIdsByVoteId(Long voteId);
 
   CandCount findCandidateIdByVoteId(Long voteId);
+
+  List<CandCount> findAllByResult(boolean b);
 }
