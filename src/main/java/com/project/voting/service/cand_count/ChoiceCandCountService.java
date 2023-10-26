@@ -15,12 +15,9 @@ public class ChoiceCandCountService extends CandCountService {
   VoteBoxRepository voteBoxRepository;
   @Autowired
   CandCountRepository candCountRepository;
-
   @Override
   public void countVotesResult(Long electionId, Long voteId) {
-
     List<VoteBox> voteBoxes = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
-
     for (VoteBox voteBox : voteBoxes) {
 
       double sumValue;
@@ -37,12 +34,10 @@ public class ChoiceCandCountService extends CandCountService {
       candCountRepository.save(candCount);
     }
   }
-
   @Override
   public VoteType getVoteType() {
     return VoteType.CHOICE;
   }
-
   private int calculateSumValue(Long candidateId) {
     List<VoteBox> voteBoxes = voteBoxRepository.findAllByCandidateId(candidateId);
 
@@ -52,5 +47,4 @@ public class ChoiceCandCountService extends CandCountService {
     }
     return sum;
   }
-
 }

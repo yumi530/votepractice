@@ -65,5 +65,4 @@ public abstract class CandCountService {
     }
     return usersSum;
   }
-
 }

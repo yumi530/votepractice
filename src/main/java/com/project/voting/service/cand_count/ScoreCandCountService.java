@@ -12,17 +12,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ScoreCandCountService extends CandCountService {
-
   @Autowired
   VoteBoxRepository voteBoxRepository;
   @Autowired
   CandCountRepository candCountRepository;
-
   @Override
   public void countVotesResult(Long electionId, Long voteId) {
-
     List<VoteBox> voteBoxes = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
-
     for (VoteBox voteBox : voteBoxes) {
 
       int sumValue;
@@ -39,7 +35,6 @@ public class ScoreCandCountService extends CandCountService {
       candCountRepository.save(candCount);
     }
   }
-
   @Override
   public VoteType getVoteType() {
     return VoteType.SCORE;

@@ -29,10 +29,8 @@ public class PreferenceVoteBoxService extends VoteBoxService {
         voteBox.setRanks(isRankListValid(ranks,candidateIds.size()) ? ranks.get(i) : 0);
         voteBoxes.add(voteBox);
       }
-
     voteBoxRepository.saveAll(voteBoxes);
   }
-
   @Override
   public VoteType getVoteType() {
     return VoteType.PREFERENCE;
