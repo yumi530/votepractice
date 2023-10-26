@@ -7,24 +7,21 @@ import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.domain.voteBox.VoteBoxRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 @Component
-@RequiredArgsConstructor
 public class ProsConsCandCountService extends CandCountService {
-
-  private final VoteBoxRepository voteBoxRepository;
-  private final CandCountRepository candCountRepository;
-
-  @Override
-  public boolean isValidCandCount(Long electionId, Long voteId, VoteType voteType) {
-    return super.isValidCandCount(electionId, voteId, voteType);
-  }
+  @Autowired
+  VoteBoxRepository voteBoxRepository;
+  @Autowired
+  CandCountRepository candCountRepository;
 
   @Override
-  public void countVotesResult(Long voteId, Long electionId, VoteType voteType) {
+  public void countVotesResult(Long electionId, Long voteId) {
 
-    List<VoteBox> voteBoxes = voteBoxRepository.findAllByVoteId(voteId);
+    List<VoteBox> voteBoxes = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
 
     Long countPros = 0L;
     Long countCons = 0L;
@@ -46,7 +43,7 @@ public class ProsConsCandCountService extends CandCountService {
       .candidateId(voteBoxes.get(0).getCandidateId())
       .prosRatio(prosRatio)
       .consRatio(consRatio)
-      .result(countPros > countCons) //값 수정해야 함
+      .result(countPros > countCons)
       .build();
 
     candCountRepository.save(candCount);

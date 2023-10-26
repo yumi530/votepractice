@@ -6,72 +6,56 @@ import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
 import com.project.voting.domain.voteBox.VoteBoxRepository;
 
+import com.project.voting.dto.candcount.CandCountDto;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class ScoreCandCountService extends CandCountService {
 
-  private final VoteBoxRepository voteBoxRepository;
-  private final CandCountRepository candCountRepository;
-
+  @Autowired
+  VoteBoxRepository voteBoxRepository;
+  @Autowired
+  CandCountRepository candCountRepository;
 
   @Override
-  public void countVotesResult(Long voteId, Long electionId, VoteType voteType) {
+  public void countVotesResult(Long electionId, Long voteId) {
 
-    List<VoteBox> voteBoxes = voteBoxRepository.findAllByVoteId(voteId);
-    List<Double> avgList = new ArrayList<>();
+    List<VoteBox> voteBoxes = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
 
     for (VoteBox voteBox : voteBoxes) {
-      int sumValue = 0;
-      double avg = 0.0;
 
-      sumValue = voteBoxRepository.sumChoicesByCandidateId(voteBox.getCandidateId());
-      Double usersNum = voteBoxRepository.countUsersPhonesByCandidateId(voteBox.getCandidateId());
+      int sumValue;
+      double avg;
 
-      if (usersNum > 0) {
-        avg = sumValue / usersNum;
-      }
+      sumValue = calculateSumValue(voteBox.getCandidateId());
+      double usersNum = calculateUsersNum(voteBox.getCandidateId());
 
-      avgList.add(avg);
+      avg = sumValue / usersNum;
 
-      CandCount candCount = CandCount.builder()
-              .electionId(electionId)
-              .voteId(voteId)
-              .candidateId(voteBox.getCandidateId())
-              .choicesAvg(avg)
-              .build();
+      CandCount candCount = createCandCount(voteId, electionId);
+      candCount.setCandidateId(voteBox.getCandidateId());
+      candCount.setScoresAvg(avg);
       candCountRepository.save(candCount);
     }
   }
 
-//    List<VoteBox> voteBoxes = voteBoxRepository.findAllByVoteId(voteId);
-//
-//    for (VoteBox voteBox : voteBoxes) {
-//      int sumValue = 0;
-//
-//      sumValue += extractField(voteBox);
-//
-//      sumValue / users
-//
-//      CandCount candCount = CandCount.builder()
-//        .electionId(electionId)
-//        .voteId(voteId)
-//        .candidateId(voteBox.getCandidateId())
-//        .scoresAvg(scoresAvg)
-//        .build();
-//
-//      candCountRepository.save(candCount);
-//    }
-//    return new CandCount();
-//  }
-
   @Override
   public VoteType getVoteType() {
     return VoteType.SCORE;
+  }
+
+  private int calculateSumValue(Long candidateId) {
+    List<VoteBox> voteBoxes = voteBoxRepository.findAllByCandidateId(candidateId);
+
+    int sum = 0;
+    for (VoteBox voteBox : voteBoxes) {
+      sum += voteBox.getScores();
+    }
+    return sum;
   }
 }
 

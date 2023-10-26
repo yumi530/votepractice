@@ -39,8 +39,8 @@ public class AdminCountController {
   VoteType voteType) {
 
     CandCountService candCountService =  candCountFactory.getService(voteType);
-    candCountService.isValidCandCount(electionId, voteId, voteType);
-    candCountService.countVotesResult(electionId, voteId, voteType);
+    candCountService.isValidCandCount(electionId);
+    candCountService.countVotesResult(electionId, voteId);
 
     Vote vote = voteService.detail(voteId);
     Election election = electionService.detail(electionId);

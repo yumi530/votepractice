@@ -2,11 +2,11 @@ package com.project.voting.service.cand_count;
 
 import com.project.voting.domain.cand_count.CandCount;
 import com.project.voting.domain.cand_count.CandCountRepository;
-import com.project.voting.domain.count.CountRepository;
 import com.project.voting.domain.election.Election;
 import com.project.voting.domain.election.ElectionRepository;
 import com.project.voting.domain.vote.VoteType;
 import com.project.voting.domain.voteBox.VoteBox;
+import com.project.voting.domain.voteBox.VoteBoxRepository;
 import com.project.voting.exception.cand_count.CandCountCustomException;
 import com.project.voting.exception.cand_count.CandCountErrorCode;
 import com.project.voting.exception.election.ElectionCustomException;
@@ -23,15 +23,16 @@ public abstract class CandCountService {
   @Autowired
   ElectionRepository electionRepository;
   @Autowired
+  VoteBoxRepository voteBoxRepository;
+  @Autowired
   CandCountRepository candCountRepository;
 
-  public abstract void countVotesResult(Long voteId, Long electionId, VoteType voteType);
+  public abstract void countVotesResult(Long voteId, Long electionId);
 
   public abstract VoteType getVoteType();
 
-//  int extractField(VoteBox voteBox);
 
-  public boolean isValidCandCount(Long electionId, Long voteId, VoteType voteType){
+  public boolean isValidCandCount(Long electionId){
 
     Optional<Election> optionalElection = electionRepository.findById(electionId);
     Election election = optionalElection.orElseThrow(
@@ -49,20 +50,21 @@ public abstract class CandCountService {
     return candCountRepository.findAllCandidateIdsByVoteId(voteId);
   }
 
-//  protected double countUsersNum (List<VoteBox> voteBoxes) {
-//    Set<String> uniqueUserPhones = voteBoxes.stream()
-//      .map(VoteBox::getUsersPhone)
-//      .collect(Collectors.toSet());
-//
-//    return uniqueUserPhones.size();
-//  }
+  public CandCount createCandCount(Long voteId, Long electionId) {
 
-  protected long calculateUsersNum(Long candidateId, List<VoteBox> voteBoxes) {
-    return voteBoxes.stream()
-      .filter(vb -> vb.getCandidateId().equals(candidateId))
-      .map(VoteBox::getUsersPhone)
-      .distinct()
-      .count();
+    CandCount candCount = new CandCount();
+    candCount.setElectionId(electionId);
+    candCount.setVoteId(voteId);
+    return candCount;
+  }
+
+  public double calculateUsersNum(Long candidateId) {
+    double usersSum = 0.0;
+    List<VoteBox> voteBoxes = voteBoxRepository.findAllByCandidateId(candidateId);
+    for (VoteBox voteBox : voteBoxes) {
+      usersSum += 1.0;
+    }
+    return usersSum;
   }
 
 }
