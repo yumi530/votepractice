@@ -1,6 +1,5 @@
 package com.project.voting.domain.vote;
 
-import java.util.Arrays;
 import lombok.Getter;
 
 @Getter
