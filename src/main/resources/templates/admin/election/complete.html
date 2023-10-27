@@ -85,7 +85,7 @@
       </div>
 
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-      <div th:if="${#strings.equals(votes.voteType, 'PROS_CONS')}">
+      <div th:if="${votes.voteType == T(com.project.voting.domain.vote.VoteType).PROS_CONS}">
       <script th:inline="javascript">
         /*<![CDATA[*/
 
@@ -126,7 +126,7 @@
         /*]]>*/
       </script>
       </div>
-      <div th:if="${#strings.equals(votes.voteType, 'CHOICE')}">
+      <div th:if="${votes.voteType == T(com.project.voting.domain.vote.VoteType).CHOICE}">
         <script th:inline="javascript">
 
           /*<![CDATA[*/
@@ -182,7 +182,7 @@
         </script>
   </div>
 
-    <div th:if="${#strings.equals(votes.voteType, 'SCORE')}">
+    <div th:if="${votes.voteType == T(com.project.voting.domain.vote.VoteType).SCORE}">
       <script th:inline="javascript">
 
         /*<![CDATA[*/
@@ -239,7 +239,7 @@
       </script>
     </div>
 
-    <div th:if="${#strings.equals(votes.voteType, 'PREFERENCE')}">
+    <div th:if="${votes.voteType == T(com.project.voting.domain.vote.VoteType).PREFERENCE}">
       <script th:inline="javascript">
 
         /*<![CDATA[*/
