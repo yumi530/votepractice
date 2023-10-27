@@ -30,7 +30,7 @@
           <hr>
           <p class="card-text" th:text="'투표 종류: ' + ${detailVote.voteType}"></p>
 
-          <div th:if="${#strings.equals(detailVote.voteType, 'PROS_CONS')}">
+          <div th:if="${detailVote.voteType == T(com.project.voting.domain.vote.VoteType).PROS_CONS}">
             <label for="hadChosen">찬성</label>
             <input type="radio" id="hadChosen" name="hadChosen" value="true" checked>
             <label for="unChosen">반대</label>
@@ -44,7 +44,7 @@
             <ul>PREFERENCE : 선호도 투표</ul>
           </div>
 
-          <div th:if="${#strings.equals(detailVote.voteType, 'CHOICE')}">
+          <div th:if="${detailVote.voteType == T(com.project.voting.domain.vote.VoteType).CHOICE}">
             <div th:each="candidate : ${detailCand}" class="form-check form-check-inline">
               <div>
                 <input class="form-check-input" type="radio" th:name="chosenCandidateId"
@@ -62,7 +62,7 @@
             <ul>PREFERENCE : 선호도 투표</ul>
           </div>
 
-          <div th:if="${#strings.equals(detailVote.voteType, 'SCORE')}">
+          <div th:if="${detailVote.voteType == T(com.project.voting.domain.vote.VoteType).SCORE}">
             <div th:each="candidate : ${detailCand}">
               <label th:for="scores" th:text="${candidate.candidateName}"></label>
               <input type="number" min="0" max="100" th:id="'candidate-' + ${candidate.candidateId}"
@@ -76,7 +76,7 @@
             <ul>PREFERENCE : 선호도 투표</ul>
           </div>
 
-          <div th:if="${#strings.equals(detailVote.voteType, 'PREFERENCE')}">
+          <div th:if="${detailVote.voteType == T(com.project.voting.domain.vote.VoteType).PREFERENCE}">
             <div th:each="candidate : ${detailCand}">
               <label th:for="ranks" th:text="${candidate.candidateName}"></label>
               <input type="number" min="1" th:id="'candidate-' + ${candidate.candidateId}"
