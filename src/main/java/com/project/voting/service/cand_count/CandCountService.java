@@ -57,14 +57,14 @@ public abstract class CandCountService {
     return candCount;
   }
 
-
-
   protected int calculateUsersNum(Long candidateId) {
     int usersSum = 0;
     List<VoteBox> voteBoxes = voteBoxRepository.findAllByCandidateId(candidateId);
     for (VoteBox voteBox : voteBoxes) {
       usersSum += 1;
     }
+
+
     return usersSum;
   }
 }

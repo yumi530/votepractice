@@ -17,17 +17,15 @@ public class PreferenceCandCountService extends CandCountService {
   CandCountRepository candCountRepository;
   @Override
   public void countVotesResult(Long electionId, Long voteId) {
-    List<VoteBox> voteBoxes = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
-    for (VoteBox voteBox : voteBoxes) {
-      int sumValue;
-
-      sumValue = calculateSumValue(voteBox.getCandidateId());
-      int usersNum = calculateUsersNum(voteBox.getCandidateId());
+    List<VoteBox> foundCandidates = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
+    for (VoteBox foundCandidate : foundCandidates) {
+      int sumValue = calculateSumValue(foundCandidate.getCandidateId());
+      int usersNum = calculateUsersNum(foundCandidate.getCandidateId());
 
       double avg = sumValue / usersNum;
 
       CandCount candCount = createCandCount(voteId, electionId);
-      candCount.setCandidateId(voteBox.getCandidateId());
+      candCount.setCandidateId(foundCandidate.getCandidateId());
       candCount.setRanksAvg(avg);
 
       candCountRepository.save(candCount);
@@ -38,11 +36,11 @@ public class PreferenceCandCountService extends CandCountService {
     return VoteType.PREFERENCE;
   }
   private int calculateSumValue(Long candidateId) {
-    List<VoteBox> voteBoxes = voteBoxRepository.findAllByCandidateId(candidateId);
+    List<VoteBox> values = voteBoxRepository.findAllByCandidateId(candidateId);
 
     int sum = 0;
-    for (VoteBox voteBox : voteBoxes) {
-      sum += voteBox.getRanks();
+    for (VoteBox value : values) {
+      sum += value.getRanks();
     }
     return sum;
   }
