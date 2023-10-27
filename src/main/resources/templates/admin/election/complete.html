@@ -35,7 +35,7 @@
             </td>
           </tr>
         </div>
-        <div th:if="${#strings.equals(votes.voteType, 'CHOICE')}">
+        <div th:if="${votes.voteType == T(com.project.voting.domain.vote.VoteType).CHOICE}">
           <span th:each="count : ${counts}">
             <tr>
               <td th:text="후보자명"></td>
@@ -48,7 +48,7 @@
             </tr>
           </span>
         </div>
-        <div th:if="${#strings.equals(votes.voteType, 'SCORE')}">
+        <div th:if="${votes.voteType == T(com.project.voting.domain.vote.VoteType).SCORE}">
           <span th:each="count : ${counts}">
             <tr>
               <td th:text="후보자명"></td>
@@ -61,7 +61,7 @@
             </tr>
           </span>
         </div>
-        <div th:if="${#strings.equals(votes.voteType, 'PREFERENCE')}">
+        <div th:if="${votes.voteType == T(com.project.voting.domain.vote.VoteType).PREFERENCE}">
           <span th:each="count : ${counts}">
             <tr>
               <td th:text="후보자명"></td>
