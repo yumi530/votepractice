@@ -21,14 +21,13 @@ public class ProsConsCountService extends CountService {
   @Override
   public void votesResultConfirm(Long electionId, Long voteId, VoteType voteType) {
 
-    List<CandCount> candCounts = candCountRepository.findAllByResult(true);
-    CandCount candidate = candCountRepository.findCandidateIdByVoteId(voteId);
+    List<CandCount> candCounts = candCountRepository.findAllByResultAndVoteId(true, voteId);
 
     for (CandCount candCount : candCounts) {
 
-      Count count = createCount(electionId, voteId, candidate.getCandidateId());
-      count.setElectedYn(candCount.isResult());
-      countRepository.save(count);
+      Count count = createCount(electionId, voteId, candCount.getCandidateId());
+        count.setElectedYn(candCount.isResult());
+        countRepository.save(count);
     }
   }
 

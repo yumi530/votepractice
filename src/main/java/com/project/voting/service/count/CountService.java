@@ -46,7 +46,7 @@ public abstract class CountService {
     return countRepository.findAllCandidateIdsByVoteId(voteId);
   }
 
-  public Count createCount(Long electionId, Long voteId, Long candidateId) {
+  protected Count createCount(Long electionId, Long voteId, Long candidateId) {
 
     Count count = new Count();
     count.setElectionId(electionId);
@@ -54,7 +54,7 @@ public abstract class CountService {
     count.setCandidateId(candidateId);
     return count;
   }
-  public List<CandCount> sortCandidatesByAvg(List<CandCount> candidates) {
+  protected List<CandCount> sortCandidatesByAvg(List<CandCount> candidates) {
     int n = candidates.size();
     for (int i = 0; i < n - 1; i++) {
       for (int j = i + 1; j < n; j++) {

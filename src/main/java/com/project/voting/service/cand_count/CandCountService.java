@@ -49,7 +49,7 @@ public abstract class CandCountService {
     return true;
   }
 
-  public CandCount createCandCount(Long voteId, Long electionId) {
+  protected CandCount createCandCount(Long voteId, Long electionId) {
 
     CandCount candCount = new CandCount();
     candCount.setElectionId(electionId);
@@ -57,11 +57,13 @@ public abstract class CandCountService {
     return candCount;
   }
 
-  public double calculateUsersNum(Long candidateId) {
-    double usersSum = 0.0;
+
+
+  protected int calculateUsersNum(Long candidateId) {
+    int usersSum = 0;
     List<VoteBox> voteBoxes = voteBoxRepository.findAllByCandidateId(candidateId);
     for (VoteBox voteBox : voteBoxes) {
-      usersSum += 1.0;
+      usersSum += 1;
     }
     return usersSum;
   }

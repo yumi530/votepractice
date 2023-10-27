@@ -22,12 +22,11 @@ public class ScoreCandCountService extends CandCountService {
     for (VoteBox voteBox : voteBoxes) {
 
       int sumValue;
-      double avg;
 
       sumValue = calculateSumValue(voteBox.getCandidateId());
-      double usersNum = calculateUsersNum(voteBox.getCandidateId());
+      int usersNum = calculateUsersNum(voteBox.getCandidateId());
 
-      avg = sumValue / usersNum;
+      double avg = sumValue / usersNum;
 
       CandCount candCount = createCandCount(voteId, electionId);
       candCount.setCandidateId(voteBox.getCandidateId());

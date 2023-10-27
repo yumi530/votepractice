@@ -45,10 +45,12 @@ public abstract class VoteBoxService {
       throw new VoteBoxCustomException(VoteBoxErrorCode.VOTE_DUPLICATED);
     });
   }
+
+
     return true;
   }
 
-  public VoteBox createVoteBox(VoteBoxDto voteBoxDto) {
+  protected VoteBox createVoteBox(VoteBoxDto voteBoxDto) {
 
     VoteBox voteBox = new VoteBox();
     voteBox.setElectionId(voteBoxDto.getElectionId());

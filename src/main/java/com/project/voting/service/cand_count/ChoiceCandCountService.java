@@ -20,13 +20,12 @@ public class ChoiceCandCountService extends CandCountService {
     List<VoteBox> voteBoxes = voteBoxRepository.findAllCandidateIdsByVoteId(voteId);
     for (VoteBox voteBox : voteBoxes) {
 
-      double sumValue;
-      double avg;
+      int sumValue;
 
       sumValue = calculateSumValue(voteBox.getCandidateId());
-      double usersNum = calculateUsersNum(voteBox.getCandidateId());
+      int usersNum = calculateUsersNum(voteBox.getCandidateId());
 
-        avg = sumValue / usersNum;
+      double avg = sumValue / usersNum;
 
       CandCount candCount = createCandCount(voteId, electionId);
       candCount.setCandidateId(voteBox.getCandidateId());
