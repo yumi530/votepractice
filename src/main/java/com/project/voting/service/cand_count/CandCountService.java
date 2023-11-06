@@ -63,8 +63,6 @@ public abstract class CandCountService {
     for (VoteBox voteBox : voteBoxes) {
       usersSum += 1;
     }
-
-
     return usersSum;
   }
 }
