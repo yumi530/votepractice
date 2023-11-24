@@ -4,20 +4,41 @@ import lombok.Getter;
 
 @Getter
 public enum VoteType {
-  PROS_CONS("찬반"),
-  CHOICE("선택"),
-  SCORE("점수"),
-  PREFERENCE("선호도");
+    PROS_CONS("찬반") {
+        @Override
+        public int getMinCandidates() {
+            return 1;
+        }
+    },
+    CHOICE("선택") {
+        @Override
+        public int getMinCandidates() {
+            return 2;
+        }
+    },
+    SCORE("점수") {
+        @Override
+        public int getMinCandidates() {
+            return 2;
+        }
+    },
 
-  private final String value;
+    PREFERENCE("선호도") {
+        @Override
+        public int getMinCandidates() {
+            return 2;
+        }
+    };
 
-  VoteType(String value) {
-    this.value = value;
-  }
+    private final String value;
 
-  public String getValue() {
-    return value;
-  }
+    VoteType(String value) {
+        this.value = value;
+    }
 
+    public String getValue() {
+        return value;
+    }
 
+    public abstract int getMinCandidates();
 }
